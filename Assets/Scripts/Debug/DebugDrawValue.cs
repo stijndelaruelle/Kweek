@@ -37,7 +37,7 @@ public class DebugDrawValue : MonoBehaviour
                 break;
 
             case PlayerValue.CurrentVelocity:
-                m_Text.text += m_PlayerController.CurrentVelocity;
+                m_Text.text += m_PlayerController.CurrentVelocity.x + " " + m_PlayerController.CurrentVelocity.y + " " + m_PlayerController.CurrentVelocity.z;
                 break;
 
             case PlayerValue.IsGrounded:
