@@ -104,8 +104,9 @@ public class PlayerController : MonoBehaviour, MoveableObject
         //Collision
         GroundCheck();
         RoofCheck();
-        ForwardCheck();
-        SideCheck();
+
+        bool success = ForwardCheck();
+        //if (!success)  SideCheck();
 
         //Movement
         CalculateHorizontalMovement();
@@ -313,77 +314,71 @@ public class PlayerController : MonoBehaviour, MoveableObject
 
     }
 
-    private void ForwardCheck()
+    private bool ForwardCheck()
     {
-        Vector3[] rayPositions = new Vector3[4];
-
-        //Determine if we are moving forward or backward
         float dot = Vector3.Dot(transform.forward, m_CurrentVelocity);
+        float backwardMod = Mathf.Sign(dot);
 
-        if (dot >= 0.0f)
-        {
-            rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopFrontLeft];
-            rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
-            rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
-            rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
-        }
-        else
-        {
-            rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopBackLeft];
-            rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopBackRight];
-            rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomBackLeft];
-            rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomBackRight];
-        }
+        //Bottom Left
+        Vector3 bottomLeft = transform.position.Copy();
+        bottomLeft += backwardMod * transform.forward * ((m_BoxCollider.size.x * 0.5f) - m_SkinWidth);
+        bottomLeft -= transform.right * m_BoxCollider.size.x * 0.5f;
 
-        //make sure we don't interact with the side rays
-        rayPositions[0] += transform.right * 0.1f;
-        rayPositions[1] -= transform.right * 0.1f;
-        rayPositions[2] += transform.right * 0.1f;
-        rayPositions[3] -= transform.right * 0.1f;
+        //Bottom Right
+        Vector3 bottomRight = bottomLeft;
+        bottomLeft += transform.right * m_BoxCollider.size.x;
 
-        HorizontalCheck(rayPositions, transform.forward);
+        //Top Left
+        Vector3 topLeft = bottomLeft;
+        topLeft.y += m_BoxCollider.size.y;
+
+        //Top Right
+        Vector3 topRight = bottomRight;
+        topRight.y += m_BoxCollider.size.y;
+
+        Vector3[] rayPositions = new Vector3[4];
+        rayPositions[0] = topLeft;
+        rayPositions[1] = topRight;
+        rayPositions[2] = bottomLeft;
+        rayPositions[3] = bottomRight;
+
+        bool success = HorizontalCheck(rayPositions, transform.forward, backwardMod);
+
+        return success;
     }
 
     private void SideCheck()
     {
-        Vector3[] rayPositions = new Vector3[4];
-
-        //Determine if we are moving forward or backward
         float dot = Vector3.Dot(transform.right, m_CurrentVelocity);
+        float backwardMod = Mathf.Sign(dot);
 
-        if (dot >= 0.0f)
-        {
-            rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopBackRight];
-            rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
-            rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomBackRight];
-            rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
+        //Bottom Left
+        Vector3 bottomLeft = transform.position.Copy();
+        bottomLeft += backwardMod * transform.right * ((m_BoxCollider.size.x * 0.5f) - m_SkinWidth);
+        bottomLeft -= transform.forward * m_BoxCollider.size.x * 0.5f;
 
-            //make sure we don't interact with the forward rays
-            rayPositions[0] += transform.forward * 0.1f;
-            rayPositions[1] -= transform.forward * 0.1f;
-            rayPositions[2] += transform.forward * 0.1f;
-            rayPositions[3] -= transform.forward * 0.1f;
-        }
-        else
-        {
-            rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopFrontLeft];
-            rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopBackLeft];
-            rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
-            rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomBackLeft];
+        //Bottom Right
+        Vector3 bottomRight = bottomLeft;
+        bottomLeft += transform.forward * m_BoxCollider.size.x;
 
+        //Top Left
+        Vector3 topLeft = bottomLeft;
+        topLeft.y += m_BoxCollider.size.y;
 
-            //make sure we don't interact with the forward rays
-            rayPositions[0] -= transform.forward * 0.1f;
-            rayPositions[1] += transform.forward * 0.1f;
-            rayPositions[2] -= transform.forward * 0.1f;
-            rayPositions[3] += transform.forward * 0.1f;
-        }
+        //Top Right
+        Vector3 topRight = bottomRight;
+        topRight.y += m_BoxCollider.size.y;
 
+        Vector3[] rayPositions = new Vector3[4];
+        rayPositions[0] = topLeft;
+        rayPositions[1] = topRight;
+        rayPositions[2] = bottomLeft;
+        rayPositions[3] = bottomRight;
 
-        HorizontalCheck(rayPositions, transform.right);
+        HorizontalCheck(rayPositions, transform.right, backwardMod);
     }
 
-    private void HorizontalCheck(Vector3[] rayPositions, Vector3 direction)
+    private bool HorizontalCheck(Vector3[] rayPositions, Vector3 direction, float inverse)
     {
         //Determine length
         float length = m_SkinWidth + Time.deltaTime;
@@ -392,42 +387,42 @@ public class PlayerController : MonoBehaviour, MoveableObject
             length = (m_CurrentSpeed * Time.deltaTime) + m_SkinWidth;
 
         //Determine if we are moving forward or backward
-        float dot = Vector3.Dot(direction, m_CurrentVelocity);
-        float backwardMod = Mathf.Sign(dot);
-
         //Adjust the positions slightly (so they don't interfere with the above & below rays)
         rayPositions[0].y -= 0.1f;
         rayPositions[1].y -= 0.1f;
         rayPositions[2].y += 0.1f;
         rayPositions[3].y += 0.1f;
 
-        for (int i = 0; i < rayPositions.Length; ++i)
-        {
-            rayPositions[i] -= backwardMod * direction * m_SkinWidth;
-        }
-
-        Vector3 hitRay;
-        RaycastHit hit = CastRayGrid(rayPositions, backwardMod * direction, length, out hitRay, 2);
+        Vector3 rayPosition;
+        RaycastHit hit = CastRayGrid(rayPositions, inverse * direction, length, out rayPosition, 0);
 
         if (hit.collider != null)
         {
-            //Alter the position slightly, so we are not in the wall anymore
-            transform.position -= (hitRay + (backwardMod * direction) * length) - hit.point;
+            //Move backwards a bit
+            transform.position -= inverse * direction * (length - hit.distance);
 
             //Alter the rotation of our character so he can move along the wall
             Vector3 normal = hit.normal;
             Vector3 perpendicular = new Vector3(-normal.z, 0.0f, normal.x);
 
             //Inverse the perpendicular to make sure we always move forward
-            dot = Vector3.Dot(direction, perpendicular);
-
-            Debug.Log(dot);
+            float dot = Vector3.Dot(inverse * direction, perpendicular);
             if (dot < 0.0f) { perpendicular *= -1; }
 
-            transform.localRotation = Quaternion.LookRotation(perpendicular, Vector3.up);
+            perpendicular *= inverse;
 
-            Debug.Log(hit.collider.gameObject.name);
+            //transform.localRotation = Quaternion.LookRotation(perpendicular, Vector3.up);
+
+            if (direction == transform.forward)
+                transform.forward = perpendicular;
+
+            if (direction == transform.right)
+                transform.right = -perpendicular;
+
+            return true;
         }
+
+        return false;
     }
 
 
