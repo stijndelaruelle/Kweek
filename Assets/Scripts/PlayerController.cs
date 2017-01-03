@@ -283,64 +283,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
         }
     }
 
-    private void GroundCheckOld()
-    {
-        //Determine length
-        float length = m_SkinWidth + Time.deltaTime;
-
-        if (m_CurrentVelocity.y < 0.0f)
-            length = (Mathf.Abs(m_CurrentVelocity.y) * Time.deltaTime) + m_SkinWidth;
-
-        //Determine starting pos
-        Vector3[] rayPositions = new Vector3[9];
-        rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
-        rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
-        rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomBackRight];
-        rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomBackLeft];
-
-        rayPositions[4] = (rayPositions[0] + rayPositions[1]) * 0.5f;
-        rayPositions[5] = (rayPositions[1] + rayPositions[2]) * 0.5f;
-        rayPositions[6] = (rayPositions[2] + rayPositions[3]) * 0.5f;
-        rayPositions[7] = (rayPositions[3] + rayPositions[0]) * 0.5f;
-
-        rayPositions[8] = (rayPositions[0] + rayPositions[2]) * 0.5f;
-
-        for (int i = 0; i < rayPositions.Length; ++i)
-        {
-            rayPositions[i].y += m_SkinWidth;
-
-            //Cast the ray
-            Ray ray = new Ray(rayPositions[i], Vector3.down);
-            RaycastHit[] raycastHits = Physics.RaycastAll(ray, length);
-
-            //If we hit the ground
-            if (raycastHits.Length > 0)
-            {
-                for (int j = 0; j < raycastHits.Length; ++j)
-                {
-                    if (raycastHits[j].collider.gameObject != gameObject)
-                    {
-                        m_IsGrounded = true;
-
-                        if (m_IsGrounded)
-                        {
-                            m_CurrentVelocity.y = 0.0f;
-                            transform.position = new Vector3(transform.position.x, raycastHits[j].point.y, transform.position.z);
-                            m_NumberOfJumps = m_MaxNumberOfJumps;
-
-                            Debug.DrawRay(rayPositions[i], Vector3.down * length, Color.red);
-
-                            return;
-                        }
-                    }
-                }
-            }
-
-            m_IsGrounded = false;
-            Debug.DrawRay(rayPositions[i], Vector3.down * length, Color.gray);
-        }
-    }
-
     private void RoofCheck()
     {
         //Determine length
@@ -371,56 +313,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
 
     }
 
-    private void RoofCheckOld()
-    {
-        //Determine length
-        float length = m_SkinWidth + Time.deltaTime;
-
-        if (m_CurrentVelocity.y > 0.0f)
-            length = (Mathf.Abs(m_CurrentVelocity.y) * Time.deltaTime) + m_SkinWidth;
-
-        //Determine starting pos
-        Vector3[] rayPositions = new Vector3[9];
-        rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopFrontLeft];
-        rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
-        rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.TopBackRight];
-        rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.TopBackLeft];
-
-        rayPositions[4] = (rayPositions[0] + rayPositions[1]) * 0.5f;
-        rayPositions[5] = (rayPositions[1] + rayPositions[2]) * 0.5f;
-        rayPositions[6] = (rayPositions[2] + rayPositions[3]) * 0.5f;
-        rayPositions[7] = (rayPositions[3] + rayPositions[0]) * 0.5f;
-
-        rayPositions[8] = (rayPositions[0] + rayPositions[2]) * 0.5f;
-
-        for (int i = 0; i < rayPositions.Length; ++i)
-        {
-            rayPositions[i].y -= m_SkinWidth;
-
-            //Cast the ray
-            Ray ray = new Ray(rayPositions[i], Vector3.up);
-            RaycastHit[] raycastHits = Physics.RaycastAll(ray, length);
-
-            //If we hit the ceiling
-            if (raycastHits.Length > 0)
-            {
-                for (int j = 0; j < raycastHits.Length; ++j)
-                {
-                    if (raycastHits[j].collider.gameObject != gameObject)
-                    {
-                        transform.position = new Vector3(transform.position.x, raycastHits[j].point.y - m_BoxCollider.bounds.size.y, transform.position.z);
-                        m_CurrentVelocity.y = 0.0f;
-
-                        Debug.DrawRay(rayPositions[i], Vector3.up * length, Color.blue);
-                        return;
-                    }
-                }
-            }
-
-            Debug.DrawRay(rayPositions[i], Vector3.up * length, Color.gray);
-        }
-    }
-
     private void ForwardCheck()
     {
         Vector3[] rayPositions = new Vector3[4];
@@ -434,12 +326,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
             rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
             rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
             rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
-
-            //make sure we don't interact with the side rays
-            rayPositions[0] += transform.right * 0.1f;
-            rayPositions[1] -= transform.right * 0.1f;
-            rayPositions[2] += transform.right * 0.1f;
-            rayPositions[3] -= transform.right * 0.1f;
         }
         else
         {
@@ -447,13 +333,13 @@ public class PlayerController : MonoBehaviour, MoveableObject
             rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopBackRight];
             rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomBackLeft];
             rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomBackRight];
-
-            //make sure we don't interact with the side rays
-            rayPositions[0] -= transform.right * 0.1f;
-            rayPositions[1] += transform.right * 0.1f;
-            rayPositions[2] -= transform.right * 0.1f;
-            rayPositions[3] += transform.right * 0.1f;
         }
+
+        //make sure we don't interact with the side rays
+        rayPositions[0] += transform.right * 0.1f;
+        rayPositions[1] -= transform.right * 0.1f;
+        rayPositions[2] += transform.right * 0.1f;
+        rayPositions[3] -= transform.right * 0.1f;
 
         HorizontalCheck(rayPositions, transform.forward);
     }
@@ -471,6 +357,12 @@ public class PlayerController : MonoBehaviour, MoveableObject
             rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
             rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomBackRight];
             rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
+
+            //make sure we don't interact with the forward rays
+            rayPositions[0] += transform.forward * 0.1f;
+            rayPositions[1] -= transform.forward * 0.1f;
+            rayPositions[2] += transform.forward * 0.1f;
+            rayPositions[3] -= transform.forward * 0.1f;
         }
         else
         {
@@ -478,13 +370,15 @@ public class PlayerController : MonoBehaviour, MoveableObject
             rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopBackLeft];
             rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
             rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomBackLeft];
+
+
+            //make sure we don't interact with the forward rays
+            rayPositions[0] -= transform.forward * 0.1f;
+            rayPositions[1] += transform.forward * 0.1f;
+            rayPositions[2] -= transform.forward * 0.1f;
+            rayPositions[3] += transform.forward * 0.1f;
         }
 
-        //make sure we don't interact with the forward rays
-        rayPositions[0] += transform.forward * 0.1f;
-        rayPositions[1] -= transform.forward * 0.1f;
-        rayPositions[2] += transform.forward * 0.1f;
-        rayPositions[3] -= transform.forward * 0.1f;
 
         HorizontalCheck(rayPositions, transform.right);
     }
@@ -533,85 +427,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
             transform.localRotation = Quaternion.LookRotation(perpendicular, Vector3.up);
 
             Debug.Log(hit.collider.gameObject.name);
-        }
-    }
-
-    private void ForwardCheckOld()
-    {
-        //Determine length
-        float length = m_SkinWidth + Time.deltaTime;
-
-        if (m_CurrentSpeed > 0.0f)
-            length = (m_CurrentSpeed * Time.deltaTime) + m_SkinWidth;
-
-        //Determine starting pos
-        Vector3[] rayPositions = new Vector3[15];
-        rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopFrontLeft];
-        rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
-        rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
-        rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
-
-        //Adjust the positions slightly (so they don't interfere with the above & below rays)
-        rayPositions[0].y -= 0.1f;
-        rayPositions[1].y -= 0.1f;
-        rayPositions[2].y += 0.1f;
-        rayPositions[3].y += 0.1f;
-  
-        rayPositions[4] = (rayPositions[0] + rayPositions[1]) * 0.5f;   //Top center
-        rayPositions[5] = (rayPositions[2] + rayPositions[3]) * 0.5f;   //Bottom center
-        rayPositions[6] = (rayPositions[0] + rayPositions[2]) * 0.5f;   //Left center
-        rayPositions[7] = (rayPositions[1] + rayPositions[3]) * 0.5f;   //Right center
-
-        rayPositions[8] = (rayPositions[6] + rayPositions[7]) * 0.5f;   //center
-
-        //Extra left
-        rayPositions[9] = (rayPositions[0] + rayPositions[6]) * 0.5f;
-        rayPositions[10] = (rayPositions[2] + rayPositions[6]) * 0.5f;
-
-        //Extra right
-        rayPositions[11] = (rayPositions[1] + rayPositions[7]) * 0.5f;
-        rayPositions[12] = (rayPositions[3] + rayPositions[7]) * 0.5f;
-
-        //Extra center rays
-        rayPositions[13] = (rayPositions[9] + rayPositions[11]) * 0.5f;
-        rayPositions[14] = (rayPositions[10] + rayPositions[12]) * 0.5f;
-
-        for (int i = 0; i < rayPositions.Length; ++i)
-        {
-            rayPositions[i] -= transform.forward * m_SkinWidth;
-
-            //Cast the ray
-            Ray ray = new Ray(rayPositions[i], transform.forward);
-            RaycastHit[] raycastHits = Physics.RaycastAll(ray, length);
-
-            //If we hit the ceiling
-            if (raycastHits.Length > 0)
-            {
-                for (int j = 0; j < raycastHits.Length; ++j)
-                {
-                    if (raycastHits[j].collider.gameObject != gameObject)
-                    {
-                        //Alter the position slightly, so we are not in the wall anymore
-                        transform.position -= (rayPositions[i] + transform.forward * length) - raycastHits[j].point;
-
-                        //Alter the rotation of our character so he can move along the wall
-                        Vector3 normal = raycastHits[j].normal;
-                        Vector3 perpendicular = new Vector3(-normal.z, 0.0f, normal.x);
-
-                        //Inverse the perpendicular to make sure we always move forward
-                        float dot = Vector3.Dot(transform.forward, perpendicular);
-                        if (dot < 0.0f) { perpendicular *= -1; }
-
-                        transform.localRotation = Quaternion.LookRotation(perpendicular, Vector3.up);
-
-                        Debug.Log(raycastHits[j].collider.gameObject.name);
-                        Debug.DrawRay(rayPositions[i], transform.forward * length, new Color(1.0f, 0.0f, 1.0f));
-                        return;
-                    }
-                }
-            }
-
-            Debug.DrawRay(rayPositions[i], transform.forward * length, new Color(1.0f, 0.0f, 1.0f));
         }
     }
 
@@ -689,6 +504,9 @@ public class PlayerController : MonoBehaviour, MoveableObject
         return new RaycastHit();
     }
 
+
+
+    //MoveableObject
     public void AddVelocity(Vector3 velocity)
     {
         m_ExternalAddedVelocity += velocity;
