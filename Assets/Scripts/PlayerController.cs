@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, MoveableObject
 {
-    private enum ColliderPosition
-    {
-        BottomFrontLeft = 0,
-        BottomFrontRight = 1,
-        BottomBackRight = 2,
-        BottomBackLeft = 3,
-        TopFrontLeft = 4,
-        TopFrontRight = 5,
-        TopBackRight = 6,
-        TopBackLeft = 7
-    }
-
     [Header("Base Movement Settings")]
     [SerializeField]
     private float m_Acceleration = 1.0f;
@@ -55,10 +43,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
     private Transform m_Camera;
 
     [SerializeField]
-    private BoxCollider m_BoxCollider;
-    private Vector3[] m_ColliderVertices;
-
-    [SerializeField]
     private Gun m_Gun;
 
     //Exposed to debug
@@ -85,12 +69,17 @@ public class PlayerController : MonoBehaviour, MoveableObject
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
 
+    //temp
+    private Vector3 m_PreviousPosition;
+
     private void Awake()
     {
         m_NumberOfJumps = m_MaxNumberOfJumps;
 
         m_CharacterTargetRot = transform.localRotation;
         m_CameraTargetRot = m_Camera.localRotation;
+
+        m_PreviousPosition = transform.position.Copy();
     }
 
     private void Update()
@@ -98,13 +87,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
         //Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        CalculcateColliderVertices();
-
-        //Collision
-        GroundCheck();
-        RoofCheck();
-        //Horizontal follows later
 
         //Movement
         CalculateHorizontalMovement();
@@ -117,22 +99,11 @@ public class PlayerController : MonoBehaviour, MoveableObject
     private void LateUpdate()
     {
         UpdateMovement();
-    }
 
-    private void CalculcateColliderVertices()
-    {
-        BoxCollider b = m_BoxCollider;
-        m_ColliderVertices = new Vector3[8];
-
-        m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft] = gameObject.transform.TransformPoint(b.center + new Vector3(-b.size.x, -b.size.y, b.size.z) * 0.5f);  //Links voor (onder)
-        m_ColliderVertices[(int)ColliderPosition.BottomFrontRight] = gameObject.transform.TransformPoint(b.center + new Vector3(b.size.x, -b.size.y, b.size.z) * 0.5f);  //Rechts voor (onder)
-        m_ColliderVertices[(int)ColliderPosition.BottomBackRight] = gameObject.transform.TransformPoint(b.center + new Vector3(b.size.x, -b.size.y, -b.size.z) * 0.5f);  //Rechts achter (onder)
-        m_ColliderVertices[(int)ColliderPosition.BottomBackLeft] = gameObject.transform.TransformPoint(b.center + new Vector3(-b.size.x, -b.size.y, -b.size.z) * 0.5f);  //Links achter (onder)
-
-        m_ColliderVertices[(int)ColliderPosition.TopFrontLeft] = gameObject.transform.TransformPoint(b.center + new Vector3(-b.size.x, b.size.y, b.size.z) * 0.5f);      //Links voor (boven)
-        m_ColliderVertices[(int)ColliderPosition.TopFrontRight] = gameObject.transform.TransformPoint(b.center + new Vector3(b.size.x, b.size.y, b.size.z) * 0.5f);      //Rechts voor (boven)
-        m_ColliderVertices[(int)ColliderPosition.TopBackRight] = gameObject.transform.TransformPoint(b.center + new Vector3(b.size.x, b.size.y, -b.size.z) * 0.5f);      //Rechts achter (boven)
-        m_ColliderVertices[(int)ColliderPosition.TopBackLeft] = gameObject.transform.TransformPoint(b.center + new Vector3(-b.size.x, b.size.y, -b.size.z) * 0.5f);      //Links achter (boven)
+        //Collision
+        GroundCheck();
+        RoofCheck();
+        DirectionalCheck();
     }
 
     private void CalculateHorizontalMovement()
@@ -148,9 +119,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
         //Horizontal Acceleration
         float acceleration = m_Acceleration;
         if (!m_IsGrounded) acceleration = m_AirAcceleration;
-
-        //Check for collision and alter the added velocity if required
-        accelerationDir = DirectionalCheck(accelerationDir, acceleration);
 
         m_AddedVelocity.x += accelerationDir.x * acceleration;
         m_AddedVelocity.z += accelerationDir.z * acceleration;
@@ -214,6 +182,7 @@ public class PlayerController : MonoBehaviour, MoveableObject
         }
 
         //Actually move
+        m_PreviousPosition = transform.position.Copy();
         transform.position += (m_CurrentVelocity + m_ExternalAddedVelocity) * Time.deltaTime;
         m_ExternalAddedVelocity = Vector3.zero;
 
@@ -254,18 +223,22 @@ public class PlayerController : MonoBehaviour, MoveableObject
             length = (Mathf.Abs(m_CurrentVelocity.y) * Time.deltaTime) + m_SkinWidth;
 
         //Determine starting pos
+        //temp
+        float width = 0.5f;
+        float height = 2;
+
         Vector3[] rayPositions = new Vector3[4];
-        rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.BottomFrontLeft];
-        rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.BottomFrontRight];
-        rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.BottomBackRight];
-        rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.BottomBackLeft];
+        rayPositions[0] = transform.position - (transform.right * width) + (transform.forward * width);
+        rayPositions[1] = transform.position + (transform.right * width) + (transform.forward * width);
+        rayPositions[2] = transform.position + (transform.right * width) - (transform.forward * width);
+        rayPositions[3] = transform.position - (transform.right * width) - (transform.forward * width);
 
         for (int i = 0; i < rayPositions.Length; ++i)
         {
             rayPositions[i].y += m_SkinWidth;
         }
 
-        List<RaycastHit> hits = CastRayGrid(rayPositions, Vector3.down, length, 1);
+        List<RaycastHit> hits = CastRayGrid(rayPositions, Vector3.down, length, 0);
 
         if (hits.Count > 0)
         {
@@ -304,18 +277,22 @@ public class PlayerController : MonoBehaviour, MoveableObject
             length = (Mathf.Abs(m_CurrentVelocity.y) * Time.deltaTime) + m_SkinWidth;
 
         //Determine starting pos
-        Vector3[] rayPositions = new Vector3[9];
-        rayPositions[0] = m_ColliderVertices[(int)ColliderPosition.TopFrontLeft];
-        rayPositions[1] = m_ColliderVertices[(int)ColliderPosition.TopFrontRight];
-        rayPositions[2] = m_ColliderVertices[(int)ColliderPosition.TopBackRight];
-        rayPositions[3] = m_ColliderVertices[(int)ColliderPosition.TopBackLeft];
+        //temp
+        float width = 0.5f;
+        float height = 2;
+
+        Vector3[] rayPositions = new Vector3[4];
+        rayPositions[0] = transform.position - (transform.right * width) + (transform.forward * width);
+        rayPositions[1] = transform.position + (transform.right * width) + (transform.forward * width);
+        rayPositions[2] = transform.position + (transform.right * width) - (transform.forward * width);
+        rayPositions[3] = transform.position - (transform.right * width) - (transform.forward * width);
 
         for (int i = 0; i < rayPositions.Length; ++i)
         {
-            rayPositions[i].y -= m_SkinWidth;
+            rayPositions[i].y += height - m_SkinWidth;
         }
 
-        List<RaycastHit> hits = CastRayGrid(rayPositions, Vector3.up, length, 1);
+        List<RaycastHit> hits = CastRayGrid(rayPositions, Vector3.up, length, 0);
 
         if (hits.Count > 0)
         {
@@ -329,15 +306,15 @@ public class PlayerController : MonoBehaviour, MoveableObject
 
             if (closestHit.collider != null)
             {
-                transform.position = new Vector3(transform.position.x, closestHit.point.y - m_BoxCollider.bounds.size.y, transform.position.z);
+                transform.position = new Vector3(transform.position.x, closestHit.point.y - height, transform.position.z);
                 m_CurrentVelocity.y = 0.0f;
             }
         }
     }
 
-    private Vector3 DirectionalCheck(Vector3 accelerationDir, float acceleration)
+    private void DirectionalCheck()
     {
-        Vector3 normDir = accelerationDir;
+        Vector3 normDir = m_CurrentVelocity.normalized;
         normDir.y = 0.0f;
 
         if (normDir == Vector3.zero) normDir = transform.forward;
@@ -348,22 +325,27 @@ public class PlayerController : MonoBehaviour, MoveableObject
         // Generate corners for the grid
         //---------------------------------------
 
+        //temp
+        float width = 1;
+        float height = 2;
+
         //Bottom Left
-        Vector3 bottomLeft = transform.position.Copy();
-        bottomLeft -= right * m_BoxCollider.size.x * 0.5f;
+        Vector3 bottomLeft = m_PreviousPosition;
+        bottomLeft -= right * ((width * 0.5f) - 0.1f);
         bottomLeft.y += 0.1f;
 
         //Bottom Right
-        Vector3 bottomRight = bottomLeft;
-        bottomLeft += right * m_BoxCollider.size.x;
+        Vector3 bottomRight = m_PreviousPosition;
+        bottomRight += right * ((width * 0.5f) - 0.1f);
+        bottomRight.y += 0.1f;
 
         //Top Left
         Vector3 topLeft = bottomLeft;
-        topLeft.y += m_BoxCollider.size.y - 0.2f;
+        topLeft.y += height - 0.2f;
 
         //Top Right
         Vector3 topRight = bottomRight;
-        topRight.y += m_BoxCollider.size.y;
+        topRight.y += height - 0.2f;
 
         Vector3[] rayPositions = new Vector3[4];
         rayPositions[0] = topLeft;
@@ -374,25 +356,20 @@ public class PlayerController : MonoBehaviour, MoveableObject
         //---------------------------------------
         // Cast the grid
         //---------------------------------------
-
-        Vector3 totalVelocity = m_CurrentVelocity + (accelerationDir * acceleration) + m_AddedVelocity;
-        float totalSpeed = totalVelocity.magnitude;
-
-        float length = (totalSpeed * Time.deltaTime);
+        float length = 0.5f; //used to be m_CurrentSpeed * deltaTime. Don't use deltaTime it sometimes spikes randomly. Creating weird wallhugging issues
 
         if (length <= 0.0f)
-            return accelerationDir;
+            return;
 
         List<RaycastHit> hits = CastRayGrid(rayPositions, normDir, length, 2);
 
         //---------------------------------------
         // What happens when we have collision
         //---------------------------------------
-
         if (hits.Count > 0)
         {
-            //Determine the closest hit
-            RaycastHit furthestHit = hits[0];
+            //Determine the furthest hit
+            RaycastHit closestHit = hits[0];
 
             //Determine the average (unique) normal.
             //Could probably be done more efficient.
@@ -406,7 +383,7 @@ public class PlayerController : MonoBehaviour, MoveableObject
 
             foreach (RaycastHit hit in hits)
             {
-                if (hit.distance > furthestHit.distance) { furthestHit = hit; }
+                if (hit.distance < closestHit.distance) { closestHit = hit; }
 
                 if (uniqueNormals.Contains(hit.normal) == false)
                 {
@@ -418,42 +395,34 @@ public class PlayerController : MonoBehaviour, MoveableObject
             }
 
             averageNormal /= uniqueNormals.Count;
+            float lengthInWall = (length - closestHit.distance);
 
             //Either slide along the perpendicular or back off
-            //Not sliding solves corner issues.
             if (doSlide)
             {
-                //Move backwards a bit
-                transform.position -= normDir * (length - furthestHit.distance);
-
                 Vector3 perpendicular = new Vector3(-averageNormal.z, 0.0f, averageNormal.x);
+                //Vector3 perpendicular = new Vector3(-closestHit.normal.z, 0.0f, closestHit.normal.x);
                 perpendicular.Normalize();
 
                 //Inverse the perpendicular to make sure we always move forward
-                float dot = Vector3.Dot(transform.forward, perpendicular);
+                float dot = Vector3.Dot(normDir, perpendicular);
                 if (dot < 0.0f) { perpendicular *= -1; }
 
-                //Rotate the current velocity
-                m_CurrentVelocity = perpendicular * m_CurrentVelocity.magnitude;
+                //Move backwards a bit  
+                transform.position -= (normDir * lengthInWall);
 
-                Debug.DrawRay(furthestHit.point, perpendicular * length, Color.red, 5.0f);
+                //Move towards the perpendicular
+                transform.position += perpendicular * (lengthInWall * Mathf.Abs(dot)); //scale from 0 to 1 on how fast we move. Heading straight to a wall is a full stop
 
-                return perpendicular;
+                Debug.DrawRay(closestHit.point, normDir * lengthInWall, Color.red, 5.0f);
             }
             else
             {
                 //Move backwards a bit
-                transform.position -= averageNormal * (length - furthestHit.distance);
-
-                m_CurrentVelocity.x = 0.0f;
-                m_CurrentVelocity.z = 0.0f;
-
-                Debug.DrawRay(furthestHit.point, averageNormal * length, Color.red, 5.0f);
-                return Vector3.zero;
+                //transform.position -= normDir * lengthInWall;
+                transform.position -= (normDir * lengthInWall);
             }
         }
-
-        return accelerationDir;
     }
 
     private List<RaycastHit> CastRayGrid(Vector3[] corners, Vector3 direction, float length, int divisions = 0)
@@ -510,20 +479,18 @@ public class PlayerController : MonoBehaviour, MoveableObject
                 {
                     if (raycastHits[j].collider.gameObject != gameObject)
                     {
-                        //Debug.DrawRay(rayPositions[i], direction * length, new Color(1.0f, 0.0f, 1.0f));
+                        Debug.DrawRay(rayPositions[i], direction * length, new Color(1.0f, 0.0f, 1.0f));
 
                         returnValues.Add(raycastHits[j]);
                     }
                 }
             }
 
-           // Debug.DrawRay(rayPositions[i], direction * length, Color.gray);
+            Debug.DrawRay(rayPositions[i], direction * length, Color.gray);
         }
 
         return returnValues;
     }
-
-
 
     //MoveableObject
     public void AddVelocity(Vector3 velocity)
