@@ -197,10 +197,18 @@ public class PlayerController : MonoBehaviour, MoveableObject
         float xRot = Input.GetAxis("Mouse Y");// *10;
 
         m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
-        m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
-
         transform.localRotation = m_CharacterTargetRot;
+
+        m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
         m_Camera.localRotation = m_CameraTargetRot;
+
+        //Lock vertical camera rotation
+        float dot = Vector3.Dot(transform.forward, m_Camera.transform.forward);
+        if (dot < 0.0f)
+        {
+            m_CameraTargetRot = Quaternion.Euler(90.0f * Mathf.Sign(m_CameraTargetRot.x), 0f, 0f);
+            m_Camera.localRotation = m_CameraTargetRot;
+        }
     }
 
     private void HandleShooting()
