@@ -104,9 +104,7 @@ public class PlayerController : MonoBehaviour, MoveableObject
         //Collision
         GroundCheck();
         RoofCheck();
-
-        bool success = ForwardCheck();
-        //if (!success)  SideCheck();
+        //Horizontal follows later
 
         //Movement
         CalculateHorizontalMovement();
@@ -151,6 +149,9 @@ public class PlayerController : MonoBehaviour, MoveableObject
         float acceleration = m_Acceleration;
         if (!m_IsGrounded) acceleration = m_AirAcceleration;
 
+        //Check for collision and alter the added velocity if required
+        accelerationDir = DirectionalCheck(accelerationDir, acceleration);
+
         m_AddedVelocity.x += accelerationDir.x * acceleration;
         m_AddedVelocity.z += accelerationDir.z * acceleration;
         
@@ -160,7 +161,6 @@ public class PlayerController : MonoBehaviour, MoveableObject
 
         m_AddedVelocity.x -= m_CurrentVelocity.normalized.x * friction;
         m_AddedVelocity.z -= m_CurrentVelocity.normalized.z * friction;
-
     }
 
     private void CalculateVerticalMovement()
@@ -265,17 +265,28 @@ public class PlayerController : MonoBehaviour, MoveableObject
             rayPositions[i].y += m_SkinWidth;
         }
 
-        RaycastHit hit = CastRayGrid(rayPositions, Vector3.down, length, 1);
+        List<RaycastHit> hits = CastRayGrid(rayPositions, Vector3.down, length, 1);
 
-        if (hit.collider != null)
+        if (hits.Count > 0)
         {
-            m_IsGrounded = true;
+            //Determine the closest hit
+            RaycastHit closestHit = hits[0];
 
-            if (m_IsGrounded)
+            foreach (RaycastHit hit in hits)
             {
-                m_CurrentVelocity.y = 0.0f;
-                transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
-                m_NumberOfJumps = m_MaxNumberOfJumps;
+                if (hit.distance < closestHit.distance) { closestHit = hit; }
+            }
+
+            if (closestHit.collider != null)
+            {
+                m_IsGrounded = true;
+
+                if (m_IsGrounded)
+                {
+                    m_CurrentVelocity.y = 0.0f;
+                    transform.position = new Vector3(transform.position.x, closestHit.point.y, transform.position.z);
+                    m_NumberOfJumps = m_MaxNumberOfJumps;
+                }
             }
         }
         else
@@ -304,33 +315,51 @@ public class PlayerController : MonoBehaviour, MoveableObject
             rayPositions[i].y -= m_SkinWidth;
         }
 
-        RaycastHit hit = CastRayGrid(rayPositions, Vector3.up, length, 1);
+        List<RaycastHit> hits = CastRayGrid(rayPositions, Vector3.up, length, 1);
 
-        if (hit.collider != null)
+        if (hits.Count > 0)
         {
-            transform.position = new Vector3(transform.position.x, hit.point.y - m_BoxCollider.bounds.size.y, transform.position.z);
-            m_CurrentVelocity.y = 0.0f;
-        }
+            //Determine the closest hit
+            RaycastHit closestHit = hits[0];
 
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.distance < closestHit.distance) { closestHit = hit; }
+            }
+
+            if (closestHit.collider != null)
+            {
+                transform.position = new Vector3(transform.position.x, closestHit.point.y - m_BoxCollider.bounds.size.y, transform.position.z);
+                m_CurrentVelocity.y = 0.0f;
+            }
+        }
     }
 
-    private bool ForwardCheck()
+    private Vector3 DirectionalCheck(Vector3 accelerationDir, float acceleration)
     {
-        float dot = Vector3.Dot(transform.forward, m_CurrentVelocity);
-        float backwardMod = Mathf.Sign(dot);
+        Vector3 normDir = accelerationDir;
+        normDir.y = 0.0f;
+
+        if (normDir == Vector3.zero) normDir = transform.forward;
+        
+        Vector3 right = new Vector3(-normDir.z, 0.0f, normDir.x); //perpendicular to "forward"
+
+        //---------------------------------------
+        // Generate corners for the grid
+        //---------------------------------------
 
         //Bottom Left
         Vector3 bottomLeft = transform.position.Copy();
-        bottomLeft += backwardMod * transform.forward * ((m_BoxCollider.size.x * 0.5f) - m_SkinWidth);
-        bottomLeft -= transform.right * m_BoxCollider.size.x * 0.5f;
+        bottomLeft -= right * m_BoxCollider.size.x * 0.5f;
+        bottomLeft.y += 0.1f;
 
         //Bottom Right
         Vector3 bottomRight = bottomLeft;
-        bottomLeft += transform.right * m_BoxCollider.size.x;
+        bottomLeft += right * m_BoxCollider.size.x;
 
         //Top Left
         Vector3 topLeft = bottomLeft;
-        topLeft.y += m_BoxCollider.size.y;
+        topLeft.y += m_BoxCollider.size.y - 0.2f;
 
         //Top Right
         Vector3 topRight = bottomRight;
@@ -342,97 +371,92 @@ public class PlayerController : MonoBehaviour, MoveableObject
         rayPositions[2] = bottomLeft;
         rayPositions[3] = bottomRight;
 
-        bool success = HorizontalCheck(rayPositions, transform.forward, backwardMod);
+        //---------------------------------------
+        // Cast the grid
+        //---------------------------------------
 
-        return success;
-    }
+        Vector3 totalVelocity = m_CurrentVelocity + (accelerationDir * acceleration) + m_AddedVelocity;
+        float totalSpeed = totalVelocity.magnitude;
 
-    private void SideCheck()
-    {
-        float dot = Vector3.Dot(transform.right, m_CurrentVelocity);
-        float backwardMod = Mathf.Sign(dot);
+        float length = (totalSpeed * Time.deltaTime);
 
-        //Bottom Left
-        Vector3 bottomLeft = transform.position.Copy();
-        bottomLeft += backwardMod * transform.right * ((m_BoxCollider.size.x * 0.5f) - m_SkinWidth);
-        bottomLeft -= transform.forward * m_BoxCollider.size.x * 0.5f;
+        if (length <= 0.0f)
+            return accelerationDir;
 
-        //Bottom Right
-        Vector3 bottomRight = bottomLeft;
-        bottomLeft += transform.forward * m_BoxCollider.size.x;
+        List<RaycastHit> hits = CastRayGrid(rayPositions, normDir, length, 2);
 
-        //Top Left
-        Vector3 topLeft = bottomLeft;
-        topLeft.y += m_BoxCollider.size.y;
+        //---------------------------------------
+        // What happens when we have collision
+        //---------------------------------------
 
-        //Top Right
-        Vector3 topRight = bottomRight;
-        topRight.y += m_BoxCollider.size.y;
-
-        Vector3[] rayPositions = new Vector3[4];
-        rayPositions[0] = topLeft;
-        rayPositions[1] = topRight;
-        rayPositions[2] = bottomLeft;
-        rayPositions[3] = bottomRight;
-
-        HorizontalCheck(rayPositions, transform.right, backwardMod);
-    }
-
-    private bool HorizontalCheck(Vector3[] rayPositions, Vector3 direction, float inverse)
-    {
-        //Determine length
-        float length = m_SkinWidth + Time.deltaTime;
-
-        if (m_CurrentSpeed > 0.0f)
-            length = (m_CurrentSpeed * Time.deltaTime) + m_SkinWidth;
-
-        //Determine if we are moving forward or backward
-        //Adjust the positions slightly (so they don't interfere with the above & below rays)
-        rayPositions[0].y -= 0.1f;
-        rayPositions[1].y -= 0.1f;
-        rayPositions[2].y += 0.1f;
-        rayPositions[3].y += 0.1f;
-
-        Vector3 rayPosition;
-        RaycastHit hit = CastRayGrid(rayPositions, inverse * direction, length, out rayPosition, 0);
-
-        if (hit.collider != null)
+        if (hits.Count > 0)
         {
-            //Move backwards a bit
-            transform.position -= inverse * direction * (length - hit.distance);
+            //Determine the closest hit
+            RaycastHit furthestHit = hits[0];
 
-            //Alter the rotation of our character so he can move along the wall
-            Vector3 normal = hit.normal;
-            Vector3 perpendicular = new Vector3(-normal.z, 0.0f, normal.x);
+            //Determine the average (unique) normal.
+            //Could probably be done more efficient.
+            Vector3 averageNormal = Vector3.zero;
+            averageNormal += hits[0].normal;
 
-            //Inverse the perpendicular to make sure we always move forward
-            float dot = Vector3.Dot(inverse * direction, perpendicular);
-            if (dot < 0.0f) { perpendicular *= -1; }
+            List<Vector3> uniqueNormals = new List<Vector3>();
+            uniqueNormals.Add(hits[0].normal);
 
-            perpendicular *= inverse;
+            bool doSlide = true; //don't slide if not all the normals are the same
 
-            //transform.localRotation = Quaternion.LookRotation(perpendicular, Vector3.up);
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.distance > furthestHit.distance) { furthestHit = hit; }
 
-            if (direction == transform.forward)
-                transform.forward = perpendicular;
+                if (uniqueNormals.Contains(hit.normal) == false)
+                {
+                    doSlide = false;
 
-            if (direction == transform.right)
-                transform.right = -perpendicular;
+                    uniqueNormals.Add(hit.normal);
+                    averageNormal += hit.normal;
+                }
+            }
 
-            return true;
+            averageNormal /= uniqueNormals.Count;
+
+            //Either slide along the perpendicular or back off
+            //Not sliding solves corner issues.
+            if (doSlide)
+            {
+                //Move backwards a bit
+                transform.position -= normDir * (length - furthestHit.distance);
+
+                Vector3 perpendicular = new Vector3(-averageNormal.z, 0.0f, averageNormal.x);
+                perpendicular.Normalize();
+
+                //Inverse the perpendicular to make sure we always move forward
+                float dot = Vector3.Dot(transform.forward, perpendicular);
+                if (dot < 0.0f) { perpendicular *= -1; }
+
+                //Rotate the current velocity
+                m_CurrentVelocity = perpendicular * m_CurrentVelocity.magnitude;
+
+                Debug.DrawRay(furthestHit.point, perpendicular * length, Color.red, 5.0f);
+
+                return perpendicular;
+            }
+            else
+            {
+                //Move backwards a bit
+                transform.position -= averageNormal * (length - furthestHit.distance);
+
+                m_CurrentVelocity.x = 0.0f;
+                m_CurrentVelocity.z = 0.0f;
+
+                Debug.DrawRay(furthestHit.point, averageNormal * length, Color.red, 5.0f);
+                return Vector3.zero;
+            }
         }
 
-        return false;
+        return accelerationDir;
     }
 
-
-    private RaycastHit CastRayGrid(Vector3[] corners, Vector3 direction, float length, int divisions = 0)
-    {
-        Vector3 hitRay;
-        return CastRayGrid(corners, direction, length, out hitRay);
-    }
-
-    private RaycastHit CastRayGrid(Vector3[] corners, Vector3 direction, float length, out Vector3 hitRay, int divisions = 0)
+    private List<RaycastHit> CastRayGrid(Vector3[] corners, Vector3 direction, float length, int divisions = 0)
     {
         List<Vector3> rayPositions = new List<Vector3>();
 
@@ -471,6 +495,8 @@ public class PlayerController : MonoBehaviour, MoveableObject
         }
 
         //Actually cast those rays
+        List<RaycastHit> returnValues = new List<RaycastHit>();
+
         for (int i = 0; i < rayPositions.Count; ++i)
         {
             //Cast the ray
@@ -484,19 +510,17 @@ public class PlayerController : MonoBehaviour, MoveableObject
                 {
                     if (raycastHits[j].collider.gameObject != gameObject)
                     {
-                        Debug.DrawRay(rayPositions[i], direction * length, new Color(1.0f, 0.0f, 1.0f));
+                        //Debug.DrawRay(rayPositions[i], direction * length, new Color(1.0f, 0.0f, 1.0f));
 
-                        hitRay = rayPositions[i];
-                        return raycastHits[j];
+                        returnValues.Add(raycastHits[j]);
                     }
                 }
             }
 
-            Debug.DrawRay(rayPositions[i], direction * length, Color.gray);
+           // Debug.DrawRay(rayPositions[i], direction * length, Color.gray);
         }
 
-        hitRay = Vector3.zero;
-        return new RaycastHit();
+        return returnValues;
     }
 
 
