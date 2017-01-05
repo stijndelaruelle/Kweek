@@ -378,38 +378,46 @@ public class PlayerController : MonoBehaviour, MoveableObject
         {
             //Determine the furthest hit
             RaycastHit closestHit = hits[0];
-
-            //Determine the average (unique) normal.
-            //Could probably be done more efficient.
-            Vector3 averageNormal = Vector3.zero;
-            averageNormal += hits[0].normal;
+            float closestDistance = (hits[0].point - m_PreviousPosition).sqrMagnitude;
 
             List<Vector3> uniqueNormals = new List<Vector3>();
             uniqueNormals.Add(hits[0].normal);
 
-            bool doSlide = true; //don't slide if not all the normals are the same
-
             foreach (RaycastHit hit in hits)
             {
-                if (hit.distance < closestHit.distance) { closestHit = hit; }
+                //if (hit.distance < closestHit.distance) { closestHit = hit; }
+                float distance = (hit.point - m_PreviousPosition).sqrMagnitude;
+                if (distance < closestDistance)
+                {
+                    closestHit = hit;
+                    closestDistance = distance;
+                }
 
                 if (uniqueNormals.Contains(hit.normal) == false)
                 {
-                    doSlide = false;
-
                     uniqueNormals.Add(hit.normal);
-                    averageNormal += hit.normal;
                 }
             }
 
-            averageNormal /= uniqueNormals.Count;
             float lengthInWall = (length - closestHit.distance);
+
+            bool doSlide = true;
+            if (uniqueNormals.Count > 2) doSlide = false;
+
+            //determine if it's a "stompe" or "sharp" corner.
+            //In case of a "stompe" we stop moving. In case of a sharp We slide along the center ray
+            if (uniqueNormals.Count == 2)
+            {
+                float dotNormals = Vector3.Dot(uniqueNormals[0], uniqueNormals[1]);
+
+                //Stompe hoek
+                if (dotNormals > 0.0f) { doSlide = false; }
+            }
 
             //Either slide along the perpendicular or back off
             if (doSlide)
             {
-                Vector3 perpendicular = new Vector3(-averageNormal.z, 0.0f, averageNormal.x);
-                //Vector3 perpendicular = new Vector3(-closestHit.normal.z, 0.0f, closestHit.normal.x);
+                Vector3 perpendicular = new Vector3(-closestHit.normal.z, 0.0f, closestHit.normal.x);
                 perpendicular.Normalize();
 
                 //Inverse the perpendicular to make sure we always move forward
@@ -420,14 +428,13 @@ public class PlayerController : MonoBehaviour, MoveableObject
                 transform.position -= (normDir * lengthInWall);
 
                 //Move towards the perpendicular
-                transform.position += perpendicular * (lengthInWall * Mathf.Abs(dot)); //scale from 0 to 1 on how fast we move. Heading straight to a wall is a full stop
+                //transform.position += perpendicular * (lengthInWall * Mathf.Abs(dot)); //scale from 0 to 1 on how fast we move. Heading straight to a wall is a full stop
 
                 Debug.DrawRay(closestHit.point, normDir * lengthInWall, Color.red, 5.0f);
             }
             else
             {
                 //Move backwards a bit
-                //transform.position -= normDir * lengthInWall;
                 transform.position -= (normDir * lengthInWall);
             }
         }
