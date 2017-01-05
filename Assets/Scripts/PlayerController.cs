@@ -428,7 +428,7 @@ public class PlayerController : MonoBehaviour, MoveableObject
                 transform.position -= (normDir * lengthInWall);
 
                 //Move towards the perpendicular
-                //transform.position += perpendicular * (lengthInWall * Mathf.Abs(dot)); //scale from 0 to 1 on how fast we move. Heading straight to a wall is a full stop
+                transform.position += perpendicular * (lengthInWall * Mathf.Abs(dot)); //scale from 0 to 1 on how fast we move. Heading straight to a wall is a full stop
 
                 Debug.DrawRay(closestHit.point, normDir * lengthInWall, Color.red, 5.0f);
             }
