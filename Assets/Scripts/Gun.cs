@@ -39,12 +39,12 @@ public class Gun : MonoBehaviour
 
                     //Check if we are a ragdollEnemy, if so: new center of mass & disable animations
                     Transform parent = otherRigidbody.transform;
-                    RagdollEnemy ragdollEnemy = parent.gameObject.GetComponentInParent<RagdollEnemy>();
+                    PatrollingEnemy ragdollEnemy = parent.gameObject.GetComponentInParent<PatrollingEnemy>();
 
                     while (ragdollEnemy == null && parent != null)
                     {
                         parent = parent.transform.parent;
-                        if (parent != null) ragdollEnemy = parent.gameObject.GetComponentInParent<RagdollEnemy>();
+                        if (parent != null) ragdollEnemy = parent.gameObject.GetComponentInParent<PatrollingEnemy>();
                     }
 
                     if (ragdollEnemy != null)
