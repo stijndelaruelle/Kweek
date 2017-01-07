@@ -1,0 +1,309 @@
+fileFormatVersion: 2
+guid: 42a1dcb7d5f365345b3a5e23c26b6f2e
+timeCreated: 1483706641
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Attached
+    100004: basepin
+    100006: basepin low
+    100008: Belt
+    100010: Belt buckle
+    100012: Belt buckle low
+    100014: Belt low
+    100016: Belt part
+    100018: Belt part low
+    100020: Broken bottleneck
+    100022: bullet
+    100024: Bullet 2
+    100026: bullet low
+    100028: Camera001
+    100030: Camera001.Target
+    100032: Cylinder
+    100034: Cylinder low
+    100036: Flessenhals
+    100038: Flessenhals low
+    100040: hamer
+    100042: hamer low
+    100044: houten handvat
+    100046: houten handvat low
+    100048: koord
+    100050: Koord 2
+    100052: koord low
+    100054: Loop
+    100056: Loop low
+    100058: main body
+    100060: main body low
+    100062: Object003
+    100064: Omni001
+    100066: Omni002
+    100068: Omni003
+    100070: onderstel
+    100072: onderstel low
+    100074: Sheriff ring
+    100076: Sheriff ring low
+    100078: Sheriffster
+    100080: Sheriffster low
+    100082: Sigaretten
+    100084: Sigaretten low
+    100086: Slider
+    100088: Slider low
+    100090: Sterenhouder
+    100092: Sterenhouder low
+    100094: Trigger
+    100096: Trigger low
+    100098: Vijzen
+    400000: //RootNode
+    400002: Attached
+    400004: basepin
+    400006: basepin low
+    400008: Belt
+    400010: Belt buckle
+    400012: Belt buckle low
+    400014: Belt low
+    400016: Belt part
+    400018: Belt part low
+    400020: Broken bottleneck
+    400022: bullet
+    400024: Bullet 2
+    400026: bullet low
+    400028: Camera001
+    400030: Camera001.Target
+    400032: Cylinder
+    400034: Cylinder low
+    400036: Flessenhals
+    400038: Flessenhals low
+    400040: hamer
+    400042: hamer low
+    400044: houten handvat
+    400046: houten handvat low
+    400048: koord
+    400050: Koord 2
+    400052: koord low
+    400054: Loop
+    400056: Loop low
+    400058: main body
+    400060: main body low
+    400062: Object003
+    400064: Omni001
+    400066: Omni002
+    400068: Omni003
+    400070: onderstel
+    400072: onderstel low
+    400074: Sheriff ring
+    400076: Sheriff ring low
+    400078: Sheriffster
+    400080: Sheriffster low
+    400082: Sigaretten
+    400084: Sigaretten low
+    400086: Slider
+    400088: Slider low
+    400090: Sterenhouder
+    400092: Sterenhouder low
+    400094: Trigger
+    400096: Trigger low
+    400098: Vijzen
+    2300000: Attached
+    2300002: basepin
+    2300004: basepin low
+    2300006: Belt
+    2300008: Belt buckle
+    2300010: Belt buckle low
+    2300012: Belt low
+    2300014: Belt part
+    2300016: Belt part low
+    2300018: Broken bottleneck
+    2300020: bullet
+    2300022: Bullet 2
+    2300024: bullet low
+    2300026: Cylinder
+    2300028: Cylinder low
+    2300030: Flessenhals
+    2300032: Flessenhals low
+    2300034: hamer
+    2300036: hamer low
+    2300038: houten handvat
+    2300040: houten handvat low
+    2300042: koord
+    2300044: Koord 2
+    2300046: koord low
+    2300048: Loop
+    2300050: Loop low
+    2300052: main body
+    2300054: main body low
+    2300056: Object003
+    2300058: onderstel
+    2300060: onderstel low
+    2300062: Sheriff ring
+    2300064: Sheriff ring low
+    2300066: Sheriffster
+    2300068: Sheriffster low
+    2300070: Sigaretten
+    2300072: Sigaretten low
+    2300074: Slider
+    2300076: Slider low
+    2300078: Sterenhouder
+    2300080: Sterenhouder low
+    2300082: Trigger
+    2300084: Trigger low
+    2300086: Vijzen
+    3300000: Attached
+    3300002: basepin
+    3300004: basepin low
+    3300006: Belt
+    3300008: Belt buckle
+    3300010: Belt buckle low
+    3300012: Belt low
+    3300014: Belt part
+    3300016: Belt part low
+    3300018: Broken bottleneck
+    3300020: bullet
+    3300022: Bullet 2
+    3300024: bullet low
+    3300026: Cylinder
+    3300028: Cylinder low
+    3300030: Flessenhals
+    3300032: Flessenhals low
+    3300034: hamer
+    3300036: hamer low
+    3300038: houten handvat
+    3300040: houten handvat low
+    3300042: koord
+    3300044: Koord 2
+    3300046: koord low
+    3300048: Loop
+    3300050: Loop low
+    3300052: main body
+    3300054: main body low
+    3300056: Object003
+    3300058: onderstel
+    3300060: onderstel low
+    3300062: Sheriff ring
+    3300064: Sheriff ring low
+    3300066: Sheriffster
+    3300068: Sheriffster low
+    3300070: Sigaretten
+    3300072: Sigaretten low
+    3300074: Slider
+    3300076: Slider low
+    3300078: Sterenhouder
+    3300080: Sterenhouder low
+    3300082: Trigger
+    3300084: Trigger low
+    3300086: Vijzen
+    4300000: main body
+    4300002: houten handvat
+    4300004: Trigger
+    4300006: hamer
+    4300008: Loop
+    4300010: Cylinder
+    4300012: onderstel
+    4300014: basepin
+    4300016: Slider
+    4300018: Vijzen
+    4300020: Sterenhouder
+    4300022: Belt
+    4300024: Sigaretten
+    4300026: Belt buckle
+    4300028: Belt part
+    4300030: Koord 2
+    4300032: Bullet 2
+    4300034: Sheriffster
+    4300036: Sheriff ring
+    4300038: Flessenhals
+    4300040: main body low
+    4300042: houten handvat low
+    4300044: Trigger low
+    4300046: hamer low
+    4300048: Loop low
+    4300050: Cylinder low
+    4300052: onderstel low
+    4300054: basepin low
+    4300056: Slider low
+    4300058: Sterenhouder low
+    4300060: Belt low
+    4300062: Sigaretten low
+    4300064: Belt buckle low
+    4300066: Belt part low
+    4300068: bullet low
+    4300070: Sheriffster low
+    4300072: Sheriff ring low
+    4300074: Flessenhals low
+    4300076: koord low
+    4300078: Attached
+    4300080: Object003
+    4300082: koord
+    4300084: bullet
+    4300086: Broken bottleneck
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
