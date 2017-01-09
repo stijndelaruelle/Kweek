@@ -6,6 +6,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public delegate void SwitchWeaponCallback();
+    public delegate void UpdateAmmoDelegate(int i, int j);
 
     [Header("Projectile options")]
     [Space(5)]
@@ -64,6 +65,14 @@ public class Weapon : MonoBehaviour
 
     [SerializeField]
     private PlayerController m_PlayerController;
+
+    //Events
+    private UpdateAmmoDelegate m_UpdateAmmoEvent;
+    public UpdateAmmoDelegate UpdateAmmoEvent
+    {
+        get { return m_UpdateAmmoEvent; }
+        set { m_UpdateAmmoEvent = value; }
+    }
 
     private void Awake()
     {
@@ -131,6 +140,8 @@ public class Weapon : MonoBehaviour
         //Shooting consequences
         m_ShootCooldownTimer = m_ShootCooldown;
         m_AmmoInClip -= 1;
+        FireUpdateAmmoEvent();
+
 
         //Auto reload
         AutoReload();
@@ -187,6 +198,8 @@ public class Weapon : MonoBehaviour
         m_ReserveAmmo -= addedAmmo;
         m_AmmoInClip += addedAmmo;
 
+        FireUpdateAmmoEvent();
+
         m_ReloadTimer = 0.0f;
     }
 
@@ -231,6 +244,8 @@ public class Weapon : MonoBehaviour
     public void SwitchIn(SwitchWeaponCallback callback)
     {
         m_Animator.SetTrigger("SwitchInTrigger");
+        FireUpdateAmmoEvent();
+
         StartCoroutine(SwitchInRoutine(callback));
     }
 
@@ -255,5 +270,14 @@ public class Weapon : MonoBehaviour
 
         //Check if this gun needs reloading
         AutoReload();
+    }
+
+    //Event
+    private void FireUpdateAmmoEvent()
+    {
+        if (m_UpdateAmmoEvent != null)
+        {
+            m_UpdateAmmoEvent(m_AmmoInClip, m_ReserveAmmo);
+        }
     }
 }

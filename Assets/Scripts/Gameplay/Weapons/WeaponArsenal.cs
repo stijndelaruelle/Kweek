@@ -5,12 +5,19 @@ using UnityEngine;
 public class WeaponArsenal : MonoBehaviour
 {
     [SerializeField]
-    private int m_CurrentWeaponID;
-    private int m_LastWeaponID;
+    private int m_CurrentWeaponID = 0;
+    private int m_LastWeaponID = -1;
 
     [SerializeField]
     private List<Weapon> m_Weapons;
     private bool m_IsSwitching = false;
+
+    private Weapon.UpdateAmmoDelegate m_UpdateAmmoEvent;
+    public Weapon.UpdateAmmoDelegate UpdateAmmoEvent
+    {
+        get { return m_UpdateAmmoEvent; }
+        set { m_UpdateAmmoEvent = value; }
+    }
 
     private void Start()
     {
@@ -21,8 +28,7 @@ public class WeaponArsenal : MonoBehaviour
         }
 
         //Only enable our current weapon
-        m_Weapons[m_CurrentWeaponID].gameObject.SetActive(true);
-        m_LastWeaponID = m_CurrentWeaponID;
+        SwitchWeapon(m_CurrentWeaponID);
     }
 
     private void Update()
@@ -90,19 +96,32 @@ public class WeaponArsenal : MonoBehaviour
         if (m_IsSwitching == true)
             return;
 
+        m_IsSwitching = true;
+
+        //If it's the same weapon as the current one
+        if (weaponID == m_CurrentWeaponID)
+        {
+            OnWeaponSwitchedOut();
+            return;
+        }
+
         m_LastWeaponID = m_CurrentWeaponID;
         m_CurrentWeaponID = weaponID;
 
         //Switching animation
         m_Weapons[m_LastWeaponID].SwitchOut(OnWeaponSwitchedOut);
-
-        m_IsSwitching = true;
     }
 
     private void OnWeaponSwitchedOut()
     {
-        m_Weapons[m_LastWeaponID].gameObject.SetActive(false);
+        if (m_LastWeaponID > 0)
+        {
+            m_Weapons[m_LastWeaponID].gameObject.SetActive(false);
+            m_Weapons[m_LastWeaponID].UpdateAmmoEvent -= OnUpdateAmmo;
+        }
+
         m_Weapons[m_CurrentWeaponID].gameObject.SetActive(true);
+        m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent += OnUpdateAmmo; //Subscribe to the ammo event
 
         //Switching animation
         m_Weapons[m_CurrentWeaponID].SwitchIn(OnWeaponSwitchedIn);
@@ -116,5 +135,12 @@ public class WeaponArsenal : MonoBehaviour
     public void AddWeapon(Weapon weapon)
     {
         m_Weapons.Add(weapon);
+    }
+
+    public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
+    {
+        //Forward the event
+        if (m_UpdateAmmoEvent != null)
+            m_UpdateAmmoEvent(ammoInClip, ammoInReserve);
     }
 }
