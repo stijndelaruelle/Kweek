@@ -1,36 +1,101 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Doesn't really have to be a MonoBehaviour as it only exists for 1 frame.
-//We'll change this later, but for the sake of simplicity let's make it work the same way as the physical projectiles
-public class HitScanProjectile : MonoBehaviour, IProjectile
+public class HitScanFireBehaviour : IFireBehaviour
 {
+    [Header("Damage")]
+    [Space(5)]
     [SerializeField]
     private int m_Damage;
 
     [SerializeField]
     private AnimationCurve m_DamageFalloff;
 
+    [Tooltip("Max distance that the projectile will fly.")]
+    [SerializeField]
+    private float m_Range;
+
+    [SerializeField]
+    private float m_ShootCooldown = 0.0f;
+    private float m_ShootCooldownTimer;
+
+    [Tooltip("How much ammo does firing the gun 1 time take.")]
+    [SerializeField]
+    private int m_AmmoUseage = 1;
+
+    [Header("Spread")]
+    [Space(5)]
+    [SerializeField]
+    private int m_NumberOfProjectiles;
+
+    [Tooltip("Max spread at max range.")]
+    [SerializeField]
+    private float m_Spread;
+
+    [Space(10)]
+    [Header("Animation")]
+    [Space(5)]
+    [SerializeField]
+    private Animator m_Animator;
+    [SerializeField]
+    private string m_TriggerName = "FireTrigger";
+
     //[SerializeField]
     //private bool m_Piercing;
     //Piercing falloff is determined by the material we've hit (think counter strike)
 
+    private void Update()
+    {
+        HandleShootingCooldown();
+    }
 
-    public void Fire(Vector3 baseVelocity, Ray ray, float range)
+    public override void Fire()
+    {
+        if (!CanFire())
+            return;
+
+        Ray centerRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        Vector3 forward = centerRay.direction;
+        Vector3 right = new Vector3(-forward.z, 0.0f, forward.x);
+        Vector3 up = Vector3.Cross(right, forward);
+
+        for (int i = 0; i < m_NumberOfProjectiles; ++i)
+        {
+            Ray ray = centerRay;
+            float range = m_Range;
+
+            if (m_Spread > 0.0f)
+            {
+                Vector3 maxPosition = centerRay.direction * m_Range;
+
+                maxPosition += right * UnityEngine.Random.Range(-m_Spread, m_Spread);
+                maxPosition += up * UnityEngine.Random.Range(-m_Spread, m_Spread);
+
+                ray.direction = maxPosition.normalized;
+                range = maxPosition.magnitude;
+            }
+
+            FireRay(ray, range);
+        }
+
+        //Animation & Cooldown
+        m_Animator.SetTrigger(m_TriggerName);
+        m_ShootCooldownTimer = m_ShootCooldown;
+    }
+
+    public void FireRay(Ray ray, float range)
     {
         //Fire a single ray (get only the first target)
         RaycastHit hitInfo;
         bool succes = Physics.Raycast(ray, out hitInfo, range);
 
         if (!succes)
-        {
-            //Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);
             return;
-        }
 
         GameObject go = hitInfo.collider.gameObject;
-        //Debug.DrawLine(ray.origin, hitInfo.point, Color.green, 5.0f);
 
         //Did we hit a damageableobject?
         IDamageableObject damageableObject = go.GetComponent<IDamageableObject>();
@@ -45,7 +110,7 @@ public class HitScanProjectile : MonoBehaviour, IProjectile
             return;
         }
 
-        //Ddi we hit a surface?
+        //Did we hit a surface?
         SurfaceType surfaceType = go.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
@@ -93,5 +158,28 @@ public class HitScanProjectile : MonoBehaviour, IProjectile
 
         Debug.Log("Damage percentage: " + damagePercentage + " = " + (m_Damage * damagePercentage));
         return (int)(m_Damage * damagePercentage);
+    }
+
+    private void HandleShootingCooldown()
+    {
+        if (m_ShootCooldownTimer > 0.0f)
+        {
+            m_ShootCooldownTimer -= Time.deltaTime;
+
+            if (m_ShootCooldownTimer <= 0.0f)
+            {
+                m_ShootCooldownTimer = 0.0f;
+            }
+        }
+    }
+
+    public override bool CanFire()
+    {
+        return (m_ShootCooldownTimer == 0.0f);
+    }
+
+    public override int GetAmmoUseage()
+    {
+        return m_AmmoUseage;
     }
 }

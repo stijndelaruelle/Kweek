@@ -6,46 +6,17 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public delegate void SwitchWeaponCallback();
-    public delegate void UpdateAmmoDelegate(int i, int j);
 
-    [Header("Projectile options")]
+    [Header("Weapon Behaviours")]
     [Space(5)]
     [SerializeField]
-    private int m_NumberOfProjectiles;
-
-    [Tooltip("Max spread at max range.")]
-    [SerializeField]
-    private float m_Spread;
-
-    [Tooltip("Max distance that the projectile will fly.")]
-    [SerializeField]
-    private float m_Range;
+    private IFireBehaviour m_FireBehaviour;
 
     [SerializeField]
-    private float m_ShootCooldown = 1.0f;
-    private float m_ShootCooldownTimer = 0.0f;
+    private IFireBehaviour m_AltFireBehaviour;
 
     [SerializeField]
-    private Transform m_ProjectileSpawn;
-
-    [SerializeField]
-    private GameObject m_Projectile;
-
-    [Space(10)]
-    [Header("Ammo options")]
-    [Space(5)]
-    [SerializeField]
-    private float m_ReloadTime = 1.0f;
-    private float m_ReloadTimer = 0.0f;
-
-    [SerializeField]
-    private int m_MaxAmmoInClip;
-    private int m_AmmoInClip;
-
-    //Will be moved to another class so guns can share ammo types
-    [SerializeField]
-    private int m_MaxReserveAmmo;
-    private int m_ReserveAmmo;
+    private IAmmoUseBehaviour m_AmmoUseBehaviour;
 
     [Space(10)]
     [Header("Switch times")]
@@ -58,13 +29,10 @@ public class Weapon : MonoBehaviour
     private bool m_IsSwitching = false;
 
     [Space(10)]
-    [Header("Required references")]
+    [Header("Animation")]
     [Space(5)]
     [SerializeField]
     private Animator m_Animator;
-
-    [SerializeField]
-    private PlayerController m_PlayerController;
 
     //Events
     private UpdateAmmoDelegate m_UpdateAmmoEvent;
@@ -76,8 +44,14 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        m_AmmoInClip = m_MaxAmmoInClip;
-        m_ReserveAmmo = m_MaxReserveAmmo;
+        if (m_AmmoUseBehaviour != null)
+            m_AmmoUseBehaviour.UpdateAmmoEvent += OnUpdateAmmo;
+    }
+
+    private void OnDestroy()
+    {
+        if (m_AmmoUseBehaviour != null)
+            m_AmmoUseBehaviour.UpdateAmmoEvent -= OnUpdateAmmo;
     }
 
     private void Update()
@@ -85,157 +59,52 @@ public class Weapon : MonoBehaviour
         if (m_IsSwitching)
             return;
 
-        //Cooldowns
-        HandleShootingCooldown();
-        HandleReloading();
+        if (Input.GetMouseButton(0))     { Fire(); }
+        if (Input.GetMouseButton(1))     { AltFire(); }
     }
 
     //Shooting
     public void Fire()
     {
-        //Weapon is cooling down, reloading or switching out/in
-        if (m_ShootCooldownTimer > 0.0f || m_ReloadTimer > 0.0f || m_IsSwitching == true)
+        ExecuteFireBehaviour(m_FireBehaviour);
+    }
+
+    public void AltFire()
+    {
+        ExecuteFireBehaviour(m_AltFireBehaviour);
+    }
+
+    private void ExecuteFireBehaviour(IFireBehaviour fireBehaviour)
+    {
+        //Check if we can fire
+        if (m_FireBehaviour != null && m_FireBehaviour.CanFire() == false)
             return;
 
-        //We don't have any more ammo
-        if (AutoReload())
+        if (m_AltFireBehaviour != null && m_AltFireBehaviour.CanFire() == false)
             return;
 
-        //All the calculations
-        Ray centerRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        if (m_AmmoUseBehaviour != null && m_AmmoUseBehaviour.CanUse() == false)
+            return;
 
-        Vector3 forward = centerRay.direction;
-        Vector3 right = new Vector3(-forward.z, 0.0f, forward.x);
-        Vector3 up = Vector3.Cross(right, forward);
+        if (m_IsSwitching)
+            return;
 
-        for (int i = 0; i < m_NumberOfProjectiles; ++i)
-        {
-            Ray ray = centerRay;
-            float range = m_Range;
-
-            if (m_Spread > 0.0f)
-            {
-                Vector3 maxPosition = centerRay.direction * m_Range;
-
-                maxPosition += right * Random.Range(-m_Spread, m_Spread);
-                maxPosition += up * Random.Range(-m_Spread, m_Spread);
-
-                ray.direction = maxPosition.normalized;
-                range = maxPosition.magnitude;
-            }
-
-            //Can't instantiate interfaces. Preferred this setup above an abstract class. (it's overall more consistent, but a little bit messier here)
-            GameObject go = GameObject.Instantiate<GameObject>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
-            IProjectile projectile = go.GetComponent<IProjectile>();
-
-            if (projectile != null)
-            {
-                projectile.Fire(m_PlayerController.CurrentVelocity, ray, range);
-            }
-        }
-
-        //Trigger the animation
-        m_Animator.SetTrigger("FireTrigger");
+        //Fire the weapon
+        if (fireBehaviour != null)
+            fireBehaviour.Fire();
 
         //Shooting consequences
-        m_ShootCooldownTimer = m_ShootCooldown;
-        m_AmmoInClip -= 1;
-        FireUpdateAmmoEvent();
+        if (m_AmmoUseBehaviour != null)
+            m_AmmoUseBehaviour.UseAmmo(fireBehaviour.GetAmmoUseage());
 
-
-        //Auto reload
-        AutoReload();
-    }
-
-    private void HandleShootingCooldown()
-    {
-        if (m_ShootCooldownTimer > 0.0f)
-        {
-            m_ShootCooldownTimer -= Time.deltaTime;
-
-            if (m_ShootCooldownTimer <= 0.0f)
-            {
-                m_ShootCooldownTimer = 0.0f;
-            }
-        }
-    }
-
-    //Reloading
-    public void StartReload()
-    {
-        //We don't reload (Doom/Quake style)
-        if (m_ReloadTime <= 0.0f)
-        {
-            EndReload();
-            return;
-        }
-
-        //We don't need to reload
-        if (m_AmmoInClip == m_MaxAmmoInClip)
-            return;
-
-        //If we don't have any more ammo, don't reload
-        if (m_ReserveAmmo == 0)
-            return;
-
-        //We are already reloading or switching
-        if (m_ReloadTimer > 0.0f || m_IsSwitching == true)
-            return;
-
-        //Actually start reloading
-        m_Animator.SetTrigger("ReloadTrigger");
-        m_ReloadTimer = m_ReloadTime;
-    }
-
-    private void EndReload()
-    {
-        int addedAmmo = m_MaxAmmoInClip - m_AmmoInClip;
-
-        //If we don't have enough ammo, use everything we have
-        if (m_ReserveAmmo < addedAmmo)
-            addedAmmo = m_ReserveAmmo;
-
-        m_ReserveAmmo -= addedAmmo;
-        m_AmmoInClip += addedAmmo;
-
-        FireUpdateAmmoEvent();
-
-        m_ReloadTimer = 0.0f;
-    }
-
-    private void CancelReload()
-    {
-        m_ReloadTimer = 0.0f;
-    }
-
-    private void HandleReloading()
-    {
-        if (m_ReloadTimer > 0.0f)
-        {
-            m_ReloadTimer -= Time.deltaTime;
-
-            if (m_ReloadTimer <= 0.0f)
-            {
-                EndReload();
-            }
-        }
-    }
-
-    private bool AutoReload()
-    {
-        if (m_AmmoInClip <= 0)
-        {
-            StartReload();
-            return true;
-        }
-
-        return false;
+        //FireUpdateAmmoEvent();
     }
 
     //Switching
     public void SwitchOut(SwitchWeaponCallback callback)
     {
-        CancelReload();
+        if (m_AmmoUseBehaviour != null)
+            m_AmmoUseBehaviour.Cancel();
 
         m_Animator.SetTrigger("SwitchOutTrigger");
         StartCoroutine(SwitchOutRoutine(callback));
@@ -244,7 +113,6 @@ public class Weapon : MonoBehaviour
     public void SwitchIn(SwitchWeaponCallback callback)
     {
         m_Animator.SetTrigger("SwitchInTrigger");
-        FireUpdateAmmoEvent();
 
         StartCoroutine(SwitchInRoutine(callback));
     }
@@ -267,17 +135,13 @@ public class Weapon : MonoBehaviour
 
         callback();
         m_IsSwitching = false;
-
-        //Check if this gun needs reloading
-        AutoReload();
     }
 
     //Event
-    private void FireUpdateAmmoEvent()
+    public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
+        //Forward the event
         if (m_UpdateAmmoEvent != null)
-        {
-            m_UpdateAmmoEvent(m_AmmoInClip, m_ReserveAmmo);
-        }
+            m_UpdateAmmoEvent(ammoInClip, ammoInReserve);
     }
 }

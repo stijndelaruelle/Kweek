@@ -12,8 +12,8 @@ public class WeaponArsenal : MonoBehaviour
     private List<Weapon> m_Weapons;
     private bool m_IsSwitching = false;
 
-    private Weapon.UpdateAmmoDelegate m_UpdateAmmoEvent;
-    public Weapon.UpdateAmmoDelegate UpdateAmmoEvent
+    private UpdateAmmoDelegate m_UpdateAmmoEvent;
+    public UpdateAmmoDelegate UpdateAmmoEvent
     {
         get { return m_UpdateAmmoEvent; }
         set { m_UpdateAmmoEvent = value; }
@@ -31,12 +31,13 @@ public class WeaponArsenal : MonoBehaviour
         SwitchWeapon(m_CurrentWeaponID);
     }
 
+    private void OnDestroy()
+    {
+        m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent -= OnUpdateAmmo;
+    }
+
     private void Update()
     {
-        //Actions
-        if (Input.GetMouseButton(0))     { Fire(); }
-        if (Input.GetKeyDown(KeyCode.R)) { StartReload(); }
-
         //Switch to the last used weapon
         if (Input.GetKeyDown(KeyCode.A)) { SwitchWeapon(m_LastWeaponID); }
 
@@ -76,16 +77,6 @@ public class WeaponArsenal : MonoBehaviour
         }
     }
 
-    public void Fire()
-    {
-        m_Weapons[m_CurrentWeaponID].Fire();
-    }
-
-    public void StartReload()
-    {
-        m_Weapons[m_CurrentWeaponID].StartReload();
-    }
-
     private void SwitchWeapon(int weaponID)
     {
         //Check if the weapon ID exists
@@ -114,14 +105,15 @@ public class WeaponArsenal : MonoBehaviour
 
     private void OnWeaponSwitchedOut()
     {
-        if (m_LastWeaponID > 0)
+        if (m_LastWeaponID > -1)
         {
-            m_Weapons[m_LastWeaponID].gameObject.SetActive(false);
             m_Weapons[m_LastWeaponID].UpdateAmmoEvent -= OnUpdateAmmo;
+            m_Weapons[m_LastWeaponID].gameObject.SetActive(false);
         }
 
+        m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent += OnUpdateAmmo; //Subscribe to the ammo event BEFORE SetActive! (OnEnable fires one)
         m_Weapons[m_CurrentWeaponID].gameObject.SetActive(true);
-        m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent += OnUpdateAmmo; //Subscribe to the ammo event
+
 
         //Switching animation
         m_Weapons[m_CurrentWeaponID].SwitchIn(OnWeaponSwitchedIn);
@@ -130,11 +122,6 @@ public class WeaponArsenal : MonoBehaviour
     private void OnWeaponSwitchedIn()
     {
         m_IsSwitching = false;
-    }
-
-    public void AddWeapon(Weapon weapon)
-    {
-        m_Weapons.Add(weapon);
     }
 
     public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)

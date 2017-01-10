@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicalProjectile : MonoBehaviour, IProjectile
+public class PhysicalProjectile : MonoBehaviour
 {
     [SerializeField]
     protected int m_DirectImpactDamage;
@@ -26,9 +26,9 @@ public class PhysicalProjectile : MonoBehaviour, IProjectile
     [SerializeField]
     private Rigidbody m_Rigidbody;
 
-    public void Fire(Vector3 baseVelocity, Ray ray, float range)
+    public void Fire(Vector3 direction, Vector3 baseVelocity)
     {
-        Vector3 force = (ray.direction * m_InitialSpeed) + baseVelocity;
+        Vector3 force = (direction * m_InitialSpeed) + baseVelocity;
         m_Rigidbody.AddForce(force);
     }
 
