@@ -106,7 +106,6 @@ public class HitScanFireBehaviour : IFireBehaviour
             int damage = CalculateDamage(ray.origin, hitInfo.point, range);
 
             damageableObject.Damage(damage);
-            Destroy(gameObject);
             return;
         }
 
