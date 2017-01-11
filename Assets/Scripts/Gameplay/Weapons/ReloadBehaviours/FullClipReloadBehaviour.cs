@@ -9,20 +9,20 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     [Header("Ammo options")]
     [Space(5)]
     [SerializeField]
-    private int m_MaxAmmoInClip;
-    private int m_AmmoInClip;
+    protected int m_MaxAmmoInClip;
+    protected int m_AmmoInClip;
 
     //Will be moved to another class so guns can share ammo types
     [SerializeField]
-    private int m_MaxReserveAmmo;
-    private int m_ReserveAmmo;
+    protected int m_MaxReserveAmmo;
+    protected int m_ReserveAmmo;
 
     [SerializeField]
-    private float m_ReloadTime = 0.0f;
-    private float m_ReloadTimer;
+    protected float m_ReloadTime = 0.0f;
+    protected float m_ReloadTimer;
 
-    [SerializeField]
-    private bool m_CanCancel = false;
+    //[SerializeField]
+    //private bool m_CanCancel = false;
 
     [Space(10)]
     [Header("Animation")]
@@ -103,7 +103,7 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         m_ReloadTimer = m_ReloadTime;
     }
 
-    private void EndReload()
+    protected virtual void EndReload()
     {
         int addedAmmo = m_MaxAmmoInClip - m_AmmoInClip;
 
@@ -137,7 +137,7 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         }
     }
 
-    private void AutoReload()
+    protected void AutoReload()
     {
         if (m_AmmoInClip <= 0)
         {
@@ -148,12 +148,12 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
     public override bool CanUse()
     {
-        return (m_ReloadTimer == 0.0f || m_CanCancel);
+        return (m_ReloadTimer == 0.0f && m_AmmoInClip > 0); // || m_CanCancel
     }
 
-    private void FireUpdateAmmoEvent()
+    protected void FireUpdateAmmoEvent()
     {
         if (m_UpdateAmmoEvent != null)
-            m_UpdateAmmoEvent(m_AmmoInClip, m_MaxReserveAmmo);
+            m_UpdateAmmoEvent(m_AmmoInClip, m_ReserveAmmo);
     }
 }
