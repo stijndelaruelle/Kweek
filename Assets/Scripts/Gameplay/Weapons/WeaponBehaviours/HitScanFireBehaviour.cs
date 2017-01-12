@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class HitScanFireBehaviour : IFireBehaviour
@@ -12,6 +13,9 @@ public class HitScanFireBehaviour : IFireBehaviour
 
     [SerializeField]
     private AnimationCurve m_DamageFalloff;
+
+    [SerializeField]
+    private bool m_Piercing;
 
     [Tooltip("Max distance that the projectile will fly.")]
     [SerializeField]
@@ -41,10 +45,6 @@ public class HitScanFireBehaviour : IFireBehaviour
     private Animator m_Animator;
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
-
-    //[SerializeField]
-    //private bool m_Piercing;
-    //Piercing falloff is determined by the material we've hit (think counter strike)
 
     private void Update()
     {
@@ -78,7 +78,8 @@ public class HitScanFireBehaviour : IFireBehaviour
                 range = maxPosition.magnitude;
             }
 
-            FireRay(ray, range);
+            if (m_Piercing) { FirePiercingRay(ray, range); }
+            else            { FireRay(ray, range); }
         }
 
         //Animation & Cooldown
@@ -103,7 +104,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         if (damageableObject != null)
         {
             //Damage calculation
-            int damage = CalculateDamage(ray.origin, hitInfo.point, range);
+            int damage = CalculateDamage(ray.origin, hitInfo.point, range, m_Damage);
 
             damageableObject.Damage(damage);
             return;
@@ -113,50 +114,78 @@ public class HitScanFireBehaviour : IFireBehaviour
         SurfaceType surfaceType = go.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
-            Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
-
-            GameObject.Instantiate(surfaceType.Decal, decalPosition, decalRotation);
+            DrawDecal(hitInfo, surfaceType.Decal);
         }
     }
 
-    private List<IDamageableObject> FirePiercingRay(Ray ray, out List<RaycastHit> hitInfo)
+    private void FirePiercingRay(Ray ray, float range)
     {
-        //------------------
-        // TODO: Piercing damage (RaycastAll)
-        //------------------
-        hitInfo = new List<RaycastHit>();
-        return null;
+        //Fire a ray in the normal direction
+        RaycastHit[] sourceHitInfo = Physics.RaycastAll(ray, range);
 
+        if (sourceHitInfo.Length == 0)
+            return;
 
+        //Sort on distance
+        List<RaycastHit> sortedRegularList = sourceHitInfo.OrderBy(o => o.distance).ToList();
 
-        //Fire a single ray (get all the targets)
-        //RaycastHit[] hitInfoArr = Physics.RaycastAll(centerRay, m_Range);
+        //Fire a ray in the opposite direction (used to calculate the width of hit objects)
+        Ray inverseRay = new Ray(ray.origin + ray.direction * range, ray.direction * -1);
 
-        //if (hitInfoArr.Length > 0)
-        //{
-        //for (int i = 0; i < hitInfoArr.Length; ++i)
-        //{
-        //Debug.Log("COULD HAVE HIT: " + hitInfoArr[i].collider.gameObject.name);
+        sourceHitInfo = Physics.RaycastAll(inverseRay, range);
+        List<RaycastHit> sortedInverseList = sourceHitInfo.OrderByDescending(o => o.distance).ToList();
+        sortedInverseList.RemoveAt(0); //This removes the player.
 
-        //        IDamageableObject damageableObject = hitInfo[i].collider.gameObject.GetComponent<IDamageableObject>();
+        float currentDamage = m_Damage;
 
-        //        if (damageableObject != null)
-        //        {
-        //            damageableObject.Damage(m_Damage);
-        //        }
-        //}
-        //}
+        for(int i = 0; i < sortedRegularList.Count; ++i)
+        {
+            RaycastHit hitInfo = sortedRegularList[i];
+            RaycastHit inverseHitInfo = sortedInverseList[i];
+
+            GameObject go = hitInfo.collider.gameObject;
+
+            //Did we hit a damageableobject?
+            IDamageableObject damageableObject = go.GetComponent<IDamageableObject>();
+
+            if (damageableObject != null)
+            {
+                //Damage calculation
+                int damage = CalculateDamage(ray.origin, hitInfo.point, range, currentDamage);
+
+                damageableObject.Damage(damage);
+                return;
+            }
+
+            //Did we hit a surface?
+            SurfaceType surfaceType = go.GetComponent<SurfaceType>();
+            if (surfaceType != null)
+            {
+                //Calculate the distance we shot trough
+                float distance = (inverseHitInfo.point - hitInfo.point).magnitude;
+                currentDamage -= surfaceType.PiercingDamageFalloff * distance;
+
+                //Paint decal on the front side
+                DrawDecal(hitInfo, surfaceType.Decal);
+
+                //Paint decal on the backside if we reached it
+                if (currentDamage > 0.0f) { DrawDecal(inverseHitInfo, surfaceType.Decal); }
+            }
+
+            //No more damage remaining, no need to continue
+            if (currentDamage <= 0)
+                return;
+        }
     }
 
-    private int CalculateDamage(Vector3 start, Vector3 end, float range)
+    private int CalculateDamage(Vector3 start, Vector3 end, float range, float startDamage)
     {
         float distance = (end - start).magnitude;
         float normDistance = distance / range;
         float damagePercentage = m_DamageFalloff.Evaluate(normDistance);
 
-        Debug.Log("Damage percentage: " + damagePercentage + " = " + (m_Damage * damagePercentage));
-        return (int)(m_Damage * damagePercentage);
+        Debug.Log("Damage percentage: " + damagePercentage + " = " + (startDamage * damagePercentage));
+        return Mathf.RoundToInt(startDamage * damagePercentage);
     }
 
     private void HandleShootingCooldown()
@@ -180,5 +209,16 @@ public class HitScanFireBehaviour : IFireBehaviour
     public override int GetAmmoUseage()
     {
         return m_AmmoUseage;
+    }
+
+    private void DrawDecal(RaycastHit hitInfo, GameObject decal)
+    {
+        if (decal == null)
+            return;
+
+        Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
+        Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
+
+        GameObject.Instantiate(decal, decalPosition, decalRotation);
     }
 }
