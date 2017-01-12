@@ -45,6 +45,12 @@ public class PlayerController : MonoBehaviour, IMoveableObject
     [SerializeField]
     private CapsuleCollider m_Collider;
 
+    [Header("Debug")]
+    [SerializeField]
+    private bool m_LockVerticalRotation;
+    [SerializeField]
+    private bool m_LockHorizontalRotation;
+
     //Exposed to debug
     private Vector3 m_AddedVelocity;
     private Vector3 m_ExternalAddedVelocity;
@@ -194,6 +200,12 @@ public class PlayerController : MonoBehaviour, IMoveableObject
 
         float yRot = Input.GetAxis("Mouse X");// *10;
         float xRot = Input.GetAxis("Mouse Y");// *10;
+
+        if (m_LockVerticalRotation)
+            xRot = 0.0f;
+
+        if (m_LockHorizontalRotation)
+            yRot = 0.0f;
 
         m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
         transform.localRotation = m_CharacterTargetRot;
