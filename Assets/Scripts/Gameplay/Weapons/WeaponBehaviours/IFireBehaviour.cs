@@ -8,6 +8,8 @@ using UnityEngine;
 //    void Fire();
 //}
 
+public delegate void WeaponFireDelegate();
+
 public abstract class IFireBehaviour : MonoBehaviour
 {
     public abstract void Fire();

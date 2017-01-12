@@ -35,6 +35,13 @@ public class Weapon : MonoBehaviour
     private Animator m_Animator;
 
     //Events
+    private WeaponFireDelegate m_WeaponFireEvent;
+    public WeaponFireDelegate WeaponFireEvent
+    {
+        get { return m_WeaponFireEvent; }
+        set { m_WeaponFireEvent = value; }
+    }
+
     private UpdateAmmoDelegate m_UpdateAmmoEvent;
     public UpdateAmmoDelegate UpdateAmmoEvent
     {
@@ -97,7 +104,7 @@ public class Weapon : MonoBehaviour
         if (m_AmmoUseBehaviour != null)
             m_AmmoUseBehaviour.UseAmmo(fireBehaviour.GetAmmoUseage());
 
-        //FireUpdateAmmoEvent();
+        FireWeaponFireEvent();
     }
 
     //Switching
@@ -138,7 +145,13 @@ public class Weapon : MonoBehaviour
     }
 
     //Event
-    public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
+    public void FireWeaponFireEvent()
+    {
+        if (m_WeaponFireEvent != null)
+            m_WeaponFireEvent();
+    }
+
+    private void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
         //Forward the event
         if (m_UpdateAmmoEvent != null)
