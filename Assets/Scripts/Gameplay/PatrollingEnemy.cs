@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class PatrollingEnemy : MonoBehaviour, IDamageableObject, IMoveableObject
+public class PatrollingEnemy : MonoBehaviour, IMoveableObject
 {
     [SerializeField]
     private Transform m_TargetTransform;
@@ -83,29 +83,6 @@ public class PatrollingEnemy : MonoBehaviour, IDamageableObject, IMoveableObject
     {
         m_NavMeshAgent.Resume();
         m_InHitStun = false;
-    }
-
-    //IDamageableObject
-    public void Damage(int health)
-    {
-        Debug.Log("GOT HIT FOR " + health + " DAMAGE!", gameObject);
-
-        if (m_InHitStun)
-            return;
-
-        m_NavMeshAgent.Stop();
-        m_Animator.SetTrigger("WoundTrigger");
-        m_InHitStun = true;
-    }
-
-    public IDamageableObject GetMainDamageableObject()
-    {
-        return this;
-    }
-
-    public void Heal(int health)
-    {
-
     }
 
     //IMoveableObject

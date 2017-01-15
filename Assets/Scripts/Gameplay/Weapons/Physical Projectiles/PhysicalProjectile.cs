@@ -51,12 +51,12 @@ public class PhysicalProjectile : MonoBehaviour
     {
         //Explosion damage & pushback
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius);
-        List<GameObject> hitObjects = new List<GameObject>();
+        List<IDamageableObject> hitObjects = new List<IDamageableObject>();
 
         //Collect all the unique objects (objects can consist of multiple colliders)
         for (int i = 0; i < colliders.Length; ++i)
         {
-            GameObject root = null;
+            IDamageableObject root = null;
 
             DamageablePart damageablePart = colliders[i].transform.gameObject.GetComponent<DamageablePart>();
             if (damageablePart != null) root = damageablePart.MainObject;
@@ -68,10 +68,9 @@ public class PhysicalProjectile : MonoBehaviour
         }
 
         //For each unique object do damage & push back calculations
-        foreach (GameObject hitObject in hitObjects)
+        foreach (IDamageableObject damageableObject in hitObjects)
         {
-            IDamageableObject damageableObject = hitObject.GetComponent<IDamageableObject>();
-            IMoveableObject moveableObject = hitObject.GetComponent<IMoveableObject>();
+            IMoveableObject moveableObject = damageableObject.GetComponent<IMoveableObject>();
 
             Vector3 centerOfMass = transform.position;
             if (moveableObject != null) centerOfMass = moveableObject.GetCenterOfMass();
