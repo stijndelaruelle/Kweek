@@ -6,10 +6,18 @@ public class SurfaceTypeDefinition : ScriptableObject
 {
     [Tooltip("Amount of damage removed when moving trough 1 unit of this surface type.")]
     [SerializeField]
-    private int m_PiercingDamageFalloff;
-    public int PiercingDamageFalloff
+    private int m_PiercingDamageFalloffFlat;
+    public int PiercingDamageFalloffFlat
     {
-        get { return m_PiercingDamageFalloff; }
+        get { return m_PiercingDamageFalloffFlat; }
+    }
+
+    [Tooltip("Amount of damage removed when moving trough 1 unit of this surface type.")]
+    [SerializeField]
+    private int m_PiercingDamageFalloffPerUnit;
+    public int PiercingDamageFalloffPerUnit
+    {
+        get { return m_PiercingDamageFalloffPerUnit; }
     }
 
     [Tooltip("Decal left behind by a bullet that hits this surface type.")]

@@ -18,6 +18,11 @@ public class DamageablePart : MonoBehaviour, IDamageableObject
 
     public void Damage(int health)
     {
-        m_MainObject.Damage((int)(health * m_DamageMultiplier));
+        m_MainObject.Damage(Mathf.CeilToInt(health * m_DamageMultiplier));
+    }
+
+    public IDamageableObject GetMainDamageableObject()
+    {
+        return m_MainObject;
     }
 }

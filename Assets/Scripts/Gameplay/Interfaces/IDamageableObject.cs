@@ -5,4 +5,5 @@ using UnityEngine;
 public interface IDamageableObject
 {
     void Damage(int health);
+    IDamageableObject GetMainDamageableObject();
 }

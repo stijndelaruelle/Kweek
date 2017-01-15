@@ -98,6 +98,11 @@ public class PatrollingEnemy : MonoBehaviour, IDamageableObject, IMoveableObject
         m_InHitStun = true;
     }
 
+    public IDamageableObject GetMainDamageableObject()
+    {
+        return this;
+    }
+
     public void Heal(int health)
     {
 

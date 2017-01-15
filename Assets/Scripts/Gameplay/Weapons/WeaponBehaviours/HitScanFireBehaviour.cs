@@ -120,6 +120,89 @@ public class HitScanFireBehaviour : IFireBehaviour
 
     private void FirePiercingRay(Ray ray, float range)
     {
+        Ray inverseRay = new Ray(ray.origin + ray.direction * range, ray.direction * -1);
+
+        List<RaycastHit> regularList = CustomRaycastAll(ray, range);
+        List<RaycastHit> inverseList = CustomRaycastAll(inverseRay, range);
+
+        Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);
+        Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
+
+        //This removes the player.
+        if (inverseList[inverseList.Count - 1].collider.tag == "Player")
+        {
+            inverseList.RemoveAt(inverseList.Count - 1);
+        }
+
+        float currentDamage = m_Damage;
+        List<IDamageableObject> damagedObjects = new List<IDamageableObject>();
+
+        for (int i = 0; i < regularList.Count; ++i)
+        {
+            RaycastHit hitInfo = regularList[i];
+            RaycastHit inverseHitInfo = new RaycastHit();
+
+            if (inverseList.Count > regularList.Count - i - 1)
+            {
+                inverseHitInfo = inverseList[regularList.Count - i - 1];
+            }
+
+            GameObject go = hitInfo.collider.gameObject;
+
+            //Did we hit a damageableobject?
+            IDamageableObject damageableObject = go.GetComponent<IDamageableObject>();
+
+            if (damageableObject == null || damagedObjects.Contains(damageableObject.GetMainDamageableObject()) == false)
+            {
+                if (damageableObject != null)
+                {
+                    //Damage calculation
+                    int damage = CalculateDamage(ray.origin, hitInfo.point, range, currentDamage);
+                    damageableObject.Damage(damage);
+
+                    damagedObjects.Add(damageableObject.GetMainDamageableObject());
+                }
+
+                //Did we hit a surface?
+                SurfaceType surfaceType = go.GetComponent<SurfaceType>();
+                if (surfaceType != null)
+                {
+                    //Paint decal on the front side
+                    surfaceType.PlaceDecal(hitInfo);
+
+                    if (inverseHitInfo.collider != null) //Possible if we don't end up shooting all the way trough an object
+                    {
+                        currentDamage -= surfaceType.PiercingDamageFalloffFlat;
+
+                        if (currentDamage > 0.0f)
+                        {
+                            //Calculate the distance we shot trough
+                            float distance = (inverseHitInfo.point - hitInfo.point).magnitude;
+                            currentDamage -= surfaceType.PiercingDamageFalloffPerUnit * distance;
+                        }
+
+                        //Paint decal on the backside if we reached it
+                        if (currentDamage > 0.0f) { surfaceType.PlaceDecal(inverseHitInfo); }
+                    }
+                    else
+                    {
+                        currentDamage = 0.0f;
+                    }
+                }
+            }
+
+            //No more damage remaining, no need to continue
+            if (currentDamage <= 0)
+                return;
+        }
+    }
+
+    private void FirePiercingRayWithRaycastAll(Ray ray, float range)
+    {
+        //Raycast all only goes into a mesh once!
+        //This results in inaccurate piercing behaviour with convex shapes.
+
+
         //Fire a ray in the normal direction
         RaycastHit[] sourceHitInfo = Physics.RaycastAll(ray, range);
 
@@ -161,15 +244,27 @@ public class HitScanFireBehaviour : IFireBehaviour
             SurfaceType surfaceType = go.GetComponent<SurfaceType>();
             if (surfaceType != null)
             {
-                //Calculate the distance we shot trough
-                float distance = (inverseHitInfo.point - hitInfo.point).magnitude;
-                currentDamage -= surfaceType.PiercingDamageFalloff * distance;
-
                 //Paint decal on the front side
                 surfaceType.PlaceDecal(hitInfo);
 
-                //Paint decal on the backside if we reached it
-                if (currentDamage > 0.0f) { surfaceType.PlaceDecal(inverseHitInfo); }
+                if (inverseHitInfo.collider != null) //Possible if we don't end up shooting all the way trough an object
+                {
+                    currentDamage -= surfaceType.PiercingDamageFalloffFlat;
+
+                    if (currentDamage > 0.0f)
+                    {
+                        //Calculate the distance we shot trough
+                        float distance = (inverseHitInfo.point - hitInfo.point).magnitude;
+                        currentDamage -= surfaceType.PiercingDamageFalloffPerUnit * distance;
+                    }
+
+                    //Paint decal on the backside if we reached it
+                    if (currentDamage > 0.0f) { surfaceType.PlaceDecal(inverseHitInfo); }
+                }
+                else
+                {
+                    currentDamage = 0.0f;
+                }
             }
 
             //No more damage remaining, no need to continue
@@ -184,8 +279,8 @@ public class HitScanFireBehaviour : IFireBehaviour
         float normDistance = distance / range;
         float damagePercentage = m_DamageFalloff.Evaluate(normDistance);
 
-        Debug.Log("Damage percentage: " + damagePercentage + " = " + (startDamage * damagePercentage));
-        return Mathf.RoundToInt(startDamage * damagePercentage);
+        //Debug.Log("Damage percentage: " + damagePercentage + " = " + (startDamage * damagePercentage));
+        return Mathf.CeilToInt(startDamage * damagePercentage);
     }
 
     private void HandleShootingCooldown()
@@ -209,5 +304,35 @@ public class HitScanFireBehaviour : IFireBehaviour
     public override int GetAmmoUseage()
     {
         return m_AmmoUseage;
+    }
+
+    public List<RaycastHit> CustomRaycastAll(Ray ray, float range)
+    {
+        List<RaycastHit> hits = new List<RaycastHit>();
+        float rangeLeft = range;
+
+        while (rangeLeft > 0.0f)
+        {
+            //Fire a single ray
+            RaycastHit hitInfo;
+            bool succes = Physics.Raycast(ray, out hitInfo, rangeLeft);
+
+            //If we hit something
+            if (hitInfo.collider != null)
+            {
+                hits.Add(hitInfo);
+
+                ray.origin = hitInfo.point + (ray.direction * 0.01f); //Otherwise we keep hitting the same object
+                rangeLeft -= hitInfo.distance;
+            }
+
+            //If we didn't hit anything, stop the loop
+            else
+            {
+                rangeLeft = 0.0f;
+            }
+        }
+
+        return hits;
     }
 }

@@ -6,10 +6,15 @@ public class SurfaceType : MonoBehaviour
 {
     [SerializeField]
     private SurfaceTypeDefinition m_SurfaceType;
-  
-    public int PiercingDamageFalloff
+
+    public int PiercingDamageFalloffFlat
     {
-        get { return m_SurfaceType.PiercingDamageFalloff; }
+        get { return m_SurfaceType.PiercingDamageFalloffFlat; }
+    }
+
+    public int PiercingDamageFalloffPerUnit
+    {
+        get { return m_SurfaceType.PiercingDamageFalloffPerUnit; }
     }
 
     public void PlaceDecal(RaycastHit hitInfo)
