@@ -16,6 +16,7 @@ public class RegularDamageBehaviour : IDamageableObject
     {
         get { return m_Health; }
     }
+    private bool m_HasDied;
 
     //Events
     protected DamageDelegate m_DamageEvent;
@@ -53,6 +54,9 @@ public class RegularDamageBehaviour : IDamageableObject
 
     protected virtual void ChangeHealth(int health)
     {
+        if (m_HasDied)
+            return;
+
         m_Health += health;
 
         if (m_Health > m_MaxHealth)
@@ -64,7 +68,10 @@ public class RegularDamageBehaviour : IDamageableObject
 
             //Fire death event
             if (m_DeathEvent != null)
+            {
                 m_DeathEvent();
+                m_HasDied = true;
+            }
         }
 
         //Fire healthchange event
@@ -74,6 +81,9 @@ public class RegularDamageBehaviour : IDamageableObject
 
     public override void Damage(int health)
     {
+        if (m_HasDied)
+            return;
+
         ChangeHealth(-health);
 
         //Fire damage event
@@ -83,6 +93,9 @@ public class RegularDamageBehaviour : IDamageableObject
 
     public override void Heal(int health)
     {
+        if (m_HasDied)
+            return;
+
         ChangeHealth(health);
 
         //Fire heal event
