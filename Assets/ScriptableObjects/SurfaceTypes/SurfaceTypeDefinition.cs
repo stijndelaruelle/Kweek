@@ -14,10 +14,17 @@ public class SurfaceTypeDefinition : ScriptableObject
 
     [Tooltip("Decal left behind by a bullet that hits this surface type.")]
     [SerializeField]
-    private GameObject m_Decal; //Change into a decal pool later
-    public GameObject Decal
+    private GameObject m_DecalPrefab; //Change into a decal pool later
+    public GameObject DecalPrefab
     {
-        get { return m_Decal; }
+        get { return m_DecalPrefab; }
+    }
+
+    [SerializeField]
+    private List<Sprite> m_Decals;
+    public List<Sprite> Decals
+    {
+        get { return m_Decals; }
     }
 
     //Hit particle

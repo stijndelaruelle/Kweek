@@ -114,7 +114,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         SurfaceType surfaceType = go.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            DrawDecal(hitInfo, surfaceType.Decal);
+            surfaceType.PlaceDecal(hitInfo);
         }
     }
 
@@ -166,10 +166,10 @@ public class HitScanFireBehaviour : IFireBehaviour
                 currentDamage -= surfaceType.PiercingDamageFalloff * distance;
 
                 //Paint decal on the front side
-                DrawDecal(hitInfo, surfaceType.Decal);
+                surfaceType.PlaceDecal(hitInfo);
 
                 //Paint decal on the backside if we reached it
-                if (currentDamage > 0.0f) { DrawDecal(inverseHitInfo, surfaceType.Decal); }
+                if (currentDamage > 0.0f) { surfaceType.PlaceDecal(inverseHitInfo); }
             }
 
             //No more damage remaining, no need to continue
@@ -209,16 +209,5 @@ public class HitScanFireBehaviour : IFireBehaviour
     public override int GetAmmoUseage()
     {
         return m_AmmoUseage;
-    }
-
-    private void DrawDecal(RaycastHit hitInfo, GameObject decal)
-    {
-        if (decal == null)
-            return;
-
-        Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
-        Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
-
-        GameObject.Instantiate(decal, decalPosition, decalRotation);
     }
 }
