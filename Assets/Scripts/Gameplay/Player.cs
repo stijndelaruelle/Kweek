@@ -6,6 +6,17 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private IDamageableObject m_DamageableObject;
+    public IDamageableObject DamageableObject
+    {
+        get { return m_DamageableObject; }
+    }
+
+    [SerializeField]
+    private WeaponArsenal m_WeaponArsenal;
+    public WeaponArsenal WeaponArsenal
+    {
+        get { return m_WeaponArsenal; }
+    }
 
     private void Start()
     {

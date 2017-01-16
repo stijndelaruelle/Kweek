@@ -156,4 +156,20 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         if (m_UpdateAmmoEvent != null)
             m_UpdateAmmoEvent(m_AmmoInClip, m_ReserveAmmo);
     }
+
+
+    public void SetAmmo(int ammoInClip, int reserveAmmo)
+    {
+        //Mainly used by the ammo pickup, ammo will soon be implemented diffrently
+
+        if (ammoInClip > m_MaxAmmoInClip) { ammoInClip = m_MaxAmmoInClip; }
+        if (ammoInClip < 0)               { ammoInClip = 0; }
+
+        m_AmmoInClip = ammoInClip;
+
+        if (reserveAmmo > m_MaxReserveAmmo) { reserveAmmo = m_MaxReserveAmmo; }
+        if (reserveAmmo < 0)                { reserveAmmo = 0; }
+
+        m_ReserveAmmo = reserveAmmo;
+    }
 }

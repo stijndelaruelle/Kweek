@@ -130,4 +130,24 @@ public class WeaponArsenal : MonoBehaviour
         if (m_UpdateAmmoEvent != null)
             m_UpdateAmmoEvent(ammoInClip, ammoInReserve);
     }
+
+    public Weapon AddWeapon(Weapon weaponPrefab)
+    {
+        Weapon instancedWeapon = GameObject.Instantiate(weaponPrefab, transform);
+
+        //Even tough the prefabs are at 0, this is still required to actually make it so
+        instancedWeapon.transform.localPosition = Vector3.zero;
+        instancedWeapon.transform.localRotation = Quaternion.identity;
+        instancedWeapon.gameObject.SetActive(false);
+
+        m_Weapons.Add(instancedWeapon);
+        SwitchWeapon(m_Weapons.Count - 1);
+
+        return instancedWeapon;
+    }
+
+    private void DropWeapon(Weapon weaponPrefab)
+    {
+        //Spawn a pickup prefab
+    }
 }

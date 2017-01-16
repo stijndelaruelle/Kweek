@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthPickup : MonoBehaviour
+public class HealthPickup : MonoBehaviour, IPickup
 {
+    [SerializeField]
+    private string m_PickupName;
+    public string PickupName
+    {
+        get { return m_PickupName; }
+    }
+
     [SerializeField]
     private int m_Health;
 
     [SerializeField]
     private bool m_Overheal = true;
 
-
-    private void OnCollisionEnter(Collision collision)
+    public void Pickup(Player player)
     {
-        IDamageableObject damageableObject = collision.gameObject.GetComponent<IDamageableObject>();
+        IDamageableObject damageableObject = player.DamageableObject;
 
         if (damageableObject != null)
         {
