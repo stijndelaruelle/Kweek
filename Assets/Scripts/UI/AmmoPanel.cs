@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class AmmoPanel : MonoBehaviour
 {
     [SerializeField]
+    private GameObject m_Visuals;
+
+    [SerializeField]
     private Text m_AmmoInClipText;
 
     [SerializeField]
@@ -21,6 +24,13 @@ public class AmmoPanel : MonoBehaviour
 
     public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
+        if (ammoInClip == 0 && ammoInReserve == 0)
+        {
+            m_Visuals.SetActive(false);
+            return;
+        }
+
+        m_Visuals.SetActive(true);
         m_AmmoInClipText.text = ammoInClip.ToString();
         m_AmmoInReserveText.text = ammoInReserve.ToString();
     }

@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthPickup : MonoBehaviour, IPickup
+public class HealthPickup : BasicPickup
 {
-    [SerializeField]
-    private string m_PickupName;
-    public string PickupName
-    {
-        get { return m_PickupName; }
-    }
-
+    [Header("Health")]
     [SerializeField]
     private int m_Health;
 
     [SerializeField]
     private bool m_Overheal = true;
 
-    public void Pickup(Player player)
+    public override void Pickup(Player player)
     {
         IDamageableObject damageableObject = player.DamageableObject;
 

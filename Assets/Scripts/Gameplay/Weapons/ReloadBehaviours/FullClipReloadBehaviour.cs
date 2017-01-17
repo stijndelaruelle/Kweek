@@ -12,17 +12,13 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     protected int m_MaxAmmoInClip;
     protected int m_AmmoInClip;
 
-    //Will be moved to another class so guns can share ammo types
     [SerializeField]
-    protected int m_MaxReserveAmmo;
-    protected int m_ReserveAmmo;
+    protected AmmoType m_AmmoType;
+    protected AmmoArsenal m_AmmoArsenal;
 
     [SerializeField]
     protected float m_ReloadTime = 0.0f;
     protected float m_ReloadTimer;
-
-    //[SerializeField]
-    //private bool m_CanCancel = false;
 
     [Space(10)]
     [Header("Animation")]
@@ -41,7 +37,6 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     private void Awake()
     {
         m_AmmoInClip = m_MaxAmmoInClip;
-        m_ReserveAmmo = m_MaxReserveAmmo;
     }
 
     private void OnEnable()
@@ -55,6 +50,12 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         if (Input.GetKeyDown(KeyCode.R)) { StartReload(); }
 
         HandleReloadTimer();
+    }
+
+
+    public override void Setup(AmmoArsenal ammoArsenal)
+    {
+        m_AmmoArsenal = ammoArsenal;
     }
 
     public override void UseAmmo(int amount)
@@ -91,7 +92,7 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
             return;
 
         //If we don't have any more ammo
-        if (m_ReserveAmmo == 0)
+        if (m_AmmoArsenal.GetAmmo(m_AmmoType) <= 0)
             return;
 
         //We are already reloading or switching
@@ -108,10 +109,11 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         int addedAmmo = m_MaxAmmoInClip - m_AmmoInClip;
 
         //If we don't have enough ammo, use everything we have
-        if (m_ReserveAmmo < addedAmmo)
-            addedAmmo = m_ReserveAmmo;
+        int reserveAmmo = m_AmmoArsenal.GetAmmo(m_AmmoType);
+        if (reserveAmmo < addedAmmo)
+            addedAmmo = reserveAmmo;
 
-        m_ReserveAmmo -= addedAmmo;
+        m_AmmoArsenal.ChangeAmmo(m_AmmoType, - addedAmmo);
         m_AmmoInClip += addedAmmo;
 
         FireUpdateAmmoEvent();
@@ -153,12 +155,12 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
     protected void FireUpdateAmmoEvent()
     {
-        if (m_UpdateAmmoEvent != null)
-            m_UpdateAmmoEvent(m_AmmoInClip, m_ReserveAmmo);
+        if (m_UpdateAmmoEvent != null && m_AmmoArsenal != null)
+            m_UpdateAmmoEvent(m_AmmoInClip, m_AmmoArsenal.GetAmmo(m_AmmoType));
     }
 
 
-    public void SetAmmo(int ammoInClip, int reserveAmmo)
+    public void SetAmmo(int ammoInClip)
     {
         //Mainly used by the ammo pickup, ammo will soon be implemented diffrently
 
@@ -167,9 +169,11 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
         m_AmmoInClip = ammoInClip;
 
-        if (reserveAmmo > m_MaxReserveAmmo) { reserveAmmo = m_MaxReserveAmmo; }
-        if (reserveAmmo < 0)                { reserveAmmo = 0; }
+        FireUpdateAmmoEvent();
+    }
 
-        m_ReserveAmmo = reserveAmmo;
+    public override void SetPickupAmmo(WeaponPickup pickup)
+    {
+        pickup.Ammo = m_AmmoInClip;
     }
 }

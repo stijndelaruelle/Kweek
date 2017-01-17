@@ -12,8 +12,12 @@ public abstract class IAmmoUseBehaviour : MonoBehaviour
         set;
     }
 
+    public abstract void Setup(AmmoArsenal ammoArsenal);
+    
     public abstract void UseAmmo(int amount);
     public abstract void Cancel();
 
     public abstract bool CanUse();
+
+    public abstract void SetPickupAmmo(WeaponPickup pickup);
 }

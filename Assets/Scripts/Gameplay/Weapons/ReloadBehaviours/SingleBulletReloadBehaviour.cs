@@ -8,7 +8,7 @@ public class SingleBulletReloadBehaviour : FullClipReloadBehaviour
 {
     protected override void EndReload()
     {
-        m_ReserveAmmo -= 1;
+        m_AmmoArsenal.ChangeAmmo(m_AmmoType, -1);
         m_AmmoInClip += 1;
 
         FireUpdateAmmoEvent();

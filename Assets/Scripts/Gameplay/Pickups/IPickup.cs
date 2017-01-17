@@ -4,12 +4,13 @@ using UnityEngine;
 
 public delegate void ChangePickupDelegate(IPickup pickup);
 
-public interface IPickup
+public abstract class IPickup : MonoBehaviour
 {
-    string PickupName
+    public abstract string PickupName
     {
         get;
     }
 
-    void Pickup(Player player);
+    public abstract void Pickup(Player player);
+    public abstract void Drop(Vector3 force, Collider throwerCollider);
 }

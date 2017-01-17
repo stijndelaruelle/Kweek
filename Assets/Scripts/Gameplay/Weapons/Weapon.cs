@@ -29,6 +29,15 @@ public class Weapon : MonoBehaviour
     private bool m_IsSwitching = false;
 
     [Space(10)]
+    [Header("Pickup")]
+    [Space(5)]
+    [SerializeField]
+    private WeaponPickup m_PickupPrefab;
+
+    [SerializeField]
+    private float m_ThrowSpeed;
+
+    [Space(10)]
     [Header("Animation")]
     [Space(5)]
     [SerializeField]
@@ -68,6 +77,14 @@ public class Weapon : MonoBehaviour
 
         if (Input.GetMouseButton(0))     { Fire(); }
         if (Input.GetMouseButton(1))     { AltFire(); }
+    }
+
+    public void Setup(AmmoArsenal ammoArsenal)
+    {
+        if (m_AmmoUseBehaviour != null)
+        {
+            m_AmmoUseBehaviour.Setup(ammoArsenal);
+        }
     }
 
     //Shooting
@@ -142,6 +159,23 @@ public class Weapon : MonoBehaviour
 
         callback();
         m_IsSwitching = false;
+    }
+
+    //Dropping
+    public void Drop(Vector3 position, Collider throwerCollider)
+    {
+        Ray centerRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        Vector3 velocity = centerRay.direction * m_ThrowSpeed;
+
+        Quaternion rotation = transform.rotation * m_PickupPrefab.transform.localRotation;
+        WeaponPickup pickup = GameObject.Instantiate(m_PickupPrefab, position, rotation);
+
+        if (m_AmmoUseBehaviour != null)
+        {
+            m_AmmoUseBehaviour.SetPickupAmmo(pickup);
+        }
+
+        pickup.Drop(velocity, throwerCollider);
     }
 
     //Event

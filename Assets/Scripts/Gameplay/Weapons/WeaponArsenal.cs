@@ -5,12 +5,25 @@ using UnityEngine;
 public class WeaponArsenal : MonoBehaviour
 {
     [SerializeField]
+    private int m_MaxWeapons = 2;
+
+    [SerializeField]
     private int m_CurrentWeaponID = 0;
     private int m_LastWeaponID = -1;
 
     [SerializeField]
     private List<Weapon> m_Weapons;
     private bool m_IsSwitching = false;
+
+    [Header("Required pass trough references")]
+    [SerializeField]
+    private AmmoArsenal m_AmmoArsenal;
+
+    [SerializeField]
+    private Transform m_ThrowPosition;
+
+    [SerializeField]
+    private Collider m_OwnerCollider;
 
     private UpdateAmmoDelegate m_UpdateAmmoEvent;
     public UpdateAmmoDelegate UpdateAmmoEvent
@@ -25,6 +38,7 @@ public class WeaponArsenal : MonoBehaviour
         foreach(Weapon weapon in m_Weapons)
         {
             weapon.gameObject.SetActive(false);
+            weapon.Setup(m_AmmoArsenal);
         }
 
         //Only enable our current weapon
@@ -33,7 +47,8 @@ public class WeaponArsenal : MonoBehaviour
 
     private void OnDestroy()
     {
-        m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent -= OnUpdateAmmo;
+        if (m_Weapons.Count > 0)
+            m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent -= OnUpdateAmmo;
     }
 
     private void Update()
@@ -73,6 +88,27 @@ public class WeaponArsenal : MonoBehaviour
                 if (newWeaponID >= m_Weapons.Count) { newWeaponID = 0; }
 
                 SwitchWeapon(newWeaponID);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            //Drop the current weapon
+            DropWeapon();
+
+            //Pickup the next one if we have one
+            m_LastWeaponID = -1;
+            m_CurrentWeaponID++;
+
+            if (m_CurrentWeaponID >= m_Weapons.Count)
+            {
+                m_CurrentWeaponID = 0;
+            }
+
+            if (m_Weapons.Count > 0)
+            {
+                m_IsSwitching = true;
+                OnWeaponSwitchedOut();
             }
         }
     }
@@ -134,20 +170,48 @@ public class WeaponArsenal : MonoBehaviour
     public Weapon AddWeapon(Weapon weaponPrefab)
     {
         Weapon instancedWeapon = GameObject.Instantiate(weaponPrefab, transform);
+        instancedWeapon.Setup(m_AmmoArsenal);
 
         //Even tough the prefabs are at 0, this is still required to actually make it so
         instancedWeapon.transform.localPosition = Vector3.zero;
         instancedWeapon.transform.localRotation = Quaternion.identity;
         instancedWeapon.gameObject.SetActive(false);
 
-        m_Weapons.Add(instancedWeapon);
-        SwitchWeapon(m_Weapons.Count - 1);
+        //When we pickup a lot of guns sequentally (while getting ready) it made all the guns inactive
+        if (m_IsSwitching == true)
+        {
+            m_IsSwitching = false;
+        }
+
+        if (m_Weapons.Count >= m_MaxWeapons)
+        {
+            DropWeapon();
+            m_Weapons.Insert(m_CurrentWeaponID, instancedWeapon);
+            SwitchWeapon(m_CurrentWeaponID);
+        }
+        else
+        {
+            m_Weapons.Add(instancedWeapon);
+            SwitchWeapon(m_Weapons.Count - 1);
+        }
 
         return instancedWeapon;
     }
 
-    private void DropWeapon(Weapon weaponPrefab)
+    private void RemoveWeapon(Weapon weapon)
     {
-        //Spawn a pickup prefab
+        OnUpdateAmmo(0, 0);
+
+        weapon.UpdateAmmoEvent -= OnUpdateAmmo;
+        weapon.gameObject.SetActive(false);
+
+        m_Weapons.Remove(weapon);
+        GameObject.Destroy(weapon.gameObject);
+    }
+
+    private void DropWeapon()
+    {
+        m_Weapons[m_CurrentWeaponID].Drop(m_ThrowPosition.position, m_OwnerCollider);
+        RemoveWeapon(m_Weapons[m_CurrentWeaponID]);
     }
 }

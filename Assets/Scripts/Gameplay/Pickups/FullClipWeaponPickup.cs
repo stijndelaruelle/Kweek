@@ -2,37 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FullClipWeaponPickup : MonoBehaviour, IPickup
+public class FullClipWeaponPickup : WeaponPickup
 {
-    [SerializeField]
-    private string m_PickupName;
-    public string PickupName
+    public override void Pickup(Player player)
     {
-        get { return m_PickupName; }
-    }
+        base.Pickup(player);
 
-    [SerializeField]
-    private Weapon m_FirstPersonWeapon;
-
-    [Header("Ammo")]
-    [SerializeField]
-    private int m_AmmoInClip;
-
-    [SerializeField]
-    private int m_AmmoInReserve;
-
-    public void Pickup(Player player)
-    {
-        WeaponArsenal weaponArsenal = player.WeaponArsenal;
-        Weapon newWeapon = weaponArsenal.AddWeapon(m_FirstPersonWeapon);
-
-        FullClipReloadBehaviour reloadBehaviour = newWeapon.GetComponent<FullClipReloadBehaviour>();
-
+        FullClipReloadBehaviour reloadBehaviour = m_FirstPersonWeaponInstance.GetComponent<FullClipReloadBehaviour>();
         if (reloadBehaviour != null)
         {
-            reloadBehaviour.SetAmmo(m_AmmoInClip, m_AmmoInReserve);
+            reloadBehaviour.SetAmmo(m_Ammo);
         }
-
-        Destroy(gameObject);
     }
 }
