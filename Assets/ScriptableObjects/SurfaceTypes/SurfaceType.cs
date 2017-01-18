@@ -17,6 +17,17 @@ public class SurfaceType : MonoBehaviour
         get { return m_SurfaceType.PiercingDamageFalloffPerUnit; }
     }
 
+    public float PiercingRangeFalloffFlat
+    {
+        get { return m_SurfaceType.PiercingRangeFalloffFlat; }
+    }
+
+    public float PiercingRangeFalloffPerUnit
+    {
+        get { return m_SurfaceType.PiercingRangeFalloffPerUnit; }
+    }
+
+
     public void PlaceDecal(RaycastHit hitInfo)
     {
         if (m_SurfaceType.DecalPrefab == null || m_SurfaceType.Decals.Count == 0)
