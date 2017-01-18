@@ -13,7 +13,7 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     protected int m_AmmoInClip;
 
     [SerializeField]
-    protected AmmoType m_AmmoType;
+    protected AmmoTypeDefinition m_AmmoType;
     protected AmmoArsenal m_AmmoArsenal;
 
     [SerializeField]
@@ -44,6 +44,12 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         FireUpdateAmmoEvent();
     }
 
+    private void OnDestroy()
+    {
+        if (m_AmmoArsenal != null)
+            m_AmmoArsenal.UpdateReserveAmmoEvent -= OnUpdateReserveAmmo;
+    }
+
     private void Update()
     {
         //In here and not in the weapon, as not every weapon needs reloading
@@ -56,6 +62,9 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     public override void Setup(AmmoArsenal ammoArsenal)
     {
         m_AmmoArsenal = ammoArsenal;
+
+        if (m_AmmoArsenal != null)
+            m_AmmoArsenal.UpdateReserveAmmoEvent += OnUpdateReserveAmmo;
     }
 
     public override void UseAmmo(int amount)
@@ -159,6 +168,11 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
             m_UpdateAmmoEvent(m_AmmoInClip, m_AmmoArsenal.GetAmmo(m_AmmoType));
     }
 
+    private void OnUpdateReserveAmmo(AmmoTypeDefinition ammoType, int amount)
+    {
+        if (m_AmmoType == ammoType)
+            FireUpdateAmmoEvent();
+    }
 
     public void SetAmmo(int ammoInClip)
     {

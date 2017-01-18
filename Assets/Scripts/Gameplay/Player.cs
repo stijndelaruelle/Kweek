@@ -23,6 +23,12 @@ public class Player : MonoBehaviour
         m_DamageableObject.DeathEvent += OnDeath;
     }
 
+    private void OnDestroy()
+    {
+        if (m_DamageableObject != null)
+            m_DamageableObject.DeathEvent -= OnDeath;
+    }
+
     private void OnDeath()
     {
         Debug.Log("THE PLAYER DIED!");

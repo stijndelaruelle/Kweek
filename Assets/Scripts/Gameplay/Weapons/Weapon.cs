@@ -58,12 +58,6 @@ public class Weapon : MonoBehaviour
         set { m_UpdateAmmoEvent = value; }
     }
 
-    private void Awake()
-    {
-        if (m_AmmoUseBehaviour != null)
-            m_AmmoUseBehaviour.UpdateAmmoEvent += OnUpdateAmmo;
-    }
-
     private void OnDestroy()
     {
         if (m_AmmoUseBehaviour != null)
@@ -83,6 +77,7 @@ public class Weapon : MonoBehaviour
     {
         if (m_AmmoUseBehaviour != null)
         {
+            m_AmmoUseBehaviour.UpdateAmmoEvent += OnUpdateAmmo;
             m_AmmoUseBehaviour.Setup(ammoArsenal);
         }
     }

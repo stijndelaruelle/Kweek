@@ -18,6 +18,10 @@ public class WeaponArsenal : MonoBehaviour
     [Header("Required pass trough references")]
     [SerializeField]
     private AmmoArsenal m_AmmoArsenal;
+    public AmmoArsenal AmmoArsenal
+    {
+        get { return m_AmmoArsenal; }
+    }
 
     [SerializeField]
     private Transform m_ThrowPosition;

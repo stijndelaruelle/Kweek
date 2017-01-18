@@ -22,6 +22,12 @@ public class AmmoPanel : MonoBehaviour
         m_WeaponArsenal.UpdateAmmoEvent += OnUpdateAmmo;
     }
 
+    private void OnDestroy()
+    {
+        if (m_WeaponArsenal != null)
+            m_WeaponArsenal.UpdateAmmoEvent -= OnUpdateAmmo;
+    }
+
     public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
         if (ammoInClip == 0 && ammoInReserve == 0)

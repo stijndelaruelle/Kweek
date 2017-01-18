@@ -20,6 +20,12 @@ public class PickupPanel : MonoBehaviour
         m_Visuals.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        if (m_PickupHandler != null)
+            m_PickupHandler.ChangePickupEvent -= OnChangePickup;
+    }
+
     public void OnChangePickup(IPickup pickup)
     {
         if (pickup == null)

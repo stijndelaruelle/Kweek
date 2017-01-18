@@ -11,6 +11,12 @@ public class CreateScriptableObject
         CreateAsset<SurfaceTypeDefinition>();
     }
 
+    [MenuItem("Assets/Create/Custom/AmmoType")]
+    public static void CreateAmmoType()
+    {
+        CreateAsset<AmmoTypeDefinition>();
+    }
+
     public static void CreateAsset<T>() where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();
