@@ -125,6 +125,9 @@ public class HitScanFireBehaviour : IFireBehaviour
         Ray inverseRay = new Ray(ray.origin + ray.direction * range, ray.direction * -1);
 
         List<RaycastHit> regularList = CustomRaycastAll(ray, range);
+        if (regularList.Count == 0)
+            return;
+
         List<RaycastHit> inverseList = CustomRaycastAll(inverseRay, range);
 
         Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);

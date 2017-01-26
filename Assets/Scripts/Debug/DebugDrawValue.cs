@@ -9,39 +9,34 @@ public class DebugDrawValue : MonoBehaviour
     //UnityEvents don't support return values.
     public enum PlayerValue
     {
-        CurrentSpeed,
         CurrentVelocity,
-        IsGrounded
+        CurrentSpeed
     }
 
     [SerializeField]
     private Text m_Text;
 
     [SerializeField]
-    private PlayerController m_PlayerController;
+    private Player m_Player;
 
     [SerializeField]
     private PlayerValue m_Value;
 
     private void Update()
     {
-        if (m_PlayerController == null)
+        if (m_Player == null)
             return;
 
         m_Text.text = m_Value.ToString() + ": ";
 
         switch (m_Value)
         {
-            case PlayerValue.CurrentSpeed:
-                m_Text.text += m_PlayerController.CurrentSpeed;
-                break;
-
             case PlayerValue.CurrentVelocity:
-                m_Text.text += m_PlayerController.CurrentVelocity.x + " " + m_PlayerController.CurrentVelocity.y + " " + m_PlayerController.CurrentVelocity.z;
+                m_Text.text += m_Player.Velocity;
                 break;
 
-            case PlayerValue.IsGrounded:
-                m_Text.text += m_PlayerController.IsGrounded;
+            case PlayerValue.CurrentSpeed:
+                m_Text.text += m_Player.Velocity.magnitude;
                 break;
 
             default:
