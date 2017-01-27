@@ -10,7 +10,8 @@ public class DebugDrawValue : MonoBehaviour
     public enum PlayerValue
     {
         CurrentVelocity,
-        CurrentSpeed
+        CurrentSpeed,
+        CurrentState
     }
 
     [SerializeField]
@@ -37,6 +38,10 @@ public class DebugDrawValue : MonoBehaviour
 
             case PlayerValue.CurrentSpeed:
                 m_Text.text += m_Player.Velocity.magnitude;
+                break;
+
+            case PlayerValue.CurrentState:
+                m_Text.text += m_Player.CurrentState;
                 break;
 
             default:

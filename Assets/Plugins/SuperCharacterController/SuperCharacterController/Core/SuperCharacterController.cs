@@ -11,16 +11,16 @@ using System.Collections.Generic;
 /// </summary>
 public class SuperCharacterController : MonoBehaviour
 {
-    [SerializeField]
+    //[SerializeField]
     Vector3 debugMove = Vector3.zero;
 
     [SerializeField]
     QueryTriggerInteraction triggerInteraction;
 
-    [SerializeField]
+    //[SerializeField]
     bool fixedTimeStep;
 
-    [SerializeField]
+    //[SerializeField]
     int fixedUpdatesPerSecond;
 
     [SerializeField]
@@ -487,6 +487,14 @@ public class SuperCharacterController : MonoBehaviour
             return transform.position + sphere.offset * up * heightScale;
     }
 
+    public bool CheckHeadCollision(float heightScale)
+    {
+        Vector3 position = transform.position + head.offset * up * heightScale;
+        Collider[] colliders = Physics.OverlapSphere(position, radius, Walkable, triggerInteraction);
+
+        return (colliders.Length > 0);
+    }
+
     public bool PointBelowHead(Vector3 point)
     {
         return Vector3.Angle(point - SpherePosition(head), up) > 89.0f;
@@ -648,11 +656,13 @@ public class SuperCharacterController : MonoBehaviour
                 // it is connected to at it's base, if there exists any
                 if (Vector3.Angle(nearHit.normal, up) > superColType.StandAngle || nearHit.distance > Tolerance)
                 {
-                    var col = nearHit.collider.gameObject.GetComponent<SuperCollisionType>();
+                    Collider collider = nearHit.collider;
+                    SuperCollisionType col = defaultCollisionType;
 
-                    if (col == null)
+                    if (collider != null)
                     {
-                        col = defaultCollisionType;
+                        SuperCollisionType temp = nearHit.collider.gameObject.GetComponent<SuperCollisionType>();
+                        if (temp != null) { col = temp; }
                     }
 
                     // We contacted the wall of the ledge, rather than the landing. Raycast down
@@ -703,7 +713,7 @@ public class SuperCharacterController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("[SuperCharacterComponent]: No ground was found below the player; player has escaped level");
+                //Debug.LogError("[SuperCharacterComponent]: No ground was found below the player; player has escaped level");
             }
         }
 

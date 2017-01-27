@@ -134,7 +134,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
 
         //This removes the player.
-        if (inverseList[inverseList.Count - 1].collider.tag == "Player")
+        if (inverseList.Count > 0 && inverseList[inverseList.Count - 1].collider.tag == "Player")
         {
             inverseList.RemoveAt(inverseList.Count - 1);
         }

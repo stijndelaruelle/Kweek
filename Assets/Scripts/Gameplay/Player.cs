@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void DuckDelegate(bool isDucking);
+
 public class Player : MonoBehaviour
 {
     [Header("Base Movement Settings")]
@@ -34,10 +36,17 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField]
-    private float m_MaxGroundSpeed = 20.0f;
-    public float MaxGroundSpeed
+    private float m_MaxWalkSpeed = 20.0f;
+    public float MaxWalkSpeed
     {
-        get { return m_MaxGroundSpeed; }
+        get { return m_MaxWalkSpeed; }
+    }
+
+    [SerializeField]
+    private float m_MaxRunSpeed = 20.0f;
+    public float MaxRunSpeed
+    {
+        get { return m_MaxRunSpeed; }
     }
 
     [SerializeField]
@@ -97,7 +106,6 @@ public class Player : MonoBehaviour
         get { return m_WeaponArsenal; }
     }
 
-
     private Vector3 m_Velocity;
     public Vector3 Velocity
     {
@@ -106,8 +114,22 @@ public class Player : MonoBehaviour
     }
 
     private IState m_CurrentState;
+    public string CurrentState
+    {
+        get { return m_CurrentState.ToString(); }
+    }
+
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
+
+    //Events
+    private DuckDelegate m_DuckEvent;
+    public DuckDelegate DuckEvent
+    {
+        get { return m_DuckEvent; }
+        set { m_DuckEvent = value; }
+    }
+
 
     private void Start()
     {
@@ -116,7 +138,7 @@ public class Player : MonoBehaviour
         m_CharacterTargetRot = transform.localRotation;
         m_CameraTargetRot = m_Camera.localRotation;
 
-        SwitchState(new IdleState(this));
+        SwitchState(new RunState(this));
     }
 
     private void OnDestroy()
@@ -125,7 +147,7 @@ public class Player : MonoBehaviour
             m_DamageableObject.DeathEvent -= OnDeath;
     }
 
-    private void Update()
+    private void SuperUpdate()
     {
         //Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
@@ -200,35 +222,30 @@ public class Player : MonoBehaviour
     //---------------------
     // STATES
     //---------------------
-    public class IdleState : IState
+
+    //Ground states
+    public class RunState : IState
     {
         private Player m_Player;
 
-        public IdleState(Player player)
+        public RunState(Player player)
         {
             m_Player = player;
         }
 
-        public void Enter()
-        {
-            Debug.Log("Entered IDLE state");
-
-            m_Player.CharacterController.EnableSlopeLimit();
-            m_Player.CharacterController.EnableClamping();
-        }
-
-        public void Exit()
-        {
-
-        }
+        public void Enter() {}
+        public void Exit() {}
 
         public void Update()
         {
-            // Run every frame we are in the idle state
-            float horizInput = Input.GetAxisRaw("Horizontal");
-            float vertInput = Input.GetAxisRaw("Vertical");
-            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            HandleSwitchingStates();
+            HandleHorizontalMovement();
+        }
 
+        private void HandleSwitchingStates()
+        {
+            //Jumping
+            bool isJumping = Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
                 AirborneState state = new AirborneState(m_Player);
@@ -237,22 +254,54 @@ public class Player : MonoBehaviour
                 return;
             }
 
+            //Falling
             if (!m_Player.MaintainingGround())
             {
                 m_Player.SwitchState(new AirborneState(m_Player));
                 return;
             }
 
-            if (horizInput != 0.0f || vertInput != 0.0f)
+            //Ducking
+            bool isDucking = Input.GetKey(KeyCode.LeftAlt);
+            if (isDucking)
+            {
+                m_Player.SwitchState(new DuckState(m_Player));
+                return;
+            }
+
+            //Walking
+            bool isWalking = Input.GetKey(KeyCode.LeftShift);
+            if (isWalking)
             {
                 m_Player.SwitchState(new WalkState(m_Player));
                 return;
             }
+        }
 
-            // Apply friction to slow us to a halt
+        private void HandleHorizontalMovement()
+        {
+            float horizInput = Input.GetAxisRaw("Horizontal");
+            float vertInput = Input.GetAxisRaw("Vertical");
+
+            //Calculate the movement direction
+            Vector3 accelerationDir = vertInput * m_Player.gameObject.transform.forward;
+            accelerationDir += horizInput * m_Player.gameObject.transform.right;
+            accelerationDir.Normalize();
+
+            //Horizontal friction
             m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
-                                                    Vector3.zero,
-                                                    m_Player.Friction * Time.deltaTime); //controller.deltaTime
+                                        Vector3.zero,
+                                        m_Player.Friction * Time.deltaTime); //controller.deltaTime
+
+            //Horizontal Acceleration
+            m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
+                                                    accelerationDir * m_Player.MaxRunSpeed,
+                                                    m_Player.Acceleration * Time.deltaTime); //controller.deltaTime
+        }
+
+        public override string ToString()
+        {
+            return "Running";
         }
     }
 
@@ -265,22 +314,19 @@ public class Player : MonoBehaviour
             m_Player = player;
         }
 
-        public void Enter()
-        {
-            Debug.Log("Entered WALK state");
-        }
-
-        public void Exit()
-        {
-
-        }
+        public void Enter() {}
+        public void Exit() {}
 
         public void Update()
         {
-            float horizInput = Input.GetAxisRaw("Horizontal");
-            float vertInput = Input.GetAxisRaw("Vertical");
-            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            HandleSwitchingStates();
+            HandleHorizontalMovement();
+        }
 
+        private void HandleSwitchingStates()
+        {
+            //Jumping
+            bool isJumping = Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
                 AirborneState state = new AirborneState(m_Player);
@@ -289,35 +335,150 @@ public class Player : MonoBehaviour
                 return;
             }
 
+            //Falling
             if (!m_Player.MaintainingGround())
             {
                 m_Player.SwitchState(new AirborneState(m_Player));
                 return;
             }
 
-            if (horizInput == 0.0f && vertInput == 0.0f)
+            //Ducking
+            bool isDucking = Input.GetKey(KeyCode.LeftAlt);
+            if (isDucking)
             {
-                m_Player.SwitchState(new IdleState(m_Player));
+                m_Player.SwitchState(new DuckState(m_Player));
                 return;
             }
 
-            HandleHorizontalMovement(horizInput, vertInput);
+            //Running
+            bool isWalking = Input.GetKey(KeyCode.LeftShift);
+            if (isWalking == false)
+            {
+                m_Player.SwitchState(new RunState(m_Player));
+                return;
+            }
         }
 
-        private void HandleHorizontalMovement(float horizInput, float vertInput)
+        private void HandleHorizontalMovement()
         {
+            float horizInput = Input.GetAxisRaw("Horizontal");
+            float vertInput = Input.GetAxisRaw("Vertical");
+
             //Calculate the movement direction
             Vector3 accelerationDir = vertInput * m_Player.gameObject.transform.forward;
             accelerationDir += horizInput * m_Player.gameObject.transform.right;
             accelerationDir.Normalize();
 
+            //Horizontal friction
+            m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
+                                        Vector3.zero,
+                                        m_Player.Friction * Time.deltaTime); //controller.deltaTime
+
             //Horizontal Acceleration
             m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
-                                                    accelerationDir * m_Player.MaxGroundSpeed,
+                                                    accelerationDir * m_Player.MaxWalkSpeed,
                                                     m_Player.Acceleration * Time.deltaTime); //controller.deltaTime
+        }
+
+        public override string ToString()
+        {
+            return "Walking";
         }
     }
 
+    public class DuckState : IState
+    {
+        private Player m_Player;
+
+        public DuckState(Player player)
+        {
+            m_Player = player;
+        }
+
+        public void Enter()
+        {
+            if (m_Player.DuckEvent != null)
+                m_Player.DuckEvent(true);
+
+            m_Player.CharacterController.heightScale = 0.5f;
+        }
+
+        public void Exit()
+        {
+            if (m_Player.DuckEvent != null)
+                m_Player.DuckEvent(false);
+
+            m_Player.CharacterController.heightScale = 1.0f;
+        }
+
+        public void Update()
+        {
+            HandleSwitchingStates();
+            HandleHorizontalMovement();
+        }
+
+        private void HandleSwitchingStates()
+        {
+            //Jumping
+            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            if (isJumping)
+            {
+                AirborneState state = new AirborneState(m_Player);
+                m_Player.SwitchState(state);
+                state.Jump();
+                return;
+            }
+
+            //Falling
+            if (!m_Player.MaintainingGround())
+            {
+                m_Player.SwitchState(new AirborneState(m_Player));
+                return;
+            }
+
+            //Stop Ducking
+            bool isDucking = Input.GetKey(KeyCode.LeftAlt);
+            if (isDucking == false)
+            {
+                //Check if we are even allowed to leave the ducking state
+                bool headCollision = m_Player.CharacterController.CheckHeadCollision(1.0f);
+
+                if (headCollision == false)
+                {
+                    m_Player.SwitchState(new WalkState(m_Player));
+                    return;
+                }
+            }
+        }
+
+        private void HandleHorizontalMovement()
+        {
+            float horizInput = Input.GetAxisRaw("Horizontal");
+            float vertInput = Input.GetAxisRaw("Vertical");
+
+            //Calculate the movement direction
+            Vector3 accelerationDir = vertInput * m_Player.gameObject.transform.forward;
+            accelerationDir += horizInput * m_Player.gameObject.transform.right;
+            accelerationDir.Normalize();
+
+            //Horizontal friction
+            m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
+                                        Vector3.zero,
+                                        m_Player.Friction * Time.deltaTime); //controller.deltaTime
+
+            //Horizontal Acceleration
+            m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
+                                                    accelerationDir * m_Player.MaxWalkSpeed,
+                                                    m_Player.Acceleration * Time.deltaTime); //controller.deltaTime
+        }
+
+        public override string ToString()
+        {
+            return "Ducking";
+        }
+    }
+
+    //Airborne state
     public class AirborneState : IState
     {
         private Player m_Player;
@@ -330,7 +491,6 @@ public class Player : MonoBehaviour
 
         public void Enter()
         {
-            Debug.Log("Entered AIRBORNE state");
             m_Player.CharacterController.DisableClamping();
             m_Player.CharacterController.DisableSlopeLimit();
 
@@ -339,7 +499,8 @@ public class Player : MonoBehaviour
 
         public void Exit()
         {
-
+            m_Player.CharacterController.EnableClamping();
+            m_Player.CharacterController.EnableSlopeLimit();
         }
 
         public void Update()
@@ -361,7 +522,7 @@ public class Player : MonoBehaviour
             if (m_Player.AcquiringGround())
             {
                 m_Player.Velocity = planarMoveDirection;
-                m_Player.SwitchState(new IdleState(m_Player));
+                m_Player.SwitchState(new RunState(m_Player));
                 return;
             }
 
@@ -390,5 +551,11 @@ public class Player : MonoBehaviour
 
             m_NumberOfJumps -= 1;
         }
+
+        public override string ToString()
+        {
+            return "Airborne";
+        }
     }
+
 }
