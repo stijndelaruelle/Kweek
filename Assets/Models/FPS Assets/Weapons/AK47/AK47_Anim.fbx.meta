@@ -180,7 +180,15 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 61edf61e75d50a94d8cd8e050ce4f41f,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -320,7 +328,39 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.7080645
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 205b1884283bec94282c2ba5ee6fd609,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.80483866
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: bae356d488f91eb4583067166402accc,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.09193548
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 71edf411b9141e248a24eef4c5cb35fc,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.44354838
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: d46573f7134609e47b9c61e4dca77c73,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -441,7 +481,7 @@ ModelImporter:
       name: Ready
       takeName: Take 001
       firstFrame: 84
-      lastFrame: 115.00001
+      lastFrame: 115
       wrapMode: 1
       orientationOffsetY: 0
       level: 0
@@ -460,7 +500,23 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.22542374
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 205b1884283bec94282c2ba5ee6fd609,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.4807073
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: bae356d488f91eb4583067166402accc,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1

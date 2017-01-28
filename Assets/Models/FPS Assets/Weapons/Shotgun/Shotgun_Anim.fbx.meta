@@ -105,7 +105,8 @@ ModelImporter:
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: Event PlayAudio of Animation Clip Fire has a time  (0.000000)
+      outside the clip's valid range (0.041667..2.250000). It will never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
@@ -138,7 +139,31 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 0f98fa9ebd2ec444893ae00dbfa89bd9,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.2516129
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: dddf12107a0736c4598959663a0f45df,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3435484
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 674fbdac426ecb34a96c6b45e8eedb92,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -232,7 +257,23 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.09516128
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: dddf12107a0736c4598959663a0f45df,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.19354838
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 674fbdac426ecb34a96c6b45e8eedb92,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -326,7 +367,15 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: e8a1010caf0a39f4d947631c1bf92706,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1

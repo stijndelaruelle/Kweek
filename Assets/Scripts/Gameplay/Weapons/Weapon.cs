@@ -42,6 +42,8 @@ public class Weapon : MonoBehaviour
     [Space(5)]
     [SerializeField]
     private Animator m_Animator;
+    [SerializeField]
+    private AudioSource m_SwitchAudioSource;
 
     //Events
     private WeaponFireDelegate m_WeaponFireEvent;
@@ -132,6 +134,7 @@ public class Weapon : MonoBehaviour
     public void SwitchIn(SwitchWeaponCallback callback)
     {
         m_Animator.SetTrigger("SwitchInTrigger");
+        //Play switch sound
 
         StartCoroutine(SwitchInRoutine(callback));
     }

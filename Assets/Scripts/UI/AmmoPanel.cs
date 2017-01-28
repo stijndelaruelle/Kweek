@@ -30,12 +30,6 @@ public class AmmoPanel : MonoBehaviour
 
     public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
-        if (ammoInClip == 0 && ammoInReserve == 0)
-        {
-            m_Visuals.SetActive(false);
-            return;
-        }
-
         m_Visuals.SetActive(true);
         m_AmmoInClipText.text = ammoInClip.ToString();
         m_AmmoInReserveText.text = ammoInReserve.ToString();

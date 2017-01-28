@@ -196,7 +196,15 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 9157eec6e7e97ca459e27101e918eefd,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -348,7 +356,39 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.0952381
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 9875b2ff97a0e4945b6fe27515127525,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.8903225
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 3c329608edc896e479fc6218eedf59a0,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3887097
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 9638aab529de76d469bf1d241a52d08f,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.61774194
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: addd032a47db5e740b1ea0da1acda875,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -500,7 +540,23 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.27258077
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 9875b2ff97a0e4945b6fe27515127525,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5258064
+        functionName: PlayAudio
+        data: 
+        objectReferenceParameter: {fileID: 8300000, guid: 3c329608edc896e479fc6218eedf59a0,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
