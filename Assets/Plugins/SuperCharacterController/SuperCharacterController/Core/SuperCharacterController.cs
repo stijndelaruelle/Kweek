@@ -489,8 +489,12 @@ public class SuperCharacterController : MonoBehaviour
 
     public bool CheckHeadCollision(float heightScale)
     {
+        PushIgnoredColliders();
+
         Vector3 position = transform.position + head.offset * up * heightScale;
         Collider[] colliders = Physics.OverlapSphere(position, radius, Walkable, triggerInteraction);
+
+        PopIgnoredColliders();
 
         return (colliders.Length > 0);
     }

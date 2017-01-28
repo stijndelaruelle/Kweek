@@ -6,6 +6,17 @@ using UnityEngine;
 
 public class HitScanFireBehaviour : IFireBehaviour
 {
+    [Header("General")]
+    [Space(5)]
+    [SerializeField]
+    private float m_ShootCooldown = 0.0f;
+    private float m_ShootCooldownTimer;
+
+    [Tooltip("How much ammo does firing the gun 1 time take.")]
+    [SerializeField]
+    private int m_AmmoUseage = 1;
+
+    [Space(10)]
     [Header("Damage")]
     [Space(5)]
     [SerializeField]
@@ -21,14 +32,20 @@ public class HitScanFireBehaviour : IFireBehaviour
     [SerializeField]
     private float m_Range;
 
+    [Space(10)]
+    [Header("Recoil")]
+    [Space(5)]
     [SerializeField]
-    private float m_ShootCooldown = 0.0f;
-    private float m_ShootCooldownTimer;
+    private AnimationCurve m_RecoilPattern; //TODO: Create custom inspector because the curve editor can't handle multiple keyframes at the same time.
 
-    [Tooltip("How much ammo does firing the gun 1 time take.")]
+    [Tooltip("Time = number of bullets fired, Value = Time it takes to recoved entirely + Shoot Cooldown")]
     [SerializeField]
-    private int m_AmmoUseage = 1;
+    private AnimationCurve m_RecoilCooldownRate;
+    private float m_RecoilCooldownTimer;
 
+    private int m_CurrentRecoilBullet = 0;
+
+    [Space(10)]
     [Header("Spread")]
     [Space(5)]
     [SerializeField]
@@ -46,9 +63,12 @@ public class HitScanFireBehaviour : IFireBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
+
+
     private void Update()
     {
         HandleShootingCooldown();
+        HandleRecoilCooldown();
     }
 
     public override void Fire()
@@ -67,16 +87,25 @@ public class HitScanFireBehaviour : IFireBehaviour
             Ray ray = centerRay;
             float range = m_Range;
 
+            Vector3 maxPosition = centerRay.direction * m_Range;
+
+            //Vertical recoil
+            Keyframe[] keys = m_RecoilPattern.keys;
+            int keyID = m_CurrentRecoilBullet;
+            if (keyID >= keys.Length) keyID = keys.Length - 1;
+
+            maxPosition += up * keys[keyID].time;   //Vertical
+            maxPosition += right * keys[keyID].value; //Horizontal
+
+            //Natural gun spread
             if (m_Spread > 0.0f)
             {
-                Vector3 maxPosition = centerRay.direction * m_Range;
-
-                maxPosition += right * UnityEngine.Random.Range(-m_Spread, m_Spread);
                 maxPosition += up * UnityEngine.Random.Range(-m_Spread, m_Spread);
-
-                ray.direction = maxPosition.normalized;
-                range = maxPosition.magnitude;
+                maxPosition += right * UnityEngine.Random.Range(-m_Spread, m_Spread);
             }
+
+            ray.direction = maxPosition.normalized;
+            range = maxPosition.magnitude;
 
             if (m_Piercing) { FirePiercingRay(ray, range); }
             else            { FireRay(ray, range); }
@@ -85,6 +114,10 @@ public class HitScanFireBehaviour : IFireBehaviour
         //Animation & Cooldown
         m_Animator.SetTrigger(m_TriggerName);
         m_ShootCooldownTimer = m_ShootCooldown;
+
+        //Recoil
+        m_CurrentRecoilBullet += 1;
+        m_RecoilCooldownTimer = m_RecoilCooldownRate.Evaluate(m_CurrentRecoilBullet);
     }
 
     public void FireRay(Ray ray, float range)
@@ -230,6 +263,28 @@ public class HitScanFireBehaviour : IFireBehaviour
             if (m_ShootCooldownTimer <= 0.0f)
             {
                 m_ShootCooldownTimer = 0.0f;
+            }
+        }
+    }
+
+    private void HandleRecoilCooldown()
+    {
+        if (m_RecoilCooldownTimer > 0.0f && m_ShootCooldownTimer <= 0.0f)
+        {
+            m_RecoilCooldownTimer -= Time.deltaTime;
+
+            //Can we go down 1 step?
+            if (m_CurrentRecoilBullet > 0 &&
+                m_RecoilCooldownTimer <= m_RecoilCooldownRate.Evaluate(m_CurrentRecoilBullet - 1))
+            {
+                m_CurrentRecoilBullet -= 1;
+            }
+
+            //Did we hit rock bottom?
+            if (m_RecoilCooldownTimer <= 0.0f)
+            {
+                m_RecoilCooldownTimer = 0.0f;
+                m_CurrentRecoilBullet = 0;
             }
         }
     }
