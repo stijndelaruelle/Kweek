@@ -24,6 +24,13 @@ public class SingleBulletReloadBehaviour : FullClipReloadBehaviour
 
     public override bool CanUse()
     {
+        //If the weapon tries to use us, but we're out of ammo.
+        if (m_ReloadTimer == 0.0f && m_AmmoInClip <= 0)
+        {
+            if (m_OutOfAmmoAudio != null && m_OutOfAmmoAudio.isPlaying == false)
+                m_OutOfAmmoAudio.Play();
+        }
+
         return (m_AmmoInClip > 0);
     }
 }

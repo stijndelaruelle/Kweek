@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayAnimationAudio : MonoBehaviour
 {
+    [SerializeField]
+    private AudioMixerGroup m_Mixer;
+
     [SerializeField]
     private int m_MaxChannels;
 
@@ -17,6 +21,7 @@ public class PlayAnimationAudio : MonoBehaviour
         for (int i = 0; i < m_MaxChannels; ++i)
         {
             AudioSource newAudioSource = gameObject.AddComponent<AudioSource>();
+            newAudioSource.outputAudioMixerGroup = m_Mixer;
             newAudioSource.playOnAwake = false;
             newAudioSource.loop = false;
 

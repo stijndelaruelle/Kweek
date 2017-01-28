@@ -26,6 +26,12 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     [SerializeField]
     private Animator m_Animator;
 
+    [Space(10)]
+    [Header("Sound")]
+    [Space(5)]
+    [SerializeField]
+    protected AudioSource m_OutOfAmmoAudio; //Not an event as it's very specific to ammo dependant weapons
+
     //Event
     private UpdateAmmoDelegate m_UpdateAmmoEvent;
     public override UpdateAmmoDelegate UpdateAmmoEvent
@@ -122,8 +128,9 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         if (reserveAmmo < addedAmmo)
             addedAmmo = reserveAmmo;
 
-        m_AmmoArsenal.ChangeAmmo(m_AmmoType, - addedAmmo);
+        //Add ammo in clip before removing because of the autoreload call from OnUpdateReserveAmmo.
         m_AmmoInClip += addedAmmo;
+        m_AmmoArsenal.ChangeAmmo(m_AmmoType, - addedAmmo);
 
         FireUpdateAmmoEvent();
 
@@ -159,7 +166,14 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
     public override bool CanUse()
     {
-        return (m_ReloadTimer == 0.0f && m_AmmoInClip > 0); // || m_CanCancel
+        //If the weapon tries to use us, but we're out of ammo.
+        if (m_ReloadTimer == 0.0f && m_AmmoInClip <= 0)
+        {
+            if (m_OutOfAmmoAudio != null && m_OutOfAmmoAudio.isPlaying == false)
+                m_OutOfAmmoAudio.Play();
+        }
+
+        return (m_ReloadTimer == 0.0f && m_AmmoInClip > 0);
     }
 
     protected void FireUpdateAmmoEvent()
@@ -172,6 +186,8 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     {
         if (m_AmmoType == ammoType)
             FireUpdateAmmoEvent();
+
+        AutoReload();
     }
 
     public void SetAmmo(int ammoInClip)
