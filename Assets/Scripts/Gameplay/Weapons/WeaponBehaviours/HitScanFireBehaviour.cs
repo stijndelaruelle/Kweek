@@ -38,6 +38,10 @@ public class HitScanFireBehaviour : IFireBehaviour
     [SerializeField]
     private AnimationCurve m_RecoilPattern; //TODO: Create custom inspector because the curve editor can't handle multiple keyframes at the same time.
 
+    [Tooltip("Adds randomisation in both directions")]
+    [SerializeField]
+    private AnimationCurve m_RecoilSpreadRate;
+
     [Tooltip("Time = number of bullets fired, Value = Time it takes to recoved entirely + Shoot Cooldown")]
     [SerializeField]
     private AnimationCurve m_RecoilCooldownRate;
@@ -89,13 +93,18 @@ public class HitScanFireBehaviour : IFireBehaviour
 
             Vector3 maxPosition = centerRay.direction * m_Range;
 
-            //Vertical recoil
+            //Recoil
             Keyframe[] keys = m_RecoilPattern.keys;
             int keyID = m_CurrentRecoilBullet;
             if (keyID >= keys.Length) keyID = keys.Length - 1;
 
             maxPosition += up * keys[keyID].time;   //Vertical
             maxPosition += right * keys[keyID].value; //Horizontal
+
+            //Recoil spread
+            float spreadRate = m_RecoilSpreadRate.Evaluate(m_CurrentRecoilBullet);
+            maxPosition += up * UnityEngine.Random.Range(-spreadRate, spreadRate);
+            maxPosition += right * UnityEngine.Random.Range(-spreadRate, spreadRate);
 
             //Natural gun spread
             if (m_Spread > 0.0f)
