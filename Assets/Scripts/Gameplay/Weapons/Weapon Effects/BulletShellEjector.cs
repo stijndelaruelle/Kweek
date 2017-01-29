@@ -56,7 +56,7 @@ public class BulletShellEjector : MonoBehaviour
 
     private void EjectShell()
     {
-        BulletShell bulletShell = GameObject.Instantiate(m_BulletShell, transform.position, m_BulletShell.transform.rotation);
+        BulletShell bulletShell = GameObject.Instantiate(m_BulletShell, transform.position, transform.rotation *  m_BulletShell.transform.rotation);
 
         bulletShell.transform.parent = transform;
 

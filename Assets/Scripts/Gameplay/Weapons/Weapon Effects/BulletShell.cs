@@ -7,6 +7,13 @@ public class BulletShell : MonoBehaviour
     [SerializeField]
     private Rigidbody m_RigidBody;
 
+    [SerializeField]
+    private AudioSource m_AudioSource;
+
+    [SerializeField]
+    private AudioClip[] m_AudioClips;
+    private bool m_HasPlayedClip = false;
+
     //At first we are coupled to our parent. This to get consistent visuals when the player is on the move.
     //After a short time (when we dissappear from the screen, we decouple ourselves to behave normally when landing)
 
@@ -37,6 +44,16 @@ public class BulletShell : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Fall sound effect randomizer
+        if (m_AudioClips.Length <= 0 || m_HasPlayedClip == true)
+            return;
+
+        int randClip = 0;
+        if (m_AudioClips.Length > 1)
+            randClip = UnityEngine.Random.Range(0, m_AudioClips.Length - 1);
+
+        m_AudioSource.clip = m_AudioClips[randClip];
+        m_AudioSource.Play();
+
+        m_HasPlayedClip = true;
     }
 }
