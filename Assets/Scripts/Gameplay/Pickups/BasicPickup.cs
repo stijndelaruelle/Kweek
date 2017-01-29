@@ -5,8 +5,6 @@ using UnityEngine;
 //Normally I won't use inherritance because of code reuse.
 //But in this case it really makes it more readable
 [RequireComponent (typeof(Rigidbody))]
-[RequireComponent(typeof(Collider))]
-
 public class BasicPickup : IPickup
 {
     [SerializeField]
@@ -16,20 +14,60 @@ public class BasicPickup : IPickup
         get { return m_PickupName; }
     }
 
+    [SerializeField]
+    private AudioSource m_PickupSoundEffect;
+
     private Rigidbody m_Rigidbody;
-    private Collider[] m_Colliders;
+    private List<Collider> m_Colliders;
+    private List<Renderer> m_Renderers;
 
     private void Awake()
     {
         //GetComponent because dragging collider components in the inspector is very error prone
         //(all the colliders have the same name and there is no way to check if you got them all)
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_Colliders = GetComponents<Collider>();
+
+        m_Colliders = new List<Collider>();
+        m_Colliders.AddRange(GetComponents<Collider>());
+        m_Colliders.AddRange(GetComponentsInChildren<Collider>());
+
+        m_Renderers = new List<Renderer>();
+        m_Renderers.AddRange(GetComponents<Renderer>());
+        m_Renderers.AddRange(GetComponentsInChildren<Renderer>());
     }
 
     public override void Pickup(Player player)
     {
-        //Picking up a basic pickup does nothing!
+
+    }
+
+    protected void DestroyPickup()
+    {
+        StopAllCoroutines();
+        StartCoroutine(DestroyPickupRoutine());
+    }
+
+    private IEnumerator DestroyPickupRoutine()
+    {
+        if (m_PickupSoundEffect != null)
+            m_PickupSoundEffect.Play();
+
+        //Disable the colliders
+        foreach (Collider collider in m_Colliders)
+        {
+            collider.enabled = false;
+        }
+
+        //Disable the renderer
+        foreach (Renderer renderer in m_Renderers)
+        {
+            renderer.enabled = false;
+        }
+
+        //Destroy the pickup once the sound effect was played
+        yield return new WaitForSeconds(m_PickupSoundEffect.clip.length);
+
+        Destroy(this);
     }
 
     public override void Drop(Vector3 force, Collider throwerCollider)

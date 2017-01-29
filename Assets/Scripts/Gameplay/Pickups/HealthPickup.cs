@@ -13,6 +13,8 @@ public class HealthPickup : BasicPickup
 
     public override void Pickup(Player player)
     {
+        base.Pickup(player);
+
         IDamageableObject damageableObject = player.DamageableObject;
 
         if (damageableObject != null)
@@ -29,7 +31,7 @@ public class HealthPickup : BasicPickup
             if (addedHealth > 0)
             {
                 damageableObject.Heal(addedHealth);
-                Destroy(gameObject);
+                DestroyPickup();
             }
         }
     }

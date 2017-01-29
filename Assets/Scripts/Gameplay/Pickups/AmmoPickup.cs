@@ -13,6 +13,8 @@ public class AmmoPickup : BasicPickup
 
     public override void Pickup(Player player)
     {
+        base.Pickup(player);
+
         AmmoArsenal ammoArsenal = player.WeaponArsenal.AmmoArsenal;
 
         if (ammoArsenal != null)
@@ -27,9 +29,8 @@ public class AmmoPickup : BasicPickup
             if (addedAmmo > 0)
             {
                 ammoArsenal.ChangeAmmo(m_AmmoType, m_Amount);
-                Destroy(gameObject);
+                DestroyPickup();
             }
-
         }
     }
 }

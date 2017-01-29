@@ -21,9 +21,11 @@ public class WeaponPickup : BasicPickup
 
     public override void Pickup(Player player)
     {
+        base.Pickup(player);
+
         WeaponArsenal weaponArsenal = player.WeaponArsenal;
         m_FirstPersonWeaponInstance = weaponArsenal.AddWeapon(m_FirstPersonWeapon);
 
-        Destroy(gameObject);
+        DestroyPickup();
     }
 }
