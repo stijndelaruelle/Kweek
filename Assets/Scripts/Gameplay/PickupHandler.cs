@@ -24,11 +24,11 @@ public class PickupHandler : MonoBehaviour
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
         RaycastHit hitInfo;
-        bool succes = Physics.Raycast(ray, out hitInfo, m_Range);
+        bool success = Physics.Raycast(ray, out hitInfo, m_Range);
 
         Debug.DrawRay(ray.origin, ray.direction * m_Range, Color.red);
 
-        if (!succes)
+        if (!success)
         {
             FireChangePickupEvent(null);
             return;

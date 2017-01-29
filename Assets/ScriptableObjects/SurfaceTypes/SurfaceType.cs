@@ -27,6 +27,15 @@ public class SurfaceType : MonoBehaviour
         get { return m_SurfaceType.PiercingRangeFalloffPerUnit; }
     }
 
+    public List<AudioClip> FootstepSounds
+    {
+        get { return m_SurfaceType.FootstepSounds; }
+    }
+
+    public AudioClip LandSound
+    {
+        get { return m_SurfaceType.LandSound; }
+    }
 
     public void PlaceDecal(RaycastHit hitInfo)
     {

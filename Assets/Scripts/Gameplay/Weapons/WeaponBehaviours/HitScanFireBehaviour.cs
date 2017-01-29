@@ -133,9 +133,9 @@ public class HitScanFireBehaviour : IFireBehaviour
     {
         //Fire a single ray (get only the first target)
         RaycastHit hitInfo;
-        bool succes = Physics.Raycast(ray, out hitInfo, range);
+        bool success = Physics.Raycast(ray, out hitInfo, range);
 
-        if (!succes)
+        if (!success)
             return;
 
         GameObject go = hitInfo.collider.gameObject;
@@ -317,7 +317,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         {
             //Fire a single ray
             RaycastHit hitInfo;
-            bool succes = Physics.Raycast(ray, out hitInfo, rangeLeft);
+            bool success = Physics.Raycast(ray, out hitInfo, rangeLeft);
 
             //If we hit something
             if (hitInfo.collider != null)

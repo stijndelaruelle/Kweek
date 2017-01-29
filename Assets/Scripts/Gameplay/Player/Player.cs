@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void JumpDelegate();
 public delegate void DuckDelegate(bool isDucking);
 
 public class Player : MonoBehaviour
@@ -130,6 +131,19 @@ public class Player : MonoBehaviour
         set { m_DuckEvent = value; }
     }
 
+    private JumpDelegate m_JumpEvent;
+    public JumpDelegate JumpEvent
+    {
+        get { return m_JumpEvent; }
+        set { m_JumpEvent = value; }
+    }
+
+    private JumpDelegate m_LandEvent;
+    public JumpDelegate LandEvent
+    {
+        get { return m_LandEvent; }
+        set { m_LandEvent = value; }
+    }
 
     private void Start()
     {
@@ -217,7 +231,10 @@ public class Player : MonoBehaviour
         return m_CharacterController.currentGround.IsGrounded(true, 0.5f);
     }
 
-
+    public bool IsGrounded()
+    {
+        return m_CharacterController.currentGround.IsGrounded(false, 0.01f);
+    }
 
     //---------------------
     // STATES
@@ -523,6 +540,10 @@ public class Player : MonoBehaviour
             {
                 m_Player.Velocity = planarMoveDirection;
                 m_Player.SwitchState(new RunState(m_Player));
+
+                if (m_Player.LandEvent != null)
+                    m_Player.LandEvent();
+
                 return;
             }
 
@@ -550,6 +571,9 @@ public class Player : MonoBehaviour
             m_Player.Velocity = new Vector3(m_Player.Velocity.x, height, m_Player.Velocity.z);
 
             m_NumberOfJumps -= 1;
+
+            if (m_Player.JumpEvent != null)
+                m_Player.JumpEvent();
         }
 
         public override string ToString()

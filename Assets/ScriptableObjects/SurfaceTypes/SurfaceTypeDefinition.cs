@@ -60,5 +60,20 @@ public class SurfaceTypeDefinition : ScriptableObject
         get { return m_MeleeImpactEffectPrefab; }
     }
 
-    //Walk sound
+    [Space(10)]
+    [Header("Footstep sounds")]
+    [Space(5)]
+    [SerializeField]
+    private List<AudioClip> m_FootstepSounds;
+    public List<AudioClip> FootstepSounds
+    {
+        get { return m_FootstepSounds; }
+    }
+
+    [SerializeField]
+    private AudioClip m_LandSound;
+    public AudioClip LandSound
+    {
+        get { return m_LandSound; }
+    }
 }

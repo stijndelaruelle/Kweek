@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class DebugDrawValue : MonoBehaviour
 {
     //Make this way more generic
-    //UnityEvents don't support return values.
+    //UnityEvents doesn't support return values.
     public enum PlayerValue
     {
         CurrentVelocity,
