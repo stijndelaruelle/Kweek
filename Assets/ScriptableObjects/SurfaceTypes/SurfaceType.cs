@@ -30,20 +30,13 @@ public class SurfaceType : MonoBehaviour
 
     public void PlaceDecal(RaycastHit hitInfo)
     {
-        if (m_SurfaceType.DecalPrefab == null || m_SurfaceType.Decals.Count == 0)
+        if (m_SurfaceType.ImpactEffectPrefab == null)
             return;
 
-        //Spawn the decal
+        //Spawn the decal (pool this later
         Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
         Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
-        GameObject go = GameObject.Instantiate(m_SurfaceType.DecalPrefab, decalPosition, decalRotation);
 
-        //Set a random sprite (spawning a GameObject and referencing it as a SpriteRenderer wasn't something unity liked)
-        SpriteRenderer decalRenderer = go.GetComponent<SpriteRenderer>();
-        if (decalRenderer != null)
-        {
-            int randomDecalID = Random.Range(0, m_SurfaceType.Decals.Count - 1);
-            decalRenderer.sprite = m_SurfaceType.Decals[randomDecalID];
-        }
+        Instantiate(m_SurfaceType.ImpactEffectPrefab, decalPosition, decalRotation);
     }
 }

@@ -42,24 +42,23 @@ public class SurfaceTypeDefinition : ScriptableObject
     }
 
     [Space(10)]
-    [Header("Decals")]
+    [Header("Impact effect")]
     [Space(5)]
     [Tooltip("Decal left behind by a bullet that hits this surface type.")]
     [SerializeField]
-    private GameObject m_DecalPrefab; //Change into a decal pool later
-    public GameObject DecalPrefab
+    private GameObject m_ImpactEffectPrefab;
+    public GameObject ImpactEffectPrefab
     {
-        get { return m_DecalPrefab; }
+        get { return m_ImpactEffectPrefab; }
     }
 
+    [Tooltip("Decal left behind when a melee attack hits this surface type.")]
     [SerializeField]
-    private List<Sprite> m_Decals;
-    public List<Sprite> Decals
+    private GameObject m_MeleeImpactEffectPrefab;
+    public GameObject MeleeImpactEffectPrefab
     {
-        get { return m_Decals; }
+        get { return m_MeleeImpactEffectPrefab; }
     }
 
-    //Hit particle
-    //Hit sound
     //Walk sound
 }
