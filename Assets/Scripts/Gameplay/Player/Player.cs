@@ -233,7 +233,7 @@ public class Player : MonoBehaviour
 
     public bool IsGrounded()
     {
-        return m_CharacterController.currentGround.IsGrounded(false, 0.01f);
+        return MaintainingGround();
     }
 
     //---------------------
