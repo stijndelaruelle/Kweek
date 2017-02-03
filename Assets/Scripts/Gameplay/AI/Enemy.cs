@@ -22,19 +22,20 @@ public class Enemy : MonoBehaviour, IMoveableObject
         get { return m_MainRigidbody; }
     }
 
-    [SerializeField]
-    private List<GameObject> m_RagdollParts;
-    public List<GameObject> RagdollParts
+    //Get component instead of assigning, because assigning manually is very error prone
+    private Rigidbody[] m_Rigidbodies;
+
+    private RagdollPart[] m_RagdollParts;
+    public RagdollPart[] RagdollParts
     {
         get { return m_RagdollParts; }
     }
-
-    private Rigidbody[] m_Rigidbodies;
 
     private void Awake()
     {
         //Enable kinematic (otherwise raycasts will occasionally miss!)
         m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
+        m_RagdollParts = GetComponentsInChildren<RagdollPart>();
 
         for (int i = 0; i < m_Rigidbodies.Length; ++i)
         {
@@ -57,13 +58,18 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_DamageableObject.DeathEvent -= OnDeath;
     }
 
+    private void Update()
+    {
+
+    }
+
     //Damage handling
     private void OnDamage()
     {
         if (m_DamageableObject.Health > 0)
         {
             Debug.Log("THE enemy has " + m_DamageableObject.Health + " left");
-            m_Animator.SetTrigger("WoundTrigger");
+            //m_Animator.SetTrigger("WoundTrigger");
             m_AIBehaviour.Pause();
         }
     }
@@ -71,7 +77,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
     private void OnDeath()
     {
         Debug.Log("THE enemy DIED!");
-        m_Animator.SetTrigger("DeathTrigger");
+        //m_Animator.SetTrigger("DeathTrigger");
         m_AIBehaviour.Pause();
 
         EnableCollisions();
@@ -95,6 +101,10 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_Animator.enabled = false;
     }
 
+    public bool IsRagdollEnabled()
+    {
+        return (!m_Animator.enabled);
+    }
     
     //IMoveableObject
     public void AddVelocity(Vector3 velocity)

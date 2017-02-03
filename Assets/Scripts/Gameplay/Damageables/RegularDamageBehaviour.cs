@@ -52,18 +52,23 @@ public class RegularDamageBehaviour : IDamageableObject
         ChangeHealth(m_MaxHealth);
     }
 
-    protected virtual void ChangeHealth(int health)
+    protected virtual int ChangeHealth(int health)
     {
         if (m_HasDied)
-            return;
+            return health;
 
         m_Health += health;
 
+        int reserveHealth = 0;
         if (m_Health > m_MaxHealth)
+        {
+            reserveHealth = m_Health - m_MaxHealth;
             m_Health = m_MaxHealth;
+        }
 
         if (m_Health <= 0)
         {
+            reserveHealth = Mathf.Abs(m_Health);
             m_Health = 0;
 
             //Fire death event
@@ -77,18 +82,22 @@ public class RegularDamageBehaviour : IDamageableObject
         //Fire healthchange event
         if (m_ChangeHealthEvent != null)
             m_ChangeHealthEvent(m_Health);
+
+        return reserveHealth;
     }
 
-    public override void Damage(int health)
+    public override int Damage(int health)
     {
         if (m_HasDied)
-            return;
+            return health;
 
-        ChangeHealth(-health);
+        int reserveHealth =  ChangeHealth(-health);
 
         //Fire damage event
         if (m_DamageEvent != null)
             m_DamageEvent();
+
+        return reserveHealth;
     }
 
     public override void Heal(int health)

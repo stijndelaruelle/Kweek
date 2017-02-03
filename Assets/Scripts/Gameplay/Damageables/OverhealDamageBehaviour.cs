@@ -34,15 +34,21 @@ public class OverhealDamageBehaviour : RegularDamageBehaviour
         }
     }
 
-    protected override void ChangeHealth(int health)
+    protected override int ChangeHealth(int health)
     {
         m_Health += health;
 
+        int reserveHealth = 0;
+
         if (m_Health > m_MaxOverhealHealth)
+        {
+            reserveHealth = m_Health - m_MaxOverhealHealth;
             m_Health = m_MaxOverhealHealth;
+        }
 
         if (m_Health <= 0)
         {
+            reserveHealth = Mathf.Abs(m_Health);
             m_Health = 0;
 
             //Fire death event
@@ -53,5 +59,7 @@ public class OverhealDamageBehaviour : RegularDamageBehaviour
         //Fire healthchange event
         if (m_ChangeHealthEvent != null)
             m_ChangeHealthEvent(m_Health);
+
+        return reserveHealth;
     }
 }

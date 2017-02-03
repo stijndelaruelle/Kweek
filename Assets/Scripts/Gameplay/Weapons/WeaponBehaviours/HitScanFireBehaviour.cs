@@ -212,7 +212,8 @@ public class HitScanFireBehaviour : IFireBehaviour
                 {
                     //Damage calculation
                     int damage = CalculateDamage(ray.origin, hitInfo.point, range, currentDamage);
-                    damageableObject.Damage(damage);
+                    int reserveDamage = damageableObject.Damage(damage);
+                    currentDamage -= (damage - reserveDamage);
 
                     damagedObjects.Add(damageableObject.GetMainDamageableObject());
                 }

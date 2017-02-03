@@ -13,11 +13,18 @@ public class RagdollPart : MonoBehaviour
 
     private void Start()
     {
-        m_OtherParts = m_Enemy.RagdollParts;
+        m_OtherParts = new List<GameObject>();
+        foreach (RagdollPart part in m_Enemy.RagdollParts)
+        {
+            m_OtherParts.Add(part.gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (m_Enemy.IsRagdollEnabled())
+            return;
+
         if (m_OtherParts.Contains(collision.gameObject))
             return;
 

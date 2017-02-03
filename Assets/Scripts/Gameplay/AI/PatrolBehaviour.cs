@@ -42,13 +42,18 @@ public class PatrolBehaviour : MonoBehaviour
     {
         UpdateMovement();
 
-        float velocity01 = (m_NavMeshAgent.velocity.magnitude / m_NavMeshAgent.speed) * m_Speed;
+        float normSpeed = (m_NavMeshAgent.velocity.magnitude / m_NavMeshAgent.speed) * m_Speed;
+        Vector3 normVelocity = m_NavMeshAgent.velocity.normalized * normSpeed;
 
-        m_Animator.SetFloat("Speed", velocity01);
+        m_Animator.SetFloat("VelocityX", 0.0f);
+        m_Animator.SetFloat("VelocityZ", 0.5f);
     }
 
     private void UpdateMovement()
     {
+        if (m_TargetTransform == null)
+            return;
+
         //Check if we reached our destination
         if (m_NavMeshAgent.remainingDistance <= 0.5f)
         {

@@ -39,7 +39,7 @@ public abstract class IDamageableObject : MonoBehaviour
         set;
     }
 
-    public abstract void Damage(int health);
+    public abstract int Damage(int health);
     public abstract void Heal(int health);
     public abstract IDamageableObject GetMainDamageableObject();
 }

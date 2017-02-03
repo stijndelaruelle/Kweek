@@ -67,7 +67,7 @@ public class BasicPickup : IPickup
         //Destroy the pickup once the sound effect was played
         yield return new WaitForSeconds(m_PickupSoundEffect.clip.length);
 
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
     public override void Drop(Vector3 force, Collider throwerCollider)
