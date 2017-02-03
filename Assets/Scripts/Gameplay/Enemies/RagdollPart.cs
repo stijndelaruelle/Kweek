@@ -22,6 +22,9 @@ public class RagdollPart : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Play a hit sound
+        PlaySurfaceImpactSound(collision);
+
         if (m_Enemy.IsRagdollEnabled())
             return;
 
@@ -34,5 +37,14 @@ public class RagdollPart : MonoBehaviour
 
         Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
         m_Enemy.EnableRagdoll();
+    }
+
+    private void PlaySurfaceImpactSound(Collision collision)
+    {
+        SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
+        if (surfaceType != null)
+        {
+            surfaceType.SpawnImpactEffect(collision.contacts[0].point);
+        }
     }
 }

@@ -32,20 +32,23 @@ public class SurfaceType : MonoBehaviour
         get { return m_SurfaceType.FootstepSounds; }
     }
 
-    public AudioClip LandSound
+    public void SpawnBulletImpactEffect(RaycastHit hitInfo)
     {
-        get { return m_SurfaceType.LandSound; }
+        if (m_SurfaceType.BulletImpactEffectPrefab == null)
+            return;
+
+        //Spawn the decal (pool this later)
+        Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
+        Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
+
+        Instantiate(m_SurfaceType.BulletImpactEffectPrefab, decalPosition, decalRotation);
     }
 
-    public void PlaceDecal(RaycastHit hitInfo)
+    public void SpawnImpactEffect(Vector3 position)
     {
         if (m_SurfaceType.ImpactEffectPrefab == null)
             return;
 
-        //Spawn the decal (pool this later
-        Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
-        Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
-
-        Instantiate(m_SurfaceType.ImpactEffectPrefab, decalPosition, decalRotation);
+        Instantiate(m_SurfaceType.ImpactEffectPrefab, position, m_SurfaceType.ImpactEffectPrefab.transform.rotation);
     }
 }

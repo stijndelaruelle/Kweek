@@ -42,14 +42,14 @@ public class SurfaceTypeDefinition : ScriptableObject
     }
 
     [Space(10)]
-    [Header("Impact effect")]
+    [Header("Bullet Impact effects")]
     [Space(5)]
     [Tooltip("Decal left behind by a bullet that hits this surface type.")]
     [SerializeField]
-    private GameObject m_ImpactEffectPrefab;
-    public GameObject ImpactEffectPrefab
+    private GameObject m_BulletImpactEffectPrefab;
+    public GameObject BulletImpactEffectPrefab
     {
-        get { return m_ImpactEffectPrefab; }
+        get { return m_BulletImpactEffectPrefab; }
     }
 
     [Tooltip("Decal left behind when a melee attack hits this surface type.")]
@@ -61,6 +61,16 @@ public class SurfaceTypeDefinition : ScriptableObject
     }
 
     [Space(10)]
+    [Header("Impact effect")]
+    [Space(5)]
+    [SerializeField]
+    private GameObject m_ImpactEffectPrefab;
+    public GameObject ImpactEffectPrefab
+    {
+        get { return m_ImpactEffectPrefab; }
+    }
+
+    [Space(10)]
     [Header("Footstep sounds")]
     [Space(5)]
     [SerializeField]
@@ -68,12 +78,5 @@ public class SurfaceTypeDefinition : ScriptableObject
     public List<AudioClip> FootstepSounds
     {
         get { return m_FootstepSounds; }
-    }
-
-    [SerializeField]
-    private AudioClip m_LandSound;
-    public AudioClip LandSound
-    {
-        get { return m_LandSound; }
     }
 }

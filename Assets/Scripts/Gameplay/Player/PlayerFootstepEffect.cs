@@ -98,19 +98,12 @@ public class PlayerFootstepEffect : MonoBehaviour
         if (m_AudioSource == null || m_DefaultSurfaceType == null)
             return;
 
-        AudioClip landSound = m_DefaultSurfaceType.LandSound;
-
         //Determine the current underground
         SurfaceType surfaceType = GetSurfaceType();
         if (surfaceType != null)
         {
-            if (surfaceType.LandSound != null)
-                landSound = surfaceType.LandSound;
+            surfaceType.SpawnImpactEffect(m_Player.transform.position);
         }
-
-        //Play the land sound
-        m_AudioSource.clip = landSound;
-        m_AudioSource.Play();
     }
 
     private SurfaceType GetSurfaceType()

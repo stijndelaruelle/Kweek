@@ -156,7 +156,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         SurfaceType surfaceType = go.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            surfaceType.PlaceDecal(hitInfo);
+            surfaceType.SpawnBulletImpactEffect(hitInfo);
         }
     }
 
@@ -223,7 +223,7 @@ public class HitScanFireBehaviour : IFireBehaviour
                 if (surfaceType != null)
                 {
                     //Paint decal on the front side
-                    surfaceType.PlaceDecal(hitInfo);
+                    surfaceType.SpawnBulletImpactEffect(hitInfo);
 
                     if (inverseHitInfo.collider != null) //Possible if we don't end up shooting all the way trough an object
                     {
@@ -239,7 +239,7 @@ public class HitScanFireBehaviour : IFireBehaviour
                         }
 
                         //Paint decal on the backside if we reached it
-                        if (currentDamage > 0.0f) { surfaceType.PlaceDecal(inverseHitInfo); }
+                        if (currentDamage > 0.0f) { surfaceType.SpawnBulletImpactEffect(inverseHitInfo); }
                     }
                     else
                     {
@@ -321,7 +321,7 @@ public class HitScanFireBehaviour : IFireBehaviour
             bool success = Physics.Raycast(ray, out hitInfo, rangeLeft);
 
             //If we hit something
-            if (hitInfo.collider != null)
+            if (success && hitInfo.collider != null)
             {
                 hits.Add(hitInfo);
 

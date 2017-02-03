@@ -99,4 +99,19 @@ public class BasicPickup : IPickup
             Physics.IgnoreCollision(collider, throwerCollider, false);
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //Play a hit sound
+        PlaySurfaceImpactSound(collision);
+    }
+
+    private void PlaySurfaceImpactSound(Collision collision)
+    {
+        SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
+        if (surfaceType != null)
+        {
+            surfaceType.SpawnImpactEffect(collision.contacts[0].point);
+        }
+    }
 }
