@@ -89,7 +89,7 @@ ModelImporter:
     9500000: //RootNode
     13700000: pasted__polySurface6
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:

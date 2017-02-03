@@ -153,7 +153,7 @@ ModelImporter:
     13700000: polySurface8
     13700002: polySurface9
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
