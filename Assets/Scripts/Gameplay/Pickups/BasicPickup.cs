@@ -21,6 +21,8 @@ public class BasicPickup : IPickup
     private List<Collider> m_Colliders;
     private List<Renderer> m_Renderers;
 
+    private GameObject m_UsedImpactEffect = null;
+
     private void Awake()
     {
         //GetComponent because dragging collider components in the inspector is very error prone
@@ -108,10 +110,13 @@ public class BasicPickup : IPickup
 
     private void PlaySurfaceImpactSound(Collision collision)
     {
+        if (m_UsedImpactEffect != null)
+            return;
+
         SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            surfaceType.SpawnImpactEffect(collision.contacts[0].point);
+            m_UsedImpactEffect = surfaceType.SpawnImpactEffect(collision.contacts[0].point);
         }
     }
 }

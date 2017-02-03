@@ -44,11 +44,11 @@ public class SurfaceType : MonoBehaviour
         Instantiate(m_SurfaceType.BulletImpactEffectPrefab, decalPosition, decalRotation);
     }
 
-    public void SpawnImpactEffect(Vector3 position)
+    public GameObject SpawnImpactEffect(Vector3 position)
     {
         if (m_SurfaceType.ImpactEffectPrefab == null)
-            return;
+            return null;
 
-        Instantiate(m_SurfaceType.ImpactEffectPrefab, position, m_SurfaceType.ImpactEffectPrefab.transform.rotation);
+        return Instantiate(m_SurfaceType.ImpactEffectPrefab, position, m_SurfaceType.ImpactEffectPrefab.transform.rotation);
     }
 }
