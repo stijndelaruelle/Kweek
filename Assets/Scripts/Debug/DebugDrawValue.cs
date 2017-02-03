@@ -18,7 +18,7 @@ public class DebugDrawValue : MonoBehaviour
     private Text m_Text;
 
     [SerializeField]
-    private Player m_Player;
+    private PlayerController m_Player;
 
     [SerializeField]
     private PlayerValue m_Value;

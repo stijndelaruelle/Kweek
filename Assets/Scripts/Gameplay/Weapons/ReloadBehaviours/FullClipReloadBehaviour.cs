@@ -58,12 +58,13 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
     private void Update()
     {
-        //In here and not in the weapon, as not every weapon needs reloading
-        if (Input.GetKeyDown(KeyCode.R)) { StartReload(); }
-
         HandleReloadTimer();
     }
 
+    public override void PerformAction()
+    {
+        StartReload();
+    }
 
     public override void Setup(AmmoArsenal ammoArsenal)
     {

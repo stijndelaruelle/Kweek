@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraDuckMotion : MonoBehaviour
 {
     [SerializeField]
-    private Player m_Player;
+    private PlayerController m_Player;
 
     [SerializeField]
     private float m_Speed;

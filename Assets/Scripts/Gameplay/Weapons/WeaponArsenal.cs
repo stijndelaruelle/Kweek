@@ -57,6 +57,15 @@ public class WeaponArsenal : MonoBehaviour
 
     private void Update()
     {
+        //Fire weapons
+        if (m_Weapons != null && m_Weapons.Count > 0 && m_CurrentWeaponID >= 0 && m_CurrentWeaponID < m_Weapons.Count)
+        {
+            if (Input.GetMouseButton(0)) { m_Weapons[m_CurrentWeaponID].Fire(); }
+            if (Input.GetMouseButton(1)) { m_Weapons[m_CurrentWeaponID].AltFire(); }
+
+            if (Input.GetKeyDown(KeyCode.R)) { m_Weapons[m_CurrentWeaponID].PerformAction(); }
+        }
+
         //Switch to the last used weapon
         if (Input.GetKeyDown(KeyCode.A)) { SwitchWeapon(m_LastWeaponID); }
 

@@ -7,6 +7,9 @@ public class Enemy : MonoBehaviour, IMoveableObject
     [SerializeField]
     private IDamageableObject m_DamageableObject;
 
+    [SerializeField]
+    private WeaponPickup m_WeaponPickup;
+
     //[SerializeField]
     //private IAIBehaviour m_AIBehaviour; //The time will come...
     [SerializeField]
@@ -78,6 +81,8 @@ public class Enemy : MonoBehaviour, IMoveableObject
     {
         Debug.Log("THE enemy DIED!");
         //m_Animator.SetTrigger("DeathTrigger");
+        m_WeaponPickup.gameObject.transform.parent = null;
+
         m_AIBehaviour.Pause();
 
         EnableCollisions();

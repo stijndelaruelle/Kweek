@@ -44,7 +44,8 @@ public class ProjectileFireBehaviour : IFireBehaviour
             Vector3 targetPosition = centerRay.origin + (centerRay.direction * 1000.0f); //A position far away
             Vector3 direction = (targetPosition - m_ProjectileSpawn.position).normalized;
 
-            projectile.Fire(m_PlayerController.CurrentVelocity, direction);
+            //Look at this at a later stage. Controllers have undergone huge changes.
+            //projectile.Fire(m_PlayerController.CurrentVelocity, direction);
 
             //Animation & Cooldown
             m_Animator.SetTrigger(m_TriggerName);

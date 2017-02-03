@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IMoveableObject
+public class Old_PlayerController : MonoBehaviour, IMoveableObject
 {
     [Header("Base Movement Settings")]
     [SerializeField]

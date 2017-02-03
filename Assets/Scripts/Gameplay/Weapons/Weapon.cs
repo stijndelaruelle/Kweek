@@ -42,8 +42,6 @@ public class Weapon : MonoBehaviour
     [Space(5)]
     [SerializeField]
     private Animator m_Animator;
-    [SerializeField]
-    private AudioSource m_SwitchAudioSource;
 
     //Events
     private WeaponFireDelegate m_WeaponFireEvent;
@@ -66,15 +64,6 @@ public class Weapon : MonoBehaviour
             m_AmmoUseBehaviour.UpdateAmmoEvent -= OnUpdateAmmo;
     }
 
-    private void Update()
-    {
-        if (m_IsSwitching)
-            return;
-
-        if (Input.GetMouseButton(0))     { Fire(); }
-        if (Input.GetMouseButton(1))     { AltFire(); }
-    }
-
     public void Setup(AmmoArsenal ammoArsenal)
     {
         if (m_AmmoUseBehaviour != null)
@@ -87,12 +76,23 @@ public class Weapon : MonoBehaviour
     //Shooting
     public void Fire()
     {
+        if (m_IsSwitching)
+            return;
+
         ExecuteFireBehaviour(m_FireBehaviour);
     }
 
     public void AltFire()
     {
+        if (m_IsSwitching)
+            return;
+
         ExecuteFireBehaviour(m_AltFireBehaviour);
+    }
+
+    public void PerformAction()
+    {
+        m_AmmoUseBehaviour.PerformAction();
     }
 
     private void ExecuteFireBehaviour(IFireBehaviour fireBehaviour)
