@@ -380,8 +380,8 @@ public class FireState : IState
 
         bool switchOut = (!success || hitInfo.collider != m_Target);
 
-        if (switchOut)
-            SwitchOut();
+        //if (switchOut)
+        //    SwitchOut();
     }
 
     private void HandleShooting()
@@ -419,8 +419,8 @@ public class FireState : IState
 
             bool switchOut = (degAngle > 170.0f);
 
-            if (switchOut)
-                SwitchOut();
+            //if (switchOut)
+            //    SwitchOut();
         }
     }
 
@@ -429,7 +429,7 @@ public class FireState : IState
         if (other == m_Target)
         {
             //Change to the chasing state
-            SwitchOut();
+            //SwitchOut();
         }
     }
 
@@ -446,17 +446,20 @@ public class FireState : IState
         m_Soldier.Animator.SetLookAtWeight(normTimer * 2.0f);
         m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
 
-        //Rotate the spine
+        //Rotate the chest
         Vector3 direction = (m_Target.bounds.center - m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).position).normalized;
         Quaternion desiredRotation = Quaternion.LookRotation(direction);
         Vector3 euler = desiredRotation.eulerAngles;
-        desiredRotation = Quaternion.Euler(250.0f - euler.y, 0.0f, 360.0f - euler.x);
 
+        //Add the transform of the soldier, otherwise things get weird.
+        euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x);
+        euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) - 45.0f; //-45 so the gun points towards you
+        euler.y = 0.0f;
 
-        Quaternion currentRotation = Quaternion.Slerp(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, normTimer);
+        desiredRotation = Quaternion.Euler(euler);
 
-        //normally 270, but because of the animation a bit more
-        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, currentRotation);
+        //Quaternion currentRotation = Quaternion.Slerp(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, normTimer);
+        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, desiredRotation);
     }
 
     public override string ToString()
