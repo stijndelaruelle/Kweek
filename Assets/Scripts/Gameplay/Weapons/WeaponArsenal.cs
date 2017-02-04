@@ -42,7 +42,7 @@ public class WeaponArsenal : MonoBehaviour
         foreach(Weapon weapon in m_Weapons)
         {
             weapon.gameObject.SetActive(false);
-            weapon.Setup(m_AmmoArsenal);
+            weapon.Setup(m_OwnerCollider, m_AmmoArsenal);
         }
 
         //Only enable our current weapon
@@ -185,7 +185,7 @@ public class WeaponArsenal : MonoBehaviour
     public Weapon AddWeapon(Weapon weaponPrefab)
     {
         Weapon instancedWeapon = GameObject.Instantiate(weaponPrefab, transform);
-        instancedWeapon.Setup(m_AmmoArsenal);
+        instancedWeapon.Setup(m_OwnerCollider, m_AmmoArsenal);
 
         //Even tough the prefabs are at 0, this is still required to actually make it so
         instancedWeapon.transform.localPosition = Vector3.zero;

@@ -28,6 +28,13 @@ public class SoldierBehaviour : MonoBehaviour
     }
 
     [SerializeField]
+    private float m_BodyRotationSpeed;
+    public float BodyRotationSpeed
+    {
+        get { return m_BodyRotationSpeed; }
+    }
+
+    [SerializeField]
     private Transform m_TargetTransform;
 
     [SerializeField]
@@ -99,13 +106,14 @@ public class SoldierBehaviour : MonoBehaviour
 
         m_States.Add(new PatrolState(this, transform.position, target));
         m_States.Add(new FireState(this));
+        m_States.Add(new ChaseState(this, Vector3.zero));
     }
 
     private void Start()
     {
         SwitchState(SoldierState.Patrolling);
 
-        m_Weapon.Setup(null);
+        m_Weapon.Setup(null, null);
         m_Weapon.UpdateAmmoEvent += OnUpdateWeaponAmmo;
         m_Forwarder.AnimatorIKEvent += OnAnimatorIK;
     }
@@ -335,6 +343,7 @@ public class FireState : IState
         m_Soldier.Animator.SetFloat("VelocityX", 0.0f);
         m_Soldier.Animator.SetFloat("VelocityZ", 0.0f);
 
+        m_Target = null;
         m_FireDelayTimer = m_Soldier.FireDelay;
         m_IsInFireStance = false;
         m_IsSwitchingOut = false;
@@ -343,8 +352,6 @@ public class FireState : IState
 
     public void Exit()
     {
-        m_Target = null;
-
         if (m_Soldier == null)
             return;
 
@@ -368,6 +375,9 @@ public class FireState : IState
     //Shooting
     private void HandleShooting()
     {
+        if (m_IsSwitchingOut || m_FireDelayTimer > 0.0f)
+            return;
+
         if (m_BurstFireRoutine == null)
         {
             m_BurstFireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine());
@@ -392,9 +402,6 @@ public class FireState : IState
 
     private bool ShootOnce()
     {
-        if (m_IsSwitchingOut || m_FireDelayTimer > 0.0f)
-            return false;
-
         Vector3 weaponPos = m_Soldier.WeaponPickup.transform.position;
         Ray fireRay = new Ray(weaponPos, m_Soldier.WeaponPickup.transform.forward);
 
@@ -429,7 +436,8 @@ public class FireState : IState
         m_FireDelayTimer += Time.deltaTime;
         if (m_FireDelayTimer >= m_Soldier.FireDelay)
         {
-            m_Soldier.SwitchState(SoldierBehaviour.SoldierState.Patrolling);
+            ChaseState changeState = (ChaseState)m_Soldier.SwitchState(SoldierBehaviour.SoldierState.Chasing);
+            changeState.SetTarget(m_Target.transform.position.Copy());
         }
     }
 
@@ -440,18 +448,20 @@ public class FireState : IState
 
         m_FireDelayTimer = 0.0f;
         m_IsSwitchingOut = true;
-        m_Target = null;
         m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 
 
     private void HandleLineOfSight()
     {
-        if (m_Target == null)
+        if (m_IsSwitchingOut)
             return;
 
         //Fire a ray in the direction of the target, if we don't hit him first.. we lost line of sight!
-        Ray ray = new Ray(m_Soldier.Weapon.transform.position, (m_Target.bounds.center - m_Soldier.Weapon.transform.position));
+        Vector3 middleTop = m_Target.bounds.center;
+        middleTop.y += m_Target.bounds.extents.y * 0.5f;
+
+        Ray ray = new Ray(m_Soldier.Weapon.transform.position, (middleTop - m_Soldier.Weapon.transform.position));
 
         RaycastHit hitInfo;
         bool success = Physics.Raycast(ray, out hitInfo);
@@ -489,11 +499,6 @@ public class FireState : IState
         }
     }
 
-    public void SetTarget(Collider target)
-    {
-        m_Target = target;
-    }
-
     private void OnAnimatorIK(int layedIndex)
     {
         float normTimer = (m_Soldier.FireDelay - m_FireDelayTimer) / m_Soldier.FireDelay;
@@ -501,7 +506,7 @@ public class FireState : IState
 
         Quaternion desiredRotation;
 
-        if (m_Target != null)
+        if (m_IsSwitchingOut == false)
         {
             //Rotate the head
             m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
@@ -526,18 +531,110 @@ public class FireState : IState
         //Make the characters follow you slowly
         if (m_LastChestLocalRotation == Quaternion.identity)
         {
-            m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, 3.0f);
+            m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, m_Soldier.BodyRotationSpeed);
         }
         else
         {
-            m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation, desiredRotation, 3.0f);
+            m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation, desiredRotation, m_Soldier.BodyRotationSpeed);
         }
 
         m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
     }
 
+    public void SetTarget(Collider target)
+    {
+        m_Target = target;
+    }
+
     public override string ToString()
     {
         return "Firing";
+    }
+}
+
+public class ChaseState : IState
+{
+    private SoldierBehaviour m_Soldier;
+    private Vector3 m_TargetPosition;
+
+    public ChaseState(SoldierBehaviour soldier, Vector3 targetPosition)
+    {
+        m_Soldier = soldier;
+        m_TargetPosition = targetPosition;
+    }
+
+    public void Enter()
+    {
+        Debug.Log("Entered Chase state!");
+        m_Soldier.NavMeshAgent.destination = m_TargetPosition;
+
+        m_Soldier.TriggerStayEvent += OnTriggerStay;
+        m_Soldier.NavMeshAgent.Resume();
+        m_Soldier.Animator.SetTrigger("MovementTrigger");
+    }
+
+    public void Exit()
+    {
+        if (m_Soldier == null)
+            return;
+
+        m_Soldier.TriggerStayEvent -= OnTriggerStay;
+    }
+
+    public void Update()
+    {
+        HandleMovement();
+    }
+
+    private void HandleMovement()
+    {
+        NavMeshAgent agent = m_Soldier.NavMeshAgent;
+        Animator animator = m_Soldier.Animator;
+
+        //Check if we reached our destination
+        if (agent.remainingDistance <= 0.5f)
+        {
+            //If we still didn't switch to the fire state at this point, we lost the player. Go back to patrolling
+            m_Soldier.SwitchState(SoldierBehaviour.SoldierState.Patrolling);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        //Check if it's the player
+        if (other.tag == "Player")
+        {
+            //If so check if he's within the specified angle
+            Vector3 diffPos = other.transform.position - m_Soldier.transform.position;
+            float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
+            float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+            if (degAngle <= m_Soldier.ViewAngle)
+            {
+                //Check line of sight
+                Ray ray = new Ray(m_Soldier.Weapon.transform.position, (other.bounds.center - m_Soldier.Weapon.transform.position));
+
+                RaycastHit hitInfo;
+                bool success = Physics.Raycast(ray, out hitInfo);
+
+                if (success && hitInfo.collider == other)
+                {
+                    //Change to the firing state
+                    FireState fireState = (FireState)m_Soldier.SwitchState(SoldierBehaviour.SoldierState.Firing);
+                    fireState.SetTarget(other);
+                }
+            }
+        }
+    }
+
+    public void SetTarget(Vector3 targetPosition)
+    {
+        m_TargetPosition = targetPosition;
+        m_Soldier.NavMeshAgent.destination = m_TargetPosition;
+    }
+
+    public override string ToString()
+    {
+        return "Chasing";
     }
 }

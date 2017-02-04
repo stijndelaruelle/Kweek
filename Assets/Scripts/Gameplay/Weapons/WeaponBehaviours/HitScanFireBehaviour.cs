@@ -67,7 +67,12 @@ public class HitScanFireBehaviour : IFireBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
+    private Collider m_IgnoredCollider;
 
+    public override void Setup(Collider ownerCollider)
+    {
+        m_IgnoredCollider = ownerCollider;
+    }
 
     private void Update()
     {
@@ -136,6 +141,9 @@ public class HitScanFireBehaviour : IFireBehaviour
         if (!success)
             return;
 
+        if (hitInfo.collider == m_IgnoredCollider)
+            return;
+
         GameObject go = hitInfo.collider.gameObject;
 
         //Did we hit a damageableobject?
@@ -173,11 +181,20 @@ public class HitScanFireBehaviour : IFireBehaviour
         Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);
         Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
 
-        //This removes the shooter
-        if (inverseList.Count > regularList.Count)
+        //Ignore certain colliders (owner)
+        if (m_IgnoredCollider != null)
         {
-            int count = inverseList.Count - regularList.Count;
-            inverseList.RemoveRange(inverseList.Count - count, count);
+            for (int i = regularList.Count - 1; i >= 0; --i)
+            {
+                if (regularList[i].collider == m_IgnoredCollider)
+                    regularList.RemoveAt(i);
+            }
+
+            for (int i = inverseList.Count - 1; i >= 0; --i)
+            {
+                if (inverseList[i].collider == m_IgnoredCollider)
+                    inverseList.RemoveAt(i);
+            }
         }
 
         //Both parameters get altered when piercing through surfaces

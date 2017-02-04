@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//TODO: Refactor this class (split it up)
 public class Weapon : MonoBehaviour
 {
     public delegate void SwitchWeaponCallback();
@@ -64,8 +63,11 @@ public class Weapon : MonoBehaviour
             m_AmmoUseBehaviour.UpdateAmmoEvent -= OnUpdateAmmo;
     }
 
-    public void Setup(AmmoArsenal ammoArsenal)
+    public void Setup(Collider ownerCollider, AmmoArsenal ammoArsenal)
     {
+        if (m_FireBehaviour != null)    { m_FireBehaviour.Setup(ownerCollider); }
+        if (m_AltFireBehaviour != null) { m_AltFireBehaviour.Setup(ownerCollider); }
+
         if (m_AmmoUseBehaviour != null)
         {
             m_AmmoUseBehaviour.UpdateAmmoEvent += OnUpdateAmmo;

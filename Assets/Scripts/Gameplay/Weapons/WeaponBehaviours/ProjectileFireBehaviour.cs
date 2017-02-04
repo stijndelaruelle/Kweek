@@ -29,6 +29,11 @@ public class ProjectileFireBehaviour : IFireBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
+    public override void Setup(Collider ownerCollider)
+    {
+        //Use later when we rewrite this part.
+    }
+
     private void Update()
     {
         HandleShootingCooldown();
