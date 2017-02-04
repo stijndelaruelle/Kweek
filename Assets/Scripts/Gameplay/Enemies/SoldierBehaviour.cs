@@ -14,10 +14,10 @@ public class SoldierBehaviour : MonoBehaviour
     }
 
     [SerializeField]
-    private float m_DrawSpeed;
-    public float DrawSpeed
+    private float m_FireDelay;
+    public float FireDelay
     {
-        get { return m_DrawSpeed; }
+        get { return m_FireDelay; }
     }
 
     [SerializeField]
@@ -81,6 +81,8 @@ public class SoldierBehaviour : MonoBehaviour
     private IState m_CurrentState;
     private List<IState> m_States;
 
+    private float m_LastSpeed; //Sometines the velocity can spike, if so reset to this value
+
     //Events
     public event TriggerDelegate TriggerEnterEvent;
     public event TriggerDelegate TriggerStayEvent;
@@ -121,6 +123,23 @@ public class SoldierBehaviour : MonoBehaviour
     {
         if (m_CurrentState != null)
             m_CurrentState.Update();
+
+        HandleMovementAnimation();
+    }
+
+    private void HandleMovementAnimation()
+    {
+        //Walking animation
+        float currentSpeed = m_NavMeshAgent.velocity.magnitude;
+
+        //Every once in a while the velocity will spike
+        if (currentSpeed > m_NavMeshAgent.speed) { currentSpeed = m_LastSpeed; }
+        m_LastSpeed = currentSpeed;
+
+        float normSpeed = (currentSpeed / m_NavMeshAgent.speed) * m_Speed;
+
+        m_Animator.SetFloat("VelocityX", 0.0f);
+        m_Animator.SetFloat("VelocityZ", normSpeed * 0.5f);
     }
 
     public void Pause()
@@ -208,6 +227,7 @@ public class PatrolState : IState
         m_Soldier.TriggerStayEvent += OnTriggerStay;
         m_Soldier.AnimatorIKEvent += OnAnimatorIK;
         m_Soldier.NavMeshAgent.Resume();
+        //m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 
     public void Exit()
@@ -241,13 +261,6 @@ public class PatrolState : IState
 
             agent.destination = m_TargetPosition;
         }
-
-        //Animation
-        float normSpeed = (agent.velocity.magnitude / agent.speed) * m_Soldier.Speed;
-        Vector3 normVelocity = agent.velocity.normalized * normSpeed;
-
-        animator.SetFloat("VelocityX", 0.0f);
-        animator.SetFloat("VelocityZ", 0.5f);
     }
 
     private void OnTriggerStay(Collider other)
@@ -280,8 +293,8 @@ public class PatrolState : IState
 
     private void OnAnimatorIK(int layedIndex)
     {
-        m_Soldier.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-        m_Soldier.Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_Soldier.WeaponGrip.position);
+        //m_Soldier.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+        //m_Soldier.Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_Soldier.WeaponGrip.position);
     }
 
     public override string ToString()
@@ -294,9 +307,13 @@ public class FireState : IState
 {
     private SoldierBehaviour m_Soldier;
     private Collider m_Target;
-    private float m_DrawWeaponTimer = 0.0f;
+    private float m_FireDelayTimer = 0.0f;
+    private bool m_IsInFireStance = false;
+
+    private Coroutine m_BurstFireRoutine;
 
     private bool m_IsSwitchingOut = false;
+    private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
 
     public FireState(SoldierBehaviour soldier)
     {
@@ -318,8 +335,10 @@ public class FireState : IState
         m_Soldier.Animator.SetFloat("VelocityX", 0.0f);
         m_Soldier.Animator.SetFloat("VelocityZ", 0.0f);
 
-        m_DrawWeaponTimer = m_Soldier.DrawSpeed;
+        m_FireDelayTimer = m_Soldier.FireDelay;
+        m_IsInFireStance = false;
         m_IsSwitchingOut = false;
+        m_LastChestLocalRotation = Quaternion.identity;
     }
 
     public void Exit()
@@ -346,13 +365,60 @@ public class FireState : IState
         HandleShooting();
     }
 
+    //Shooting
+    private void HandleShooting()
+    {
+        if (m_BurstFireRoutine == null)
+        {
+            m_BurstFireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine());
+        }
+    }
+
+    private IEnumerator FireBurstRoutine()
+    {
+        int bulletsFired = 0;
+
+        while (bulletsFired < 3)
+        {
+            bool success = ShootOnce();
+            if (success) { bulletsFired++; }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForSeconds(1.0f);
+        m_BurstFireRoutine = null;
+    }
+
+    private bool ShootOnce()
+    {
+        if (m_IsSwitchingOut || m_FireDelayTimer > 0.0f)
+            return false;
+
+        Vector3 weaponPos = m_Soldier.WeaponPickup.transform.position;
+        Ray fireRay = new Ray(weaponPos, m_Soldier.WeaponPickup.transform.forward);
+
+        return m_Soldier.Weapon.Fire(fireRay);
+    }
+
+
+    //Switching
     private void HandleSwitchIn()
     {
         if (m_IsSwitchingOut)
             return;
-            
-        if (m_DrawWeaponTimer > 0.0f)
-            m_DrawWeaponTimer -= Time.deltaTime;
+
+        if (m_FireDelayTimer > 0.0f)
+        {
+            m_FireDelayTimer -= Time.deltaTime;
+
+            //If we are almost ready to fire, call the animation already once. Otherwise we fire our first bullet into the ground
+            if (m_IsInFireStance == false && m_FireDelayTimer <= 0.2f) //hardcoded value from the animator
+            {
+                m_Soldier.Animator.SetTrigger("ReadyFireTrigger");
+                m_IsInFireStance = true;
+            }
+        }
     }
 
     private void HandleSwitchOut()
@@ -360,12 +426,24 @@ public class FireState : IState
         if (!m_IsSwitchingOut)
             return;
 
-        m_DrawWeaponTimer += Time.deltaTime;
-        if (m_DrawWeaponTimer >= m_Soldier.DrawSpeed)
+        m_FireDelayTimer += Time.deltaTime;
+        if (m_FireDelayTimer >= m_Soldier.FireDelay)
         {
             m_Soldier.SwitchState(SoldierBehaviour.SoldierState.Patrolling);
         }
     }
+
+    private void SwitchOut()
+    {
+        if (m_IsSwitchingOut)
+            return;
+
+        m_FireDelayTimer = 0.0f;
+        m_IsSwitchingOut = true;
+        m_Target = null;
+        m_Soldier.Animator.SetTrigger("MovementTrigger");
+    }
+
 
     private void HandleLineOfSight()
     {
@@ -378,34 +456,12 @@ public class FireState : IState
         RaycastHit hitInfo;
         bool success = Physics.Raycast(ray, out hitInfo);
 
-        bool switchOut = (!success || hitInfo.collider != m_Target);
-
-        //if (switchOut)
-        //    SwitchOut();
+        if (!(success && hitInfo.collider == m_Target))
+        {
+            SwitchOut();
+        }
     }
 
-    private void HandleShooting()
-    {
-        if (m_IsSwitchingOut || m_DrawWeaponTimer > 0.0f)
-            return;
-
-        Vector3 weaponPos = m_Soldier.WeaponPickup.transform.position;
-        //Vector3 diff = m_Target.bounds.center - weaponPos;
-        Ray fireRay = new Ray(weaponPos, m_Soldier.WeaponPickup.transform.forward);
-
-        m_Soldier.Weapon.Fire(fireRay);
-    }
-
-    private void SwitchOut()
-    {
-        if (m_IsSwitchingOut)
-            return;
-
-        m_Soldier.Animator.SetTrigger("MovementTrigger");
-        m_DrawWeaponTimer = 0.0f;
-
-        m_IsSwitchingOut = true;
-    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -417,10 +473,10 @@ public class FireState : IState
             float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
             float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
 
-            bool switchOut = (degAngle > 170.0f);
+            bool switchOut = (degAngle > (m_Soldier.ViewAngle + 5.0f)); //a little offset to avoid standing right on the edge
 
-            //if (switchOut)
-            //    SwitchOut();
+            if (switchOut)
+                SwitchOut();
         }
     }
 
@@ -429,7 +485,7 @@ public class FireState : IState
         if (other == m_Target)
         {
             //Change to the chasing state
-            //SwitchOut();
+            SwitchOut();
         }
     }
 
@@ -440,26 +496,44 @@ public class FireState : IState
 
     private void OnAnimatorIK(int layedIndex)
     {
-        float normTimer = (m_Soldier.DrawSpeed - m_DrawWeaponTimer) / m_Soldier.DrawSpeed;
+        float normTimer = (m_Soldier.FireDelay - m_FireDelayTimer) / m_Soldier.FireDelay;
+        m_Soldier.Animator.SetLookAtWeight(normTimer);
 
-        //Physically look at the target
-        m_Soldier.Animator.SetLookAtWeight(normTimer * 2.0f);
-        m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
+        Quaternion desiredRotation;
 
-        //Rotate the chest
-        Vector3 direction = (m_Target.bounds.center - m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).position).normalized;
-        Quaternion desiredRotation = Quaternion.LookRotation(direction);
-        Vector3 euler = desiredRotation.eulerAngles;
+        if (m_Target != null)
+        {
+            //Rotate the head
+            m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
 
-        //Add the transform of the soldier, otherwise things get weird.
-        euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x);
-        euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) - 45.0f; //-45 so the gun points towards you
-        euler.y = 0.0f;
+            //Rotate the chest
+            Vector3 direction = (m_Target.bounds.center - m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).position).normalized;
+            desiredRotation = Quaternion.LookRotation(direction);
+            Vector3 euler = desiredRotation.eulerAngles;
 
-        desiredRotation = Quaternion.Euler(euler);
+            //Add the transform of the soldier, otherwise things get weird.
+            euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x);
+            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) - 45.0f; //-45 so the gun points towards you
+            euler.y = 0.0f;
 
-        //Quaternion currentRotation = Quaternion.Slerp(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, normTimer);
-        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, desiredRotation);
+            desiredRotation = Quaternion.Euler(euler);
+        }
+        else
+        {
+            desiredRotation = m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation;
+        }
+
+        //Make the characters follow you slowly
+        if (m_LastChestLocalRotation == Quaternion.identity)
+        {
+            m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, 3.0f);
+        }
+        else
+        {
+            m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation, desiredRotation, 3.0f);
+        }
+
+        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
     }
 
     public override string ToString()

@@ -74,20 +74,20 @@ public class Weapon : MonoBehaviour
     }
 
     //Shooting
-    public void Fire(Ray originalRay)
+    public bool Fire(Ray originalRay)
     {
         if (m_IsSwitching)
-            return;
+            return false;
 
-        ExecuteFireBehaviour(m_FireBehaviour, originalRay);
+        return ExecuteFireBehaviour(m_FireBehaviour, originalRay);
     }
 
-    public void AltFire(Ray originalRay)
+    public bool AltFire(Ray originalRay)
     {
         if (m_IsSwitching)
-            return;
+            return false;
 
-        ExecuteFireBehaviour(m_AltFireBehaviour, originalRay);
+        return ExecuteFireBehaviour(m_AltFireBehaviour, originalRay);
     }
 
     public void PerformAction()
@@ -95,20 +95,20 @@ public class Weapon : MonoBehaviour
         m_AmmoUseBehaviour.PerformAction();
     }
 
-    private void ExecuteFireBehaviour(IFireBehaviour fireBehaviour, Ray originalRay)
+    private bool ExecuteFireBehaviour(IFireBehaviour fireBehaviour, Ray originalRay)
     {
         //Check if we can fire
         if (m_FireBehaviour != null && m_FireBehaviour.CanFire() == false)
-            return;
+            return false;
 
         if (m_AltFireBehaviour != null && m_AltFireBehaviour.CanFire() == false)
-            return;
+            return false;
 
         if (m_AmmoUseBehaviour != null && m_AmmoUseBehaviour.CanUse() == false)
-            return;
+            return false;
 
         if (m_IsSwitching)
-            return;
+            return false;
 
         //Fire the weapon
         if (fireBehaviour != null)
@@ -119,6 +119,7 @@ public class Weapon : MonoBehaviour
             m_AmmoUseBehaviour.UseAmmo(fireBehaviour.GetAmmoUseage());
 
         FireWeaponFireEvent();
+        return true;
     }
 
     //Switching

@@ -43,6 +43,24 @@ public class BasicPickup : IPickup
 
     }
 
+    public void OnEnable()
+    {
+        //Disable the colliders
+        foreach (Collider collider in m_Colliders)
+        {
+            collider.enabled = true;
+        }
+    }
+
+    public void OnDisable()
+    {
+        //Disable the colliders
+        foreach (Collider collider in m_Colliders)
+        {
+            collider.enabled = false;
+        }
+    }
+
     protected void DestroyPickup()
     {
         StopAllCoroutines();

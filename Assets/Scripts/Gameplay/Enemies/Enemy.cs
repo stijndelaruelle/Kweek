@@ -53,6 +53,8 @@ public class Enemy : MonoBehaviour, IMoveableObject
     {
         m_DamageableObject.DamageEvent += OnDamage;
         m_DamageableObject.DeathEvent += OnDeath;
+
+        m_WeaponPickup.enabled = false;
     }
 
     private void OnDestroy()
@@ -80,6 +82,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         Debug.Log("THE enemy DIED!");
         //m_Animator.SetTrigger("DeathTrigger");
         m_WeaponPickup.gameObject.transform.parent = null;
+        m_WeaponPickup.enabled = true;
 
         m_AIBehaviour.Pause();
         m_AIBehaviour.enabled = false;
