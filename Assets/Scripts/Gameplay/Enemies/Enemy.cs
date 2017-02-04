@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
     //[SerializeField]
     //private IAIBehaviour m_AIBehaviour; //The time will come...
     [SerializeField]
-    private PatrolBehaviour m_AIBehaviour;
+    private SoldierBehaviour m_AIBehaviour;
 
     [SerializeField]
     private Animator m_Animator;
@@ -44,6 +44,9 @@ public class Enemy : MonoBehaviour, IMoveableObject
         {
             m_Rigidbodies[i].isKinematic = true;
         }
+
+        //Enable our animator
+        m_Animator.enabled = true;
     }
 
     private void Start()
@@ -61,11 +64,6 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_DamageableObject.DeathEvent -= OnDeath;
     }
 
-    private void Update()
-    {
-
-    }
-
     //Damage handling
     private void OnDamage()
     {
@@ -73,7 +71,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         {
             Debug.Log("THE enemy has " + m_DamageableObject.Health + " left");
             //m_Animator.SetTrigger("WoundTrigger");
-            m_AIBehaviour.Pause();
+            //m_AIBehaviour.Pause();
         }
     }
 
@@ -84,8 +82,10 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_WeaponPickup.gameObject.transform.parent = null;
 
         m_AIBehaviour.Pause();
+        m_AIBehaviour.enabled = false;
 
         EnableCollisions();
+        EnableRagdoll();
     }
 
     public void OnEndHitStun()

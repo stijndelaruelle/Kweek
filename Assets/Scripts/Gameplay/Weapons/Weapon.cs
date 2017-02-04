@@ -74,20 +74,20 @@ public class Weapon : MonoBehaviour
     }
 
     //Shooting
-    public void Fire()
+    public void Fire(Ray originalRay)
     {
         if (m_IsSwitching)
             return;
 
-        ExecuteFireBehaviour(m_FireBehaviour);
+        ExecuteFireBehaviour(m_FireBehaviour, originalRay);
     }
 
-    public void AltFire()
+    public void AltFire(Ray originalRay)
     {
         if (m_IsSwitching)
             return;
 
-        ExecuteFireBehaviour(m_AltFireBehaviour);
+        ExecuteFireBehaviour(m_AltFireBehaviour, originalRay);
     }
 
     public void PerformAction()
@@ -95,7 +95,7 @@ public class Weapon : MonoBehaviour
         m_AmmoUseBehaviour.PerformAction();
     }
 
-    private void ExecuteFireBehaviour(IFireBehaviour fireBehaviour)
+    private void ExecuteFireBehaviour(IFireBehaviour fireBehaviour, Ray originalRay)
     {
         //Check if we can fire
         if (m_FireBehaviour != null && m_FireBehaviour.CanFire() == false)
@@ -112,7 +112,7 @@ public class Weapon : MonoBehaviour
 
         //Fire the weapon
         if (fireBehaviour != null)
-            fireBehaviour.Fire();
+            fireBehaviour.Fire(originalRay);
 
         //Shooting consequences
         if (m_AmmoUseBehaviour != null)

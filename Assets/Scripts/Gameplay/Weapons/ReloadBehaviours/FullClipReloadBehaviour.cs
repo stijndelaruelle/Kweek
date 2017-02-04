@@ -108,7 +108,7 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
             return;
 
         //If we don't have any more ammo
-        if (m_AmmoArsenal.GetAmmo(m_AmmoType) <= 0)
+        if (m_AmmoArsenal != null && m_AmmoArsenal.GetAmmo(m_AmmoType) <= 0)
             return;
 
         //We are already reloading or switching
@@ -116,7 +116,11 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
             return;
 
         //Actually start reloading
-        m_Animator.SetTrigger("ReloadTrigger");
+        if (m_Animator != null)
+        {
+            m_Animator.SetTrigger("ReloadTrigger");
+        }
+
         m_ReloadTimer = m_ReloadTime;
     }
 
@@ -125,13 +129,20 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         int addedAmmo = m_MaxAmmoInClip - m_AmmoInClip;
 
         //If we don't have enough ammo, use everything we have
-        int reserveAmmo = m_AmmoArsenal.GetAmmo(m_AmmoType);
-        if (reserveAmmo < addedAmmo)
-            addedAmmo = reserveAmmo;
+        if (m_AmmoArsenal != null)
+        {
+            int reserveAmmo = m_AmmoArsenal.GetAmmo(m_AmmoType);
+            if (reserveAmmo < addedAmmo)
+                addedAmmo = reserveAmmo;
+        }
 
         //Add ammo in clip before removing because of the autoreload call from OnUpdateReserveAmmo.
         m_AmmoInClip += addedAmmo;
-        m_AmmoArsenal.ChangeAmmo(m_AmmoType, - addedAmmo);
+
+        if (m_AmmoArsenal != null)
+        {
+            m_AmmoArsenal.ChangeAmmo(m_AmmoType, -addedAmmo);
+        }
 
         FireUpdateAmmoEvent();
 
@@ -179,8 +190,13 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
     protected void FireUpdateAmmoEvent()
     {
-        if (m_UpdateAmmoEvent != null && m_AmmoArsenal != null)
-            m_UpdateAmmoEvent(m_AmmoInClip, m_AmmoArsenal.GetAmmo(m_AmmoType));
+        if (m_UpdateAmmoEvent != null)
+        {
+            int reserveAmmo = 0;
+            if (m_AmmoArsenal != null) { reserveAmmo = m_AmmoArsenal.GetAmmo(m_AmmoType); }
+
+            m_UpdateAmmoEvent(m_AmmoInClip, reserveAmmo);
+        } 
     }
 
     private void OnUpdateReserveAmmo(AmmoTypeDefinition ammoType, int amount)

@@ -75,23 +75,21 @@ public class HitScanFireBehaviour : IFireBehaviour
         HandleRecoilCooldown();
     }
 
-    public override void Fire()
+    public override void Fire(Ray originalRay)
     {
         if (!CanFire())
             return;
 
-        Ray centerRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        Vector3 forward = centerRay.direction;
+        Vector3 forward = originalRay.direction;
         Vector3 right = new Vector3(-forward.z, 0.0f, forward.x);
         Vector3 up = Vector3.Cross(right, forward);
 
         for (int i = 0; i < m_NumberOfProjectiles; ++i)
         {
-            Ray ray = centerRay;
+            Ray ray = originalRay;
             float range = m_Range;
 
-            Vector3 maxPosition = centerRay.direction * m_Range;
+            Vector3 maxPosition = originalRay.direction * m_Range;
 
             //Recoil
             Keyframe[] keys = m_RecoilPattern.keys;
@@ -175,10 +173,11 @@ public class HitScanFireBehaviour : IFireBehaviour
         Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);
         Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
 
-        //This removes the player.
-        if (inverseList.Count > 0 && inverseList[inverseList.Count - 1].collider.tag == "Player")
+        //This removes the shooter
+        if (inverseList.Count > regularList.Count)
         {
-            inverseList.RemoveAt(inverseList.Count - 1);
+            int count = inverseList.Count - regularList.Count;
+            inverseList.RemoveRange(inverseList.Count - count, count);
         }
 
         //Both parameters get altered when piercing through surfaces

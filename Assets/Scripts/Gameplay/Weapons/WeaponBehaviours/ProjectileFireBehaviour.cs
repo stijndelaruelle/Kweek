@@ -34,14 +34,13 @@ public class ProjectileFireBehaviour : IFireBehaviour
         HandleShootingCooldown();
     }
 
-    public override void Fire()
+    public override void Fire(Ray originalRay)
     {
         PhysicalProjectile projectile = GameObject.Instantiate<PhysicalProjectile>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
 
         if (projectile != null)
         {
-            Ray centerRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            Vector3 targetPosition = centerRay.origin + (centerRay.direction * 1000.0f); //A position far away
+            Vector3 targetPosition = originalRay.origin + (originalRay.direction * 1000.0f); //A position far away
             Vector3 direction = (targetPosition - m_ProjectileSpawn.position).normalized;
 
             //Look at this at a later stage. Controllers have undergone huge changes.

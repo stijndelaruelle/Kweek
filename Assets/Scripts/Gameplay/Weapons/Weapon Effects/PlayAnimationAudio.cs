@@ -11,6 +11,12 @@ public class PlayAnimationAudio : MonoBehaviour
     [SerializeField]
     private int m_MaxChannels;
 
+    [SerializeField]
+    private bool m_3D = false;
+
+    [SerializeField]
+    private float m_MinDistance = 1.0f;
+
     private List<AudioSource> m_AudioSources;
     private int m_CurrentChannel;
 
@@ -24,6 +30,11 @@ public class PlayAnimationAudio : MonoBehaviour
             newAudioSource.outputAudioMixerGroup = m_Mixer;
             newAudioSource.playOnAwake = false;
             newAudioSource.loop = false;
+            if (m_3D)
+            {
+                newAudioSource.spatialBlend = 1.0f;
+                newAudioSource.minDistance = m_MinDistance;
+            }
 
             m_AudioSources.Add(newAudioSource);
         }

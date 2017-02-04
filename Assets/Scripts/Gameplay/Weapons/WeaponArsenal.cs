@@ -60,8 +60,10 @@ public class WeaponArsenal : MonoBehaviour
         //Fire weapons
         if (m_Weapons != null && m_Weapons.Count > 0 && m_CurrentWeaponID >= 0 && m_CurrentWeaponID < m_Weapons.Count)
         {
-            if (Input.GetMouseButton(0)) { m_Weapons[m_CurrentWeaponID].Fire(); }
-            if (Input.GetMouseButton(1)) { m_Weapons[m_CurrentWeaponID].AltFire(); }
+            Ray originalRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            if (Input.GetMouseButton(0)) { m_Weapons[m_CurrentWeaponID].Fire(originalRay); }
+            if (Input.GetMouseButton(1)) { m_Weapons[m_CurrentWeaponID].AltFire(originalRay); }
 
             if (Input.GetKeyDown(KeyCode.R)) { m_Weapons[m_CurrentWeaponID].PerformAction(); }
         }

@@ -7,6 +7,14 @@ public delegate void DuckDelegate(bool isDucking);
 
 public class PlayerController : MonoBehaviour
 {
+    public enum PlayerState
+    {
+        Running,
+        Walking,
+        Ducking,
+        Airbourne
+    }
+
     [Header("Base Movement Settings")]
     [SerializeField]
     private float m_Acceleration = 1.0f;
@@ -106,6 +114,9 @@ public class PlayerController : MonoBehaviour
         get { return m_CurrentState.ToString(); }
     }
 
+    //List of all available states, so we don't have to recreate them all the time.
+    private List<IState> m_States;
+
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
 
@@ -131,13 +142,22 @@ public class PlayerController : MonoBehaviour
         set { m_LandEvent = value; }
     }
 
+    private void Awake()
+    {
+        //Cache the states, otherwise I kept creating new ones for no reason.
+        m_States = new List<IState>();
+        m_States.Add(new RunState(this));
+        m_States.Add(new WalkState(this));
+        m_States.Add(new DuckState(this));
+        m_States.Add(new AirborneState(this));
+    }
 
     private void Start()
     {
         m_CharacterTargetRot = transform.localRotation;
         m_CameraTargetRot = m_Camera.localRotation;
 
-        SwitchState(new RunState(this));
+        SwitchState(PlayerState.Running);
     }
 
     private void SuperUpdate()
@@ -183,14 +203,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SwitchState(IState newState)
+    public IState SwitchState(PlayerState newState)
     {
-        if (m_CurrentState != null)
-            m_CurrentState.Exit();
+        int stateID = (int)newState;
+        if (stateID >= 0 && stateID < m_States.Count)
+        {
+            if (m_CurrentState != null)
+                m_CurrentState.Exit();
 
-        m_CurrentState = newState;
+            m_CurrentState = m_States[stateID];
+            m_CurrentState.Enter();
+        }
+        else
+        {
+            Debug.LogError("INVALID STATE!");
+        }
 
-        m_CurrentState.Enter();
+        return m_CurrentState;
     }
 
 
@@ -239,8 +268,8 @@ public class PlayerController : MonoBehaviour
             bool isJumping = Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
-                AirborneState state = new AirborneState(m_Player);
-                m_Player.SwitchState(state);
+                //On the edge of being dirty(?)
+                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
                 state.Jump();
                 return;
             }
@@ -248,7 +277,7 @@ public class PlayerController : MonoBehaviour
             //Falling
             if (!m_Player.MaintainingGround())
             {
-                m_Player.SwitchState(new AirborneState(m_Player));
+                m_Player.SwitchState(PlayerState.Airbourne);
                 return;
             }
 
@@ -256,7 +285,7 @@ public class PlayerController : MonoBehaviour
             bool isDucking = Input.GetKey(KeyCode.LeftAlt);
             if (isDucking)
             {
-                m_Player.SwitchState(new DuckState(m_Player));
+                m_Player.SwitchState(PlayerState.Ducking);
                 return;
             }
 
@@ -264,7 +293,7 @@ public class PlayerController : MonoBehaviour
             bool isWalking = Input.GetKey(KeyCode.LeftShift);
             if (isWalking)
             {
-                m_Player.SwitchState(new WalkState(m_Player));
+                m_Player.SwitchState(PlayerState.Walking);
                 return;
             }
         }
@@ -320,8 +349,8 @@ public class PlayerController : MonoBehaviour
             bool isJumping = Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
-                AirborneState state = new AirborneState(m_Player);
-                m_Player.SwitchState(state);
+                //On the edge of being dirty(?)
+                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
                 state.Jump();
                 return;
             }
@@ -329,7 +358,7 @@ public class PlayerController : MonoBehaviour
             //Falling
             if (!m_Player.MaintainingGround())
             {
-                m_Player.SwitchState(new AirborneState(m_Player));
+                m_Player.SwitchState(PlayerState.Airbourne);
                 return;
             }
 
@@ -337,7 +366,7 @@ public class PlayerController : MonoBehaviour
             bool isDucking = Input.GetKey(KeyCode.LeftAlt);
             if (isDucking)
             {
-                m_Player.SwitchState(new DuckState(m_Player));
+                m_Player.SwitchState(PlayerState.Ducking);
                 return;
             }
 
@@ -345,7 +374,7 @@ public class PlayerController : MonoBehaviour
             bool isWalking = Input.GetKey(KeyCode.LeftShift);
             if (isWalking == false)
             {
-                m_Player.SwitchState(new RunState(m_Player));
+                m_Player.SwitchState(PlayerState.Running);
                 return;
             }
         }
@@ -414,8 +443,8 @@ public class PlayerController : MonoBehaviour
             bool isJumping = Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
-                AirborneState state = new AirborneState(m_Player);
-                m_Player.SwitchState(state);
+                //On the edge of being dirty(?)
+                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
                 state.Jump();
                 return;
             }
@@ -423,7 +452,7 @@ public class PlayerController : MonoBehaviour
             //Falling
             if (!m_Player.MaintainingGround())
             {
-                m_Player.SwitchState(new AirborneState(m_Player));
+                m_Player.SwitchState(PlayerState.Airbourne);
                 return;
             }
 
@@ -436,7 +465,7 @@ public class PlayerController : MonoBehaviour
 
                 if (headCollision == false)
                 {
-                    m_Player.SwitchState(new WalkState(m_Player));
+                    m_Player.SwitchState(PlayerState.Walking);
                     return;
                 }
             }
@@ -513,7 +542,7 @@ public class PlayerController : MonoBehaviour
             if (m_Player.AcquiringGround())
             {
                 m_Player.Velocity = planarMoveDirection;
-                m_Player.SwitchState(new RunState(m_Player));
+                m_Player.SwitchState(PlayerState.Running);
 
                 if (m_Player.LandEvent != null)
                     m_Player.LandEvent();
