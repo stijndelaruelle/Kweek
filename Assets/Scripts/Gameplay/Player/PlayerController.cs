@@ -100,6 +100,12 @@ public class PlayerController : MonoBehaviour
         get { return m_CharacterController; }
     }
 
+    [SerializeField]
+    private CapsuleCollider m_OwnCollider;
+    public CapsuleCollider OwnCollider
+    {
+        get { return m_OwnCollider; }
+    }
 
     private Vector3 m_Velocity;
     public Vector3 Velocity
@@ -421,6 +427,8 @@ public class PlayerController : MonoBehaviour
                 m_Player.DuckEvent(true);
 
             m_Player.CharacterController.heightScale = 0.5f;
+            m_Player.OwnCollider.height = m_Player.OwnCollider.height * 0.5f;
+            m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 0.5f, m_Player.OwnCollider.center.z);
         }
 
         public void Exit()
@@ -429,6 +437,8 @@ public class PlayerController : MonoBehaviour
                 m_Player.DuckEvent(false);
 
             m_Player.CharacterController.heightScale = 1.0f;
+            m_Player.OwnCollider.height = m_Player.OwnCollider.height * 2.0f;
+            m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 2.0f, m_Player.OwnCollider.center.z);
         }
 
         public void Update()
