@@ -339,6 +339,8 @@ public class FireState : IState
     private Coroutine m_BurstFireRoutine;
 
     private bool m_IsSwitchingOut = false;
+
+    private Vector3 m_LastHeadLookAtPosition;
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
 
     public FireState(SoldierBehaviour soldier)
@@ -363,6 +365,8 @@ public class FireState : IState
         m_FireDelayTimer = m_Soldier.FireDelay;
         m_IsInFireStance = false;
         m_IsSwitchingOut = false;
+
+        m_LastHeadLookAtPosition = Vector3.zero;
         m_LastChestLocalRotation = Quaternion.identity;
     }
 
@@ -517,44 +521,53 @@ public class FireState : IState
 
     private void OnAnimatorIK(int layerIndex)
     {
+        //Rotate the head
         float normTimer = (m_Soldier.FireDelay - m_FireDelayTimer) / m_Soldier.FireDelay;
         m_Soldier.Animator.SetLookAtWeight(normTimer);
+        m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
 
+        //Rotate the chest
+        Quaternion desiredChestRotation = CalculateLocalBoneRotation(HumanBodyBones.Chest);
+
+        if (m_LastChestLocalRotation == Quaternion.identity)
+        {
+            m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
+                                                                desiredChestRotation,
+                                                                m_Soldier.BodyRotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation,
+                                                                desiredChestRotation,
+                                                                m_Soldier.BodyRotationSpeed * Time.deltaTime);
+        }
+
+        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+    }
+
+    private Quaternion CalculateLocalBoneRotation(HumanBodyBones boneType)
+    {
         Quaternion desiredRotation;
 
         if (m_IsSwitchingOut == false)
         {
-            //Rotate the head
-            m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
-
-            //Rotate the chest
-            Vector3 direction = (m_Target.bounds.center - m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).position).normalized;
+            Vector3 direction = (m_Target.bounds.center - m_Soldier.Animator.GetBoneTransform(boneType).position).normalized;
             desiredRotation = Quaternion.LookRotation(direction);
             Vector3 euler = desiredRotation.eulerAngles;
 
             //Add the transform of the soldier, otherwise things get weird.
             euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x);
-            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) - 45.0f; //-45 so the gun points towards you
+            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) - 40.0f; //-45 so the gun points towards you
             euler.y = 0.0f;
 
             desiredRotation = Quaternion.Euler(euler);
         }
         else
         {
-            desiredRotation = m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation;
+            desiredRotation = m_Soldier.Animator.GetBoneTransform(boneType).localRotation;
         }
 
-        //Make the characters follow you slowly
-        if (m_LastChestLocalRotation == Quaternion.identity)
-        {
-            m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation, desiredRotation, m_Soldier.BodyRotationSpeed);
-        }
-        else
-        {
-            m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation, desiredRotation, m_Soldier.BodyRotationSpeed);
-        }
-
-        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+        return desiredRotation;
     }
 
     public void SetTarget(Collider target)
