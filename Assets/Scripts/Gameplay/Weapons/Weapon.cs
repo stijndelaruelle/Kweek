@@ -63,10 +63,10 @@ public class Weapon : MonoBehaviour
             m_AmmoUseBehaviour.UpdateAmmoEvent -= OnUpdateAmmo;
     }
 
-    public void Setup(Collider ownerCollider, AmmoArsenal ammoArsenal)
+    public void Setup(List<Collider> ownerColliders, AmmoArsenal ammoArsenal)
     {
-        if (m_FireBehaviour != null)    { m_FireBehaviour.Setup(ownerCollider); }
-        if (m_AltFireBehaviour != null) { m_AltFireBehaviour.Setup(ownerCollider); }
+        if (m_FireBehaviour != null)    { m_FireBehaviour.Setup(ownerColliders); }
+        if (m_AltFireBehaviour != null) { m_AltFireBehaviour.Setup(ownerColliders); }
 
         if (m_AmmoUseBehaviour != null)
         {

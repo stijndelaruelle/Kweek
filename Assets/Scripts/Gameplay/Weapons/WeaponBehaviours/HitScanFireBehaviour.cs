@@ -67,11 +67,11 @@ public class HitScanFireBehaviour : IFireBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
-    private Collider m_IgnoredCollider;
+    private List<Collider> m_IgnoredColliders;
 
-    public override void Setup(Collider ownerCollider)
+    public override void Setup(List<Collider> ignoredColliders)
     {
-        m_IgnoredCollider = ownerCollider;
+        m_IgnoredColliders = ignoredColliders;
     }
 
     private void Update()
@@ -141,7 +141,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         if (!success)
             return;
 
-        if (hitInfo.collider == m_IgnoredCollider)
+        if (m_IgnoredColliders.Contains(hitInfo.collider))
             return;
 
         GameObject go = hitInfo.collider.gameObject;
@@ -182,17 +182,17 @@ public class HitScanFireBehaviour : IFireBehaviour
         Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
 
         //Ignore certain colliders (owner)
-        if (m_IgnoredCollider != null)
+        if (m_IgnoredColliders != null && m_IgnoredColliders.Count > 0)
         {
             for (int i = regularList.Count - 1; i >= 0; --i)
             {
-                if (regularList[i].collider == m_IgnoredCollider)
+                if (m_IgnoredColliders.Contains(regularList[i].collider))
                     regularList.RemoveAt(i);
             }
 
             for (int i = inverseList.Count - 1; i >= 0; --i)
             {
-                if (inverseList[i].collider == m_IgnoredCollider)
+                if (m_IgnoredColliders.Contains(inverseList[i].collider))
                     inverseList.RemoveAt(i);
             }
         }

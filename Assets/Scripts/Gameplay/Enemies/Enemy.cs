@@ -34,8 +34,18 @@ public class Enemy : MonoBehaviour, IMoveableObject
         get { return m_RagdollParts; }
     }
 
+    private List<Collider> m_Colliders;
+    public List<Collider> Colliders
+    {
+        get { return m_Colliders; }
+    }
+
     private void Awake()
     {
+        m_Colliders = new List<Collider>();
+        m_Colliders.AddRange(GetComponents<Collider>());
+        m_Colliders.AddRange(GetComponentsInChildren<Collider>());
+
         //Enable kinematic (otherwise raycasts will occasionally miss!)
         m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
         m_RagdollParts = GetComponentsInChildren<RagdollPart>();
@@ -55,6 +65,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_DamageableObject.DeathEvent += OnDeath;
 
         m_WeaponPickup.enabled = false;
+        m_AIBehaviour.Setup(m_Colliders);
     }
 
     private void OnDestroy()

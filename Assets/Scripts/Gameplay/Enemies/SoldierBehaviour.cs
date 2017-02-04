@@ -14,6 +14,13 @@ public class SoldierBehaviour : MonoBehaviour
     }
 
     [SerializeField]
+    private Transform m_FirePosition;
+    public Transform FirePosition
+    {
+        get { return m_FirePosition; }
+    }
+
+    [SerializeField]
     private float m_FireDelay;
     public float FireDelay
     {
@@ -111,11 +118,15 @@ public class SoldierBehaviour : MonoBehaviour
 
     private void Start()
     {
-        SwitchState(SoldierState.Patrolling);
-
-        m_Weapon.Setup(null, null);
         m_Weapon.UpdateAmmoEvent += OnUpdateWeaponAmmo;
         m_Forwarder.AnimatorIKEvent += OnAnimatorIK;
+
+        SwitchState(SoldierState.Patrolling);
+    }
+
+    public void Setup(List<Collider> ownerColliders)
+    {
+        m_Weapon.Setup(ownerColliders, null);
     }
 
     private void OnDestroy()
@@ -144,10 +155,8 @@ public class SoldierBehaviour : MonoBehaviour
         if (currentSpeed > m_NavMeshAgent.speed) { currentSpeed = m_LastSpeed; }
         m_LastSpeed = currentSpeed;
 
-        float normSpeed = (currentSpeed / m_NavMeshAgent.speed) * m_Speed;
-
         m_Animator.SetFloat("VelocityX", 0.0f);
-        m_Animator.SetFloat("VelocityZ", normSpeed * 0.5f);
+        m_Animator.SetFloat("VelocityZ", currentSpeed);
     }
 
     public void Pause()
@@ -206,6 +215,13 @@ public class SoldierBehaviour : MonoBehaviour
     {
         if (AnimatorIKEvent != null)
             AnimatorIKEvent(layerIndex);
+
+        //Set the left hand to the weapongrip (layer 1 so we get new positions!)
+        if (layerIndex == 1)
+        {
+            m_Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+            m_Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_WeaponGrip.position);
+        }
     }
 }
 
@@ -233,7 +249,6 @@ public class PatrolState : IState
         }
 
         m_Soldier.TriggerStayEvent += OnTriggerStay;
-        m_Soldier.AnimatorIKEvent += OnAnimatorIK;
         m_Soldier.NavMeshAgent.Resume();
         //m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
@@ -244,7 +259,6 @@ public class PatrolState : IState
             return;
 
         m_Soldier.TriggerStayEvent -= OnTriggerStay;
-        m_Soldier.AnimatorIKEvent -= OnAnimatorIK;
     }
 
     public void Update()
@@ -283,8 +297,10 @@ public class PatrolState : IState
 
             if (degAngle <= m_Soldier.ViewAngle)
             {
-                //Check line of sight
-                Ray ray = new Ray(m_Soldier.Weapon.transform.position, (other.bounds.center - m_Soldier.Weapon.transform.position));
+                Vector3 middleTop = other.bounds.center;
+                middleTop.y += other.bounds.extents.y * 0.5f;
+
+                Ray ray = new Ray(m_Soldier.Weapon.transform.position, (middleTop - m_Soldier.Weapon.transform.position));
 
                 RaycastHit hitInfo;
                 bool success = Physics.Raycast(ray, out hitInfo);
@@ -297,12 +313,6 @@ public class PatrolState : IState
                 }
             }
         }
-    }
-
-    private void OnAnimatorIK(int layedIndex)
-    {
-        //m_Soldier.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-        //m_Soldier.Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_Soldier.WeaponGrip.position);
     }
 
     public override string ToString()
@@ -402,8 +412,8 @@ public class FireState : IState
 
     private bool ShootOnce()
     {
-        Vector3 weaponPos = m_Soldier.WeaponPickup.transform.position;
-        Ray fireRay = new Ray(weaponPos, m_Soldier.WeaponPickup.transform.forward);
+        Vector3 weaponPos = m_Soldier.FirePosition.position;
+        Ray fireRay = new Ray(weaponPos, m_Soldier.FirePosition.forward);
 
         return m_Soldier.Weapon.Fire(fireRay);
     }
@@ -499,7 +509,7 @@ public class FireState : IState
         }
     }
 
-    private void OnAnimatorIK(int layedIndex)
+    private void OnAnimatorIK(int layerIndex)
     {
         float normTimer = (m_Soldier.FireDelay - m_FireDelayTimer) / m_Soldier.FireDelay;
         m_Soldier.Animator.SetLookAtWeight(normTimer);

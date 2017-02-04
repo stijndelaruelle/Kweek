@@ -12,7 +12,7 @@ public delegate void WeaponFireDelegate();
 
 public abstract class IFireBehaviour : MonoBehaviour
 {
-    public abstract void Setup(Collider ownerCollider);
+    public abstract void Setup(List<Collider> ownerCollider);
 
     public abstract void Fire(Ray originalRay);
 
