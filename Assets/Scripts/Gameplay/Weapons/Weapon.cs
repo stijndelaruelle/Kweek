@@ -42,6 +42,12 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private Animator m_Animator;
 
+    private List<Collider> m_OwnerColliders;
+    public List<Collider> OwnerCollider
+    {
+        get { return m_OwnerColliders; }
+    }
+
     //Events
     private WeaponFireDelegate m_WeaponFireEvent;
     public WeaponFireDelegate WeaponFireEvent
@@ -65,6 +71,8 @@ public class Weapon : MonoBehaviour
 
     public void Setup(List<Collider> ownerColliders, AmmoArsenal ammoArsenal)
     {
+        m_OwnerColliders = ownerColliders;
+
         if (m_FireBehaviour != null)    { m_FireBehaviour.Setup(ownerColliders); }
         if (m_AltFireBehaviour != null) { m_AltFireBehaviour.Setup(ownerColliders); }
 

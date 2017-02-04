@@ -21,7 +21,7 @@ public class MuzzleFlash : MonoBehaviour
     private Light m_Light;
 
     [SerializeField]
-    private float m_Time;
+    private float m_ActiveTime;
     private float m_Timer;
 
     private void Start()
@@ -47,7 +47,7 @@ public class MuzzleFlash : MonoBehaviour
             m_Timer -= Time.deltaTime;
 
             //0 -> 1 -> 0
-            float normScale = 1.0f - ((Mathf.Abs((m_Time / 2) - m_Timer) * 2) / m_Time);
+            float normScale = 1.0f - ((Mathf.Abs((m_ActiveTime / 2) - m_Timer) * 2) / m_ActiveTime);
 
             //Set the material color
             Color color = m_Material.GetColor("_TintColor");
@@ -67,7 +67,7 @@ public class MuzzleFlash : MonoBehaviour
 
     private void OnWeaponFire()
     {
-        m_Timer = m_Time;
+        m_Timer = m_ActiveTime;
 
         //Rotate the mesh randomly
         float randomAngle = UnityEngine.Random.Range(0.0f, 360.0f);

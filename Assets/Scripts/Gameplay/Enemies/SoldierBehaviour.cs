@@ -28,10 +28,17 @@ public class SoldierBehaviour : MonoBehaviour
     }
 
     [SerializeField]
-    private float m_Speed;
-    public float Speed
+    private float m_WalkSpeed;
+    public float WalkSpeed
     {
-        get { return m_Speed; }
+        get { return m_WalkSpeed; }
+    }
+
+    [SerializeField]
+    private float m_RunSpeed;
+    public float RunSpeed
+    {
+        get { return m_RunSpeed; }
     }
 
     [SerializeField]
@@ -250,7 +257,8 @@ public class PatrolState : IState
 
         m_Soldier.TriggerStayEvent += OnTriggerStay;
         m_Soldier.NavMeshAgent.Resume();
-        //m_Soldier.Animator.SetTrigger("MovementTrigger");
+        m_Soldier.NavMeshAgent.speed = m_Soldier.WalkSpeed;
+        m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 
     public void Exit()
@@ -349,9 +357,7 @@ public class FireState : IState
         //Stop the character from moving, both gamewise as visually
         m_Soldier.NavMeshAgent.Stop();
         m_Soldier.NavMeshAgent.updateRotation = false;
-
-        m_Soldier.Animator.SetFloat("VelocityX", 0.0f);
-        m_Soldier.Animator.SetFloat("VelocityZ", 0.0f);
+        m_Soldier.NavMeshAgent.speed = 0.0f;
 
         m_Target = null;
         m_FireDelayTimer = m_Soldier.FireDelay;
@@ -580,6 +586,8 @@ public class ChaseState : IState
 
         m_Soldier.TriggerStayEvent += OnTriggerStay;
         m_Soldier.NavMeshAgent.Resume();
+        m_Soldier.NavMeshAgent.speed = m_Soldier.RunSpeed;
+
         m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 

@@ -60,6 +60,6 @@ public class BulletShellEjector : MonoBehaviour
 
         bulletShell.transform.parent = transform;
 
-        bulletShell.Eject(transform.right * m_EjectSpeed);
+        bulletShell.Eject(transform.right * m_EjectSpeed, m_Weapon.OwnerCollider);
     }
 }
