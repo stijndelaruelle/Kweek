@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
         UpdateRotation();
 
         if (m_CurrentState != null)
-            m_CurrentState.Update();
+            m_CurrentState.StateUpdate();
 
         //Move the player by our velocity every frame
         transform.position += m_Velocity * Time.deltaTime; //m_CharacterController.deltaTime;
@@ -262,7 +262,7 @@ public class PlayerController : MonoBehaviour
         public void Enter() {}
         public void Exit() {}
 
-        public void Update()
+        public void StateUpdate()
         {
             HandleSwitchingStates();
             HandleHorizontalMovement();
@@ -343,7 +343,7 @@ public class PlayerController : MonoBehaviour
         public void Enter() {}
         public void Exit() {}
 
-        public void Update()
+        public void StateUpdate()
         {
             HandleSwitchingStates();
             HandleHorizontalMovement();
@@ -441,7 +441,7 @@ public class PlayerController : MonoBehaviour
             m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 2.0f, m_Player.OwnCollider.center.z);
         }
 
-        public void Update()
+        public void StateUpdate()
         {
             HandleSwitchingStates();
             HandleHorizontalMovement();
@@ -533,7 +533,7 @@ public class PlayerController : MonoBehaviour
             m_Player.CharacterController.EnableSlopeLimit();
         }
 
-        public void Update()
+        public void StateUpdate()
         {
             float horizInput = Input.GetAxisRaw("Horizontal");
             float vertInput = Input.GetAxisRaw("Vertical");
