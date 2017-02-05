@@ -277,7 +277,7 @@ public class HitScanFireBehaviour : IFireBehaviour
                 Rigidbody rigidBody = go.GetComponent<Rigidbody>();
                 if (rigidBody != null)
                 {
-                    float impactForce = CalculateImpactForce(ray.origin, hitInfo.point, range, currentDamage);
+                    float impactForce = CalculateImpactForce(ray.origin, hitInfo.point, range, m_ImpactForce);
                     rigidBody.AddForceAtPosition(-hitInfo.normal * impactForce, hitInfo.point);
                 }
             }

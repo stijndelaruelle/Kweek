@@ -51,6 +51,7 @@ public class SoldierChaseState : IAbstractState
         m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
         m_Soldier.NavMeshAgent.destination = m_TargetPosition;
 
+        m_Soldier.Animator.enabled = true;
         m_Soldier.Animator.SetTrigger("MovementTrigger");
 
         m_ChaseTimer = 0.0f;

@@ -37,21 +37,30 @@ public class SoldierPatrolState : IAbstractState
         m_Soldier = GetComponent<SoldierBehaviour>();
 
         m_StartPosition = transform.position;
-        m_TargetPosition = m_TargetTransform.position;
+
+        if (m_TargetTransform != null)
+            m_TargetPosition = m_TargetTransform.position;
     }
 
     public override void Enter()
     {
         Debug.Log("Entered patrolling state!");
 
-        if (m_StartPosition != m_TargetPosition)
+        m_Soldier.TriggerStayEvent += OnStateTriggerStay;
+
+        if (m_TargetTransform != null)
         {
             m_Soldier.NavMeshAgent.destination = m_TargetPosition;
+            m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
+
+            m_Soldier.NavMeshAgent.Resume();
+        }
+        else
+        {
+            m_Soldier.NavMeshAgent.Stop();
         }
 
-        m_Soldier.TriggerStayEvent += OnStateTriggerStay;
-        m_Soldier.NavMeshAgent.Resume();
-        m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
+        m_Soldier.Animator.enabled = true;
         m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 

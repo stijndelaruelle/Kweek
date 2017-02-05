@@ -93,7 +93,7 @@ public class SoldierBehaviour : MonoBehaviour
         //Walking animation
         float currentSpeed = m_NavMeshAgent.velocity.magnitude;
 
-        //Every once in a while the velocity will spike
+        //Every once in a while the velocity will spike (fix this)
         if (currentSpeed > m_NavMeshAgent.speed) { currentSpeed = m_LastSpeed; }
         m_LastSpeed = currentSpeed;
 
@@ -103,12 +103,12 @@ public class SoldierBehaviour : MonoBehaviour
 
     public void Pause()
     {
-        m_NavMeshAgent.Stop();
+        //m_NavMeshAgent.Stop();
     }
 
     public void Resume()
     {
-        m_NavMeshAgent.Resume();
+        //m_NavMeshAgent.Resume();
     }
 
     private void OnUpdateWeaponAmmo(int ammoInClip, int reserveAmmo)

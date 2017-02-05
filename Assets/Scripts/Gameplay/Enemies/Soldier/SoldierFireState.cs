@@ -28,7 +28,10 @@ public class SoldierFireState : IAbstractState
 
     [Tooltip ("Degrees per second")]
     [SerializeField]
-    private float m_BodyRotationSpeed;
+    private float m_ChestRotationSpeed;
+
+    [SerializeField]
+    private float m_ChestRotationOffset;
 
     [Space(10)]
     [Header("Scanning")]
@@ -67,8 +70,6 @@ public class SoldierFireState : IAbstractState
 
         //Stop the character from moving, both gamewise as visually
         m_Soldier.NavMeshAgent.Stop();
-        m_Soldier.NavMeshAgent.updateRotation = false;
-        m_Soldier.NavMeshAgent.speed = 0.0f;
 
         m_Target = null;
         m_FireDelayTimer = m_FireDelay;
@@ -86,9 +87,6 @@ public class SoldierFireState : IAbstractState
         m_Soldier.TriggerStayEvent -= OnStateTriggerStay;
         m_Soldier.TriggerExitEvent -= OnStateTriggerExit;
         m_Soldier.AnimatorIKEvent -= OnStateAnimatorIK;
-
-        m_Soldier.NavMeshAgent.updateRotation = true;
-        //m_Soldier.Animator.SetLookAtWeight(0);
     }
 
     public override void StateUpdate()
@@ -228,6 +226,11 @@ public class SoldierFireState : IAbstractState
                     //Stop firing
                     SwitchOut();
                 }
+                else
+                {
+                    //Stop switching out!
+                    m_IsSwitchingOut = false;
+                }
             }
             else
             {
@@ -248,28 +251,31 @@ public class SoldierFireState : IAbstractState
 
     private void OnStateAnimatorIK(int layerIndex)
     {
-        //Rotate the head
-        float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
-        m_Soldier.Animator.SetLookAtWeight(normTimer);
-        m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
-
-        //Rotate the chest
-        Quaternion desiredChestRotation = CalculateLocalBoneRotation(HumanBodyBones.Chest);
-
-        if (m_LastChestLocalRotation == Quaternion.identity)
+        if (layerIndex == 1)
         {
-            m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
-                                                                desiredChestRotation,
-                                                                m_BodyRotationSpeed * Time.deltaTime);
-        }
-        else
-        {
-            m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation,
-                                                                desiredChestRotation,
-                                                                m_BodyRotationSpeed * Time.deltaTime);
-        }
+            //Rotate the head
+            float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
+            m_Soldier.Animator.SetLookAtWeight(normTimer);
+            m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
 
-        m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+            //Rotate the chest
+            Quaternion desiredChestRotation = CalculateLocalBoneRotation(HumanBodyBones.Chest);
+
+            if (m_LastChestLocalRotation == Quaternion.identity)
+            {
+                m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
+                                                                    desiredChestRotation,
+                                                                    m_ChestRotationSpeed * Time.deltaTime);
+            }
+            else
+            {
+                m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation,
+                                                                    desiredChestRotation,
+                                                                    m_ChestRotationSpeed * Time.deltaTime);
+            }
+
+            m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+        }
     }
 
     private Quaternion CalculateLocalBoneRotation(HumanBodyBones boneType)
@@ -284,7 +290,7 @@ public class SoldierFireState : IAbstractState
 
             //Add the transform of the soldier, otherwise things get weird.
             euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x);
-            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) - 40.0f; //-45 so the gun points towards you
+            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) + m_ChestRotationOffset;
             euler.y = 0.0f;
 
             desiredRotation = Quaternion.Euler(euler);
