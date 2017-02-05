@@ -69,6 +69,9 @@ public class SoldierBehaviour : MonoBehaviour
     public void Setup(List<Collider> ownerColliders)
     {
         m_Weapon.Setup(ownerColliders, null);
+
+        m_WeaponPickup.enabled = false;
+        m_WeaponPickup.IgnoreColliders(ownerColliders); //Make sure we don't freak out when becomming a ragdoll
     }
 
     private void OnDestroy()
@@ -101,15 +104,7 @@ public class SoldierBehaviour : MonoBehaviour
         m_Animator.SetFloat("VelocityZ", currentSpeed);
     }
 
-    public void Pause()
-    {
-        //m_NavMeshAgent.Stop();
-    }
 
-    public void Resume()
-    {
-        //m_NavMeshAgent.Resume();
-    }
 
     private void OnUpdateWeaponAmmo(int ammoInClip, int reserveAmmo)
     {
@@ -174,5 +169,12 @@ public class SoldierBehaviour : MonoBehaviour
             m_Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
             m_Animator.SetIKRotation(AvatarIKGoal.LeftHand, m_BackWeaponGrip.rotation);
         }
+    }
+
+    public void OnDeath()
+    {
+        m_WeaponPickup.enabled = true;
+        m_WeaponPickup.gameObject.transform.parent = null;
+        m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
     }
 }

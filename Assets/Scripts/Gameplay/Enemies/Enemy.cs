@@ -7,9 +7,6 @@ public class Enemy : MonoBehaviour, IMoveableObject
     [SerializeField]
     private IDamageableObject m_DamageableObject;
 
-    [SerializeField]
-    private WeaponPickup m_WeaponPickup;
-
     //[SerializeField]
     //private IAIBehaviour m_AIBehaviour; //The time will come...
     [SerializeField]
@@ -25,7 +22,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         get { return m_MainRigidbody; }
     }
 
-    //Get component instead of assigning, because assigning manually is very error prone
+    //Get component instead of assigning, because assigning these manually is very error prone
     private Rigidbody[] m_Rigidbodies;
 
     private RagdollPart[] m_RagdollParts;
@@ -40,6 +37,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         get { return m_Colliders; }
     }
 
+
     private void Awake()
     {
         m_Colliders = new List<Collider>();
@@ -47,8 +45,8 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_Colliders.AddRange(GetComponentsInChildren<Collider>());
 
         //Enable kinematic (otherwise raycasts will occasionally miss!)
-        m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
         m_RagdollParts = GetComponentsInChildren<RagdollPart>();
+        m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
 
         for (int i = 0; i < m_Rigidbodies.Length; ++i)
         {
@@ -64,9 +62,6 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_DamageableObject.DamageEvent += OnDamage;
         m_DamageableObject.DeathEvent += OnDeath;
 
-        m_WeaponPickup.enabled = false;
-        m_WeaponPickup.IgnoreColliders(m_Colliders); //Make sure we don't freak out when becomming a ragdoll
-
         m_AIBehaviour.Setup(m_Colliders);
     }
 
@@ -78,6 +73,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_DamageableObject.DamageEvent -= OnDamage;
         m_DamageableObject.DeathEvent -= OnDeath;
     }
+
 
     //Damage handling
     private void OnDamage()
@@ -98,17 +94,8 @@ public class Enemy : MonoBehaviour, IMoveableObject
         EnableRagdoll();
 
         //m_Animator.SetTrigger("DeathTrigger");
-        m_WeaponPickup.gameObject.transform.parent = null;
-        m_WeaponPickup.enabled = true;
-        m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
-
-        m_AIBehaviour.Pause();
+        m_AIBehaviour.OnDeath();
         m_AIBehaviour.enabled = false;
-    }
-
-    public void OnEndHitStun()
-    {
-        m_AIBehaviour.Resume();
     }
 
     private void EnableCollisions()
@@ -129,6 +116,7 @@ public class Enemy : MonoBehaviour, IMoveableObject
         return (!m_Animator.enabled);
     }
     
+
     //IMoveableObject
     public void AddVelocity(Vector3 velocity)
     {
