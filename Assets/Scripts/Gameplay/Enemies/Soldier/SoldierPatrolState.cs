@@ -12,10 +12,6 @@ public class SoldierPatrolState : IAbstractState
     [Space(5)]
     [SerializeField]
     private float m_MovementSpeed;
-    public float MovementSpeed
-    {
-        get { return m_MovementSpeed; }
-    }
 
     [SerializeField]
     private Transform m_TargetTransform;
@@ -27,17 +23,9 @@ public class SoldierPatrolState : IAbstractState
     [Space(5)]
     [SerializeField]
     private Transform m_ViewPosition;
-    public Transform ViewPosition
-    {
-        get { return m_ViewPosition; }
-    }
 
     [SerializeField]
     private float m_ViewAngle;
-    public float ViewAngle
-    {
-        get { return m_ViewAngle; }
-    }
 
     [SerializeField]
     private SoldierFireState m_FireState;

@@ -12,43 +12,29 @@ public class SoldierFireState : IAbstractState
     [Space(5)]
     [SerializeField]
     private Transform m_FirePosition;
-    public Transform FirePosition
-    {
-        get { return m_FirePosition; }
-    }
 
     [SerializeField]
     private float m_FireDelay;
-    public float FireDelay
-    {
-        get { return m_FireDelay; }
-    }
     private float m_FireDelayTimer = 0.0f;
+
+    [SerializeField]
+    private float m_BurstDistance = 5.0f;
+
+    [SerializeField]
+    private float m_SingleShotDistance = 15.0f;
 
     [Tooltip ("Degrees per second")]
     [SerializeField]
     private float m_BodyRotationSpeed;
-    public float BodyRotationSpeed
-    {
-        get { return m_BodyRotationSpeed; }
-    }
 
     [Space(10)]
     [Header("Scanning")]
     [Space(5)]
     [SerializeField]
     private Transform m_ViewPosition;
-    public Transform ViewPosition
-    {
-        get { return m_ViewPosition; }
-    }
 
     [SerializeField]
     private float m_ViewAngle;
-    public float ViewAngle
-    {
-        get { return m_ViewAngle; }
-    }
 
     [SerializeField]
     private SoldierChaseState m_ChaseState;
@@ -57,7 +43,7 @@ public class SoldierFireState : IAbstractState
     private bool m_IsSwitchingOut = false;
 
     private Collider m_Target;
-    private Coroutine m_BurstFireRoutine;
+    private Coroutine m_FireRoutine;
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
 
 
@@ -107,7 +93,6 @@ public class SoldierFireState : IAbstractState
         HandleSwitchIn();
         HandleSwitchOut();
 
-        HandleLineOfSight();
         HandleShooting();
     }
 
@@ -117,17 +102,37 @@ public class SoldierFireState : IAbstractState
         if (m_IsSwitchingOut || m_FireDelayTimer > 0.0f)
             return;
 
-        if (m_BurstFireRoutine == null)
+        if (m_FireRoutine != null)
+            return;
+
+        //Check the distance between us and the target
+        Vector3 diff = m_Target.bounds.center - m_FirePosition.position;
+        float distance = diff.magnitude;
+
+        //Full auto
+        if (distance < m_BurstDistance)
         {
-            m_BurstFireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine());
+            ShootOnce();
+            return;
         }
+
+        //Burstfire
+        if (distance < m_SingleShotDistance)
+        {
+            m_FireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine(3));
+            return;
+        }
+
+        //Single shot
+        m_FireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine(1));
+        return;
     }
 
-    private IEnumerator FireBurstRoutine()
+    private IEnumerator FireBurstRoutine(int numberOfBullets)
     {
         int bulletsFired = 0;
 
-        while (bulletsFired < 3)
+        while (bulletsFired < numberOfBullets)
         {
             bool success = ShootOnce();
             if (success) { bulletsFired++; }
@@ -136,7 +141,7 @@ public class SoldierFireState : IAbstractState
         }
 
         yield return new WaitForSeconds(1.0f);
-        m_BurstFireRoutine = null;
+        m_FireRoutine = null;
     }
 
     private bool ShootOnce()
@@ -188,28 +193,6 @@ public class SoldierFireState : IAbstractState
         m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 
-
-    private void HandleLineOfSight()
-    {
-        if (m_IsSwitchingOut)
-            return;
-
-        //Fire a ray in the direction of the target, if we don't hit him first.. we lost line of sight!
-        Vector3 middleTop = m_Target.bounds.center;
-        middleTop.y += m_Target.bounds.extents.y * 0.5f;
-
-        Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
-
-        RaycastHit hitInfo;
-        bool success = Physics.Raycast(ray, out hitInfo);
-
-        if (!(success && hitInfo.collider == m_Target))
-        {
-            SwitchOut();
-        }
-    }
-
-
     private void OnStateTriggerStay(Collider other)
     {
         //Check if it's the player
@@ -220,10 +203,28 @@ public class SoldierFireState : IAbstractState
             float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
             float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
 
-            bool switchOut = (degAngle > m_ViewAngle);
+            if (degAngle <= m_ViewAngle)
+            {
+                //If so, check line of sight
+                Vector3 middleTop = other.bounds.center;
+                middleTop.y += other.bounds.extents.y * 0.5f;
 
-            if (switchOut)
+                Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+
+                RaycastHit hitInfo;
+                bool success = Physics.Raycast(ray, out hitInfo);
+
+                if (!(success && hitInfo.collider == other))
+                {
+                    //Stop firing
+                    SwitchOut();
+                }
+            }
+            else
+            {
+                //If not, stop firing
                 SwitchOut();
+            }
         }
     }
 

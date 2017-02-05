@@ -12,11 +12,6 @@ public class SoldierChaseState : IAbstractState
     [Space(5)]
     [SerializeField]
     private float m_MovementSpeed;
-    public float MovementSpeed
-    {
-        get { return m_MovementSpeed; }
-    }
-
     private Vector3 m_TargetPosition;
 
     [Space(10)]
@@ -24,17 +19,9 @@ public class SoldierChaseState : IAbstractState
     [Space(5)]
     [SerializeField]
     private Transform m_ViewPosition;
-    public Transform ViewPosition
-    {
-        get { return m_ViewPosition; }
-    }
 
     [SerializeField]
     private float m_ViewAngle;
-    public float ViewAngle
-    {
-        get { return m_ViewAngle; }
-    }
 
     [SerializeField]
     private SoldierPatrolState m_PatrolState;
@@ -100,7 +87,6 @@ public class SoldierChaseState : IAbstractState
 
             if (degAngle <= m_ViewAngle)
             {
-                //Check line of sight
                 Vector3 middleTop = other.bounds.center;
                 middleTop.y += other.bounds.extents.y * 0.5f;
 
