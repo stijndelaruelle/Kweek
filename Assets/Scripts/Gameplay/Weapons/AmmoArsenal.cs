@@ -33,12 +33,7 @@ public class AmmoArsenal : MonoBehaviour
     private List<AmmoReserve> m_Ammo;
 
     //Event
-    private UpdateReserveAmmoDelegate m_UpdateReserveAmmoEvent;
-    public UpdateReserveAmmoDelegate UpdateReserveAmmoEvent
-    {
-        get { return m_UpdateReserveAmmoEvent; }
-        set { m_UpdateReserveAmmoEvent = value; }
-    }
+    public event UpdateReserveAmmoDelegate UpdateReserveAmmoEvent;
 
     public int GetAmmo(AmmoTypeDefinition ammoType)
     {
@@ -80,7 +75,7 @@ public class AmmoArsenal : MonoBehaviour
 
     private void FireUpdateReserveAmmoEvent(AmmoTypeDefinition ammoType, int amount)
     {
-        if (m_UpdateReserveAmmoEvent != null)
-            m_UpdateReserveAmmoEvent(ammoType, amount);
+        if (UpdateReserveAmmoEvent != null)
+            UpdateReserveAmmoEvent(ammoType, amount);
     }
 }

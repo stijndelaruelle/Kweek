@@ -52,13 +52,11 @@ public class OverhealDamageBehaviour : RegularDamageBehaviour
             m_Health = 0;
 
             //Fire death event
-            if (m_DeathEvent != null)
-                m_DeathEvent();
+            CallDeathEvent();
         }
 
         //Fire healthchange event
-        if (m_ChangeHealthEvent != null)
-            m_ChangeHealthEvent(m_Health);
+        CallChangeHealthEvent(m_Health);
 
         return reserveHealth;
     }

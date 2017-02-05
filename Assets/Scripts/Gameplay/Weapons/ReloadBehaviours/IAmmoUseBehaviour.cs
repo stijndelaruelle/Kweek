@@ -6,10 +6,11 @@ public delegate void UpdateAmmoDelegate(int i, int j);
 
 public abstract class IAmmoUseBehaviour : MonoBehaviour
 {
-    public abstract UpdateAmmoDelegate UpdateAmmoEvent
+    public event UpdateAmmoDelegate UpdateAmmoEvent;
+    protected void CallUpdateAmmoEvent(int ammoInClip, int ammoInReserve)
     {
-        get;
-        set;
+        if (UpdateAmmoEvent != null)
+            UpdateAmmoEvent(ammoInClip, ammoInReserve);
     }
 
     public abstract void Setup(Weapon weapon, AmmoArsenal ammoArsenal);

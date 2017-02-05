@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
 
-    //Events
+    //Events (only unsafe events because the states must be able to call it. Will change when the state machine gets refactored)
     private DuckDelegate m_DuckEvent;
     public DuckDelegate DuckEvent
     {

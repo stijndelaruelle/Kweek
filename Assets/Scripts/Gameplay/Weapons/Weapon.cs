@@ -53,19 +53,8 @@ public class Weapon : MonoBehaviour
     }
 
     //Events
-    private WeaponFireDelegate m_WeaponFireEvent;
-    public WeaponFireDelegate WeaponFireEvent
-    {
-        get { return m_WeaponFireEvent; }
-        set { m_WeaponFireEvent = value; }
-    }
-
-    private UpdateAmmoDelegate m_UpdateAmmoEvent;
-    public UpdateAmmoDelegate UpdateAmmoEvent
-    {
-        get { return m_UpdateAmmoEvent; }
-        set { m_UpdateAmmoEvent = value; }
-    }
+    public event WeaponFireDelegate WeaponFireEvent;
+    public event UpdateAmmoDelegate UpdateAmmoEvent;
 
     public event SwitchWeaponCallback StartSwitchInEvent;
     public event SwitchWeaponCallback StopSwitchInEvent;
@@ -211,14 +200,14 @@ public class Weapon : MonoBehaviour
     //Event
     public void FireWeaponFireEvent()
     {
-        if (m_WeaponFireEvent != null)
-            m_WeaponFireEvent();
+        if (WeaponFireEvent != null)
+            WeaponFireEvent();
     }
 
     private void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
         //Forward the event
-        if (m_UpdateAmmoEvent != null)
-            m_UpdateAmmoEvent(ammoInClip, ammoInReserve);
+        if (UpdateAmmoEvent != null)
+            UpdateAmmoEvent(ammoInClip, ammoInReserve);
     }
 }

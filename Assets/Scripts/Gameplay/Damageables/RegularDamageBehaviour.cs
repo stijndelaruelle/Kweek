@@ -18,35 +18,6 @@ public class RegularDamageBehaviour : IDamageableObject
     }
     private bool m_HasDied;
 
-    //Events
-    protected DamageDelegate m_DamageEvent;
-    public override DamageDelegate DamageEvent
-    {
-        get { return m_DamageEvent; }
-        set { m_DamageEvent = value; }
-    }
-
-    protected HealDelegate m_HealEvent;
-    public override HealDelegate HealEvent
-    {
-        get { return m_HealEvent; }
-        set { m_HealEvent = value; }
-    }
-
-    protected ChangeHealthDelegate m_ChangeHealthEvent;
-    public override ChangeHealthDelegate ChangeHealthEvent
-    {
-        get { return m_ChangeHealthEvent; }
-        set { m_ChangeHealthEvent = value; }
-    }
-
-    protected DeathDelegate m_DeathEvent;
-    public override DeathDelegate DeathEvent
-    {
-        get { return m_DeathEvent; }
-        set { m_DeathEvent = value; }
-    }
-
     private void Start()
     {
         ChangeHealth(m_MaxHealth);
@@ -72,16 +43,12 @@ public class RegularDamageBehaviour : IDamageableObject
             m_Health = 0;
 
             //Fire death event
-            if (m_DeathEvent != null)
-            {
-                m_DeathEvent();
-                m_HasDied = true;
-            }
+            CallDeathEvent();
+            m_HasDied = true;
         }
 
         //Fire healthchange event
-        if (m_ChangeHealthEvent != null)
-            m_ChangeHealthEvent(m_Health);
+        CallChangeHealthEvent(m_Health);
 
         return reserveHealth;
     }
@@ -94,8 +61,7 @@ public class RegularDamageBehaviour : IDamageableObject
         int reserveHealth =  ChangeHealth(-health);
 
         //Fire damage event
-        if (m_DamageEvent != null)
-            m_DamageEvent();
+        CallDamageEvent();
 
         return reserveHealth;
     }
@@ -108,8 +74,7 @@ public class RegularDamageBehaviour : IDamageableObject
         ChangeHealth(health);
 
         //Fire heal event
-        if (m_HealEvent != null)
-            m_HealEvent();
+        CallHealEvent();
     }
 
     public override IDamageableObject GetMainDamageableObject()

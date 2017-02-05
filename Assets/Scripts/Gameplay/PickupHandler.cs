@@ -11,12 +11,7 @@ public class PickupHandler : MonoBehaviour
     private float m_Range;
 
     //Event
-    private ChangePickupDelegate m_ChangePickupEvent;
-    public ChangePickupDelegate ChangePickupEvent
-    {
-        get { return m_ChangePickupEvent; }
-        set { m_ChangePickupEvent = value; }
-    }
+    public event ChangePickupDelegate ChangePickupEvent;
 
     private void Update()
     {
@@ -52,7 +47,6 @@ public class PickupHandler : MonoBehaviour
 
     private void FireChangePickupEvent(IPickup pickup)
     {
-        if (m_ChangePickupEvent != null)
-            m_ChangePickupEvent(pickup);
+        ChangePickupEvent(pickup);
     }
 }

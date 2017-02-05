@@ -29,12 +29,7 @@ public class WeaponArsenal : MonoBehaviour
     [SerializeField]
     private Collider m_OwnerCollider;
 
-    private UpdateAmmoDelegate m_UpdateAmmoEvent;
-    public UpdateAmmoDelegate UpdateAmmoEvent
-    {
-        get { return m_UpdateAmmoEvent; }
-        set { m_UpdateAmmoEvent = value; }
-    }
+    public event UpdateAmmoDelegate UpdateAmmoEvent;
 
     private void Start()
     {
@@ -180,8 +175,8 @@ public class WeaponArsenal : MonoBehaviour
     public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
     {
         //Forward the event
-        if (m_UpdateAmmoEvent != null)
-            m_UpdateAmmoEvent(ammoInClip, ammoInReserve);
+        if (UpdateAmmoEvent != null)
+            UpdateAmmoEvent(ammoInClip, ammoInReserve);
     }
 
     public Weapon AddWeapon(Weapon weaponPrefab)

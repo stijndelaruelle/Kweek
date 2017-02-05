@@ -34,14 +34,6 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     [SerializeField]
     protected AudioSource m_OutOfAmmoAudio; //Not an event as it's very specific to ammo dependant weapons
 
-    //Event
-    private UpdateAmmoDelegate m_UpdateAmmoEvent;
-    public override UpdateAmmoDelegate UpdateAmmoEvent
-    {
-        get { return m_UpdateAmmoEvent; }
-        set { m_UpdateAmmoEvent = value; }
-    }
-
     private void Awake()
     {
         m_AmmoInClip = m_MaxAmmoInClip;
@@ -200,13 +192,10 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
 
     protected void FireUpdateAmmoEvent()
     {
-        if (m_UpdateAmmoEvent != null)
-        {
-            int reserveAmmo = 0;
-            if (m_AmmoArsenal != null) { reserveAmmo = m_AmmoArsenal.GetAmmo(m_AmmoType); }
+        int reserveAmmo = 0;
+        if (m_AmmoArsenal != null) { reserveAmmo = m_AmmoArsenal.GetAmmo(m_AmmoType); }
 
-            m_UpdateAmmoEvent(m_AmmoInClip, reserveAmmo);
-        } 
+        CallUpdateAmmoEvent(m_AmmoInClip, reserveAmmo);
     }
 
     public void SetAmmo(int ammoInClip)
