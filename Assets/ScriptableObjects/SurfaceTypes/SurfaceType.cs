@@ -41,7 +41,7 @@ public class SurfaceType : MonoBehaviour
         Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
         Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
 
-        Instantiate(m_SurfaceType.BulletImpactEffectPrefab, decalPosition, decalRotation);
+        Instantiate(m_SurfaceType.BulletImpactEffectPrefab, decalPosition, decalRotation, transform); //Parent it to ourselves
     }
 
     public GameObject SpawnImpactEffect(Vector3 position)
@@ -49,6 +49,6 @@ public class SurfaceType : MonoBehaviour
         if (m_SurfaceType.ImpactEffectPrefab == null)
             return null;
 
-        return Instantiate(m_SurfaceType.ImpactEffectPrefab, position, m_SurfaceType.ImpactEffectPrefab.transform.rotation);
+        return Instantiate(m_SurfaceType.ImpactEffectPrefab, position, m_SurfaceType.ImpactEffectPrefab.transform.rotation, transform);
     }
 }

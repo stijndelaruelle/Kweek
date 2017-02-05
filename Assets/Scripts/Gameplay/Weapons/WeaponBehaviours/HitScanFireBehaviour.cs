@@ -23,6 +23,9 @@ public class HitScanFireBehaviour : IFireBehaviour
     private int m_Damage;
 
     [SerializeField]
+    private float m_ImpactForce;
+
+    [SerializeField]
     private AnimationCurve m_DamageFalloff;
 
     [SerializeField]
@@ -153,7 +156,6 @@ public class HitScanFireBehaviour : IFireBehaviour
         {
             //Damage calculation
             int damage = CalculateDamage(ray.origin, hitInfo.point, range, m_Damage);
-
             damageableObject.Damage(damage);
             return;
         }
@@ -163,6 +165,14 @@ public class HitScanFireBehaviour : IFireBehaviour
         if (surfaceType != null)
         {
             surfaceType.SpawnBulletImpactEffect(hitInfo);
+        }
+
+        //Did we hit a rigidbody?
+        Rigidbody rigidBody = go.GetComponent<Rigidbody>();
+        if (rigidBody != null)
+        {
+            float impactForce = CalculateImpactForce(ray.origin, hitInfo.point, range, m_ImpactForce);
+            rigidBody.AddForceAtPosition(-hitInfo.normal * impactForce, hitInfo.point);
         }
     }
 
@@ -222,7 +232,7 @@ public class HitScanFireBehaviour : IFireBehaviour
             //Did we hit a damageableobject?
             IDamageableObject damageableObject = go.GetComponent<IDamageableObject>();
 
-            if (damageableObject == null || damagedObjects.Contains(damageableObject.GetMainDamageableObject()) == false)
+            if (damageableObject == null || damagedObjects.Contains(damageableObject.GetMainDamageableObject()) == false) //Make sure we don't hit the same "main" object twice
             {
                 if (damageableObject != null)
                 {
@@ -262,6 +272,14 @@ public class HitScanFireBehaviour : IFireBehaviour
                         currentDamage = 0.0f;
                     }
                 }
+
+                //Did we hit a rigidbody?
+                Rigidbody rigidBody = go.GetComponent<Rigidbody>();
+                if (rigidBody != null)
+                {
+                    float impactForce = CalculateImpactForce(ray.origin, hitInfo.point, range, currentDamage);
+                    rigidBody.AddForceAtPosition(-hitInfo.normal * impactForce, hitInfo.point);
+                }
             }
 
             //No more damage remaining, no need to continue
@@ -270,14 +288,22 @@ public class HitScanFireBehaviour : IFireBehaviour
         }
     }
     
-    private int CalculateDamage(Vector3 start, Vector3 end, float range, float startDamage)
+    private int CalculateDamage(Vector3 start, Vector3 end, float range, float startingValue)
     {
         float distance = (end - start).magnitude;
         float normDistance = distance / range;
         float damagePercentage = m_DamageFalloff.Evaluate(normDistance);
 
-        //Debug.Log("Damage percentage: " + damagePercentage + " = " + (startDamage * damagePercentage));
-        return Mathf.CeilToInt(startDamage * damagePercentage);
+        return Mathf.CeilToInt(startingValue * damagePercentage);
+    }
+
+    private float CalculateImpactForce(Vector3 start, Vector3 end, float range, float startingValue)
+    {
+        float distance = (end - start).magnitude;
+        float normDistance = distance / range;
+        float damagePercentage = m_DamageFalloff.Evaluate(normDistance);
+
+        return startingValue * damagePercentage;
     }
 
     private void HandleShootingCooldown()
