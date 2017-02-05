@@ -67,6 +67,11 @@ public class Weapon : MonoBehaviour
         set { m_UpdateAmmoEvent = value; }
     }
 
+    public event SwitchWeaponCallback StartSwitchInEvent;
+    public event SwitchWeaponCallback StopSwitchInEvent;
+    public event SwitchWeaponCallback StartSwitchOutEvent;
+    public event SwitchWeaponCallback StopSwitchOutEvent;
+
     private void OnDestroy()
     {
         if (m_AmmoUseBehaviour != null)
@@ -83,7 +88,7 @@ public class Weapon : MonoBehaviour
         if (m_AmmoUseBehaviour != null)
         {
             m_AmmoUseBehaviour.UpdateAmmoEvent += OnUpdateAmmo;
-            m_AmmoUseBehaviour.Setup(ammoArsenal);
+            m_AmmoUseBehaviour.Setup(this, ammoArsenal);
         }
     }
 
@@ -158,7 +163,13 @@ public class Weapon : MonoBehaviour
     {
         m_IsSwitching = true;
 
+        if (StartSwitchOutEvent != null)
+            StartSwitchOutEvent();
+
         yield return new WaitForSeconds(m_SwitchOutTime);
+
+        if (StopSwitchOutEvent != null)
+            StopSwitchOutEvent();
 
         callback();
         m_IsSwitching = false;
@@ -168,7 +179,13 @@ public class Weapon : MonoBehaviour
     {
         m_IsSwitching = true;
 
+        if (StartSwitchInEvent != null)
+            StartSwitchInEvent();
+
         yield return new WaitForSeconds(m_SwitchInTime);
+
+        if (StopSwitchInEvent != null)
+            StopSwitchInEvent();
 
         callback();
         m_IsSwitching = false;

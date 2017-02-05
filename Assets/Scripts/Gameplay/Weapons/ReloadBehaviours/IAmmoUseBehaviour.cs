@@ -12,7 +12,7 @@ public abstract class IAmmoUseBehaviour : MonoBehaviour
         set;
     }
 
-    public abstract void Setup(AmmoArsenal ammoArsenal);
+    public abstract void Setup(Weapon weapon, AmmoArsenal ammoArsenal);
     public abstract void PerformAction();
 
     public abstract void UseAmmo(int amount);

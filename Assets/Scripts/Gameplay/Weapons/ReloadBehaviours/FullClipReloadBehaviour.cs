@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class FullClipReloadBehaviour : IAmmoUseBehaviour
 {
+    protected Weapon m_Weapon;
+
     [Space(10)]
     [Header("Ammo options")]
     [Space(5)]
@@ -45,13 +47,14 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         m_AmmoInClip = m_MaxAmmoInClip;
     }
 
-    private void OnEnable()
-    {
-        FireUpdateAmmoEvent();
-    }
-
     private void OnDestroy()
     {
+        if (m_Weapon != null)
+        {
+            m_Weapon.StartSwitchInEvent += OnStartWeaponSwitchIn;
+            m_Weapon.StopSwitchInEvent += OnStopWeaponSwitchIn;
+        }
+
         if (m_AmmoArsenal != null)
             m_AmmoArsenal.UpdateReserveAmmoEvent -= OnUpdateReserveAmmo;
     }
@@ -66,8 +69,16 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         StartReload();
     }
 
-    public override void Setup(AmmoArsenal ammoArsenal)
+    public override void Setup(Weapon weapon, AmmoArsenal ammoArsenal)
     {
+        m_Weapon = weapon;
+
+        if (m_Weapon != null)
+        {
+            m_Weapon.StartSwitchInEvent += OnStartWeaponSwitchIn;
+            m_Weapon.StopSwitchInEvent += OnStopWeaponSwitchIn;
+        }
+
         m_AmmoArsenal = ammoArsenal;
 
         if (m_AmmoArsenal != null)
@@ -175,7 +186,6 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         }
     }
 
-
     public override bool CanUse()
     {
         //If the weapon tries to use us, but we're out of ammo.
@@ -199,14 +209,6 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
         } 
     }
 
-    private void OnUpdateReserveAmmo(AmmoTypeDefinition ammoType, int amount)
-    {
-        if (m_AmmoType == ammoType)
-            FireUpdateAmmoEvent();
-
-        AutoReload();
-    }
-
     public void SetAmmo(int ammoInClip)
     {
         //Mainly used by the ammo pickup, ammo will soon be implemented diffrently
@@ -222,5 +224,25 @@ public class FullClipReloadBehaviour : IAmmoUseBehaviour
     public override void SetPickupAmmo(WeaponPickup pickup)
     {
         pickup.Ammo = m_AmmoInClip;
+    }
+
+
+    //Event callbacks
+    private void OnStartWeaponSwitchIn()
+    {
+        FireUpdateAmmoEvent();
+    }
+
+    private void OnStopWeaponSwitchIn()
+    {
+        AutoReload();
+    }
+
+    private void OnUpdateReserveAmmo(AmmoTypeDefinition ammoType, int amount)
+    {
+        if (m_AmmoType == ammoType)
+            FireUpdateAmmoEvent();
+
+        AutoReload();
     }
 }
