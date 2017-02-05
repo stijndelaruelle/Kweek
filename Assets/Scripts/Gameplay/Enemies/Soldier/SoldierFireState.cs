@@ -18,6 +18,9 @@ public class SoldierFireState : IAbstractState
     private float m_FireDelayTimer = 0.0f;
 
     [SerializeField]
+    private float m_MaxShootRange = 5.0f;
+
+    [SerializeField]
     private float m_BurstDistance = 5.0f;
 
     [SerializeField]
@@ -108,6 +111,12 @@ public class SoldierFireState : IAbstractState
         //Check the distance between us and the target
         Vector3 diff = m_Target.bounds.center - m_FirePosition.position;
         float distance = diff.magnitude;
+
+        //If we are too far away, chase to the position!
+        if (distance > m_MaxShootRange)
+        {
+            SwitchOut();
+        }
 
         //Full auto
         if (distance < m_BurstDistance)

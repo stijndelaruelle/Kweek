@@ -35,6 +35,10 @@ public class Weapon : MonoBehaviour
 
     [SerializeField]
     private float m_ThrowSpeed;
+    public float ThrowSpeed
+    {
+        get { return m_ThrowSpeed; }
+    }
 
     [Space(10)]
     [Header("Animation")]

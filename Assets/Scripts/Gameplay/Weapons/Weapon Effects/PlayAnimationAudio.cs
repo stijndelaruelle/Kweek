@@ -12,6 +12,9 @@ public class PlayAnimationAudio : MonoBehaviour
     private int m_MaxChannels;
 
     [SerializeField]
+    private AudioClip m_PresetClip;
+
+    [SerializeField]
     private bool m_3D = false;
 
     [SerializeField]
@@ -40,10 +43,19 @@ public class PlayAnimationAudio : MonoBehaviour
         }
     }
 
+    public void PlayPresetAudio()
+    {
+        PlayAudioClip(m_PresetClip);
+    }
+
     public void PlayAudio(Object objAudioClip)
     {
         AudioClip audioClip = (objAudioClip as AudioClip);
+        PlayAudioClip(audioClip);
+    }
 
+    private void PlayAudioClip(AudioClip audioClip)
+    {
         if (audioClip == null)
             return;
 

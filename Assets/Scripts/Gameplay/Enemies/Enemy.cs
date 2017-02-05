@@ -65,6 +65,8 @@ public class Enemy : MonoBehaviour, IMoveableObject
         m_DamageableObject.DeathEvent += OnDeath;
 
         m_WeaponPickup.enabled = false;
+        m_WeaponPickup.IgnoreColliders(m_Colliders); //Make sure we don't freak out when becomming a ragdoll
+
         m_AIBehaviour.Setup(m_Colliders);
     }
 
@@ -91,15 +93,17 @@ public class Enemy : MonoBehaviour, IMoveableObject
     private void OnDeath()
     {
         Debug.Log("THE enemy DIED!");
-        //m_Animator.SetTrigger("DeathTrigger");
-        m_WeaponPickup.gameObject.transform.parent = null;
-        m_WeaponPickup.enabled = true;
-
-        m_AIBehaviour.Pause();
-        m_AIBehaviour.enabled = false;
 
         EnableCollisions();
         EnableRagdoll();
+
+        //m_Animator.SetTrigger("DeathTrigger");
+        m_WeaponPickup.gameObject.transform.parent = null;
+        m_WeaponPickup.enabled = true;
+        m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
+
+        m_AIBehaviour.Pause();
+        m_AIBehaviour.enabled = false;
     }
 
     public void OnEndHitStun()

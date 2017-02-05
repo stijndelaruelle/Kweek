@@ -22,7 +22,10 @@ public class SoldierBehaviour : MonoBehaviour
     private WeaponPickup m_WeaponPickup;
 
     [SerializeField]
-    private Transform m_WeaponGrip;
+    private Transform m_FrontWeaponGrip;
+
+    [SerializeField]
+    private Transform m_BackWeaponGrip;
 
     [Space(10)]
     [Header("Required references")]
@@ -154,10 +157,22 @@ public class SoldierBehaviour : MonoBehaviour
             AnimatorIKEvent(layerIndex);
 
         //Set the left hand to the weapongrip (layer 1 so we get new positions!)
-        if (layerIndex == 1)
+        //if (layerIndex == 1)
+        //{
+        //    m_Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+        //    m_Animator.SetIKPosition(AvatarIKGoal.RightHand, m_FrontWeaponGrip.position);
+
+        //    m_Animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+        //    m_Animator.SetIKRotation(AvatarIKGoal.RightHand, m_FrontWeaponGrip.rotation);
+        //}
+
+        if (layerIndex == 2)
         {
             m_Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-            m_Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_WeaponGrip.position);
+            m_Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_BackWeaponGrip.position);
+
+            m_Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+            m_Animator.SetIKRotation(AvatarIKGoal.LeftHand, m_BackWeaponGrip.rotation);
         }
     }
 }

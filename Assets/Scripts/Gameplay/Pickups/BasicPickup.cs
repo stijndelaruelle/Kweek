@@ -45,7 +45,7 @@ public class BasicPickup : IPickup
 
     public void OnEnable()
     {
-        //Disable the colliders
+        //Enable the colliders
         foreach (Collider collider in m_Colliders)
         {
             collider.enabled = true;
@@ -93,8 +93,11 @@ public class BasicPickup : IPickup
     public override void Drop(Vector3 force, Collider throwerCollider)
     {
         //Ignore all collision for a while with the one who dropped us
-        StopAllCoroutines();
-        StartCoroutine(IgnoreCollisionRoutine(throwerCollider));
+        if (throwerCollider != null)
+        {
+            StopAllCoroutines();
+            StartCoroutine(IgnoreCollisionRoutine(throwerCollider));
+        }
 
         float randomAngle = UnityEngine.Random.Range(-90.0f, 90.0f);
         transform.rotation *= Quaternion.Euler(0.0f, 0.0f, randomAngle);
@@ -135,6 +138,17 @@ public class BasicPickup : IPickup
         if (surfaceType != null)
         {
             m_UsedImpactEffect = surfaceType.SpawnImpactEffect(collision.contacts[0].point);
+        }
+    }
+
+    public void IgnoreColliders(List<Collider> ignoreColliders)
+    {
+        foreach (Collider collider in m_Colliders)
+        {
+            foreach (Collider ignoreCollider in ignoreColliders)
+            {
+                Physics.IgnoreCollision(collider, ignoreCollider, true);
+            }
         }
     }
 }
