@@ -14,6 +14,10 @@ public class SoldierChaseState : IAbstractState
     private float m_MovementSpeed;
     private Vector3 m_TargetPosition;
 
+    [SerializeField]
+    private float m_MinChaseTime = 1.0f; //Fixes some back and forth state switching.
+    private float m_ChaseTimer;
+
     [Space(10)]
     [Header("Scanning")]
     [Space(5)]
@@ -40,13 +44,16 @@ public class SoldierChaseState : IAbstractState
     public override void Enter()
     {
         Debug.Log("Entered Chase state!");
-        m_Soldier.NavMeshAgent.destination = m_TargetPosition;
-
+        
         m_Soldier.TriggerStayEvent += OnStateTriggerStay;
+
         m_Soldier.NavMeshAgent.Resume();
         m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
+        m_Soldier.NavMeshAgent.destination = m_TargetPosition;
 
         m_Soldier.Animator.SetTrigger("MovementTrigger");
+
+        m_ChaseTimer = 0.0f;
     }
 
     public override void Exit()
@@ -60,6 +67,8 @@ public class SoldierChaseState : IAbstractState
     public override void StateUpdate()
     {
         HandleMovement();
+
+        m_ChaseTimer += Time.deltaTime;
     }
 
     private void HandleMovement()
@@ -95,7 +104,7 @@ public class SoldierChaseState : IAbstractState
                 RaycastHit hitInfo;
                 bool success = Physics.Raycast(ray, out hitInfo);
 
-                if (success && hitInfo.collider == other)
+                if (success && hitInfo.collider == other && m_ChaseTimer >= m_MinChaseTime)
                 {
                     //Change to the firing state
                     m_Soldier.SwitchState(m_FireState);
