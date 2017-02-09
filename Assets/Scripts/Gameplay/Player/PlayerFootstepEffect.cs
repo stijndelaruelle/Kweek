@@ -22,7 +22,7 @@ public class PlayerFootstepEffect : MonoBehaviour
     [Space(5)]
 
     [SerializeField]
-    private PlayerController m_Player;
+    private PlayerMovementController m_Player;
 
     [SerializeField]
     private AudioSource m_AudioSource;

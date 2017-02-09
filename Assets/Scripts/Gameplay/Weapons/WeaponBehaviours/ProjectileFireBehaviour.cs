@@ -19,7 +19,7 @@ public class ProjectileFireBehaviour : IFireBehaviour
     private Transform m_ProjectileSpawn;
 
     [SerializeField]
-    private PlayerController m_PlayerController;
+    private PlayerMovementController m_PlayerController;
 
     [Space(10)]
     [Header("Required references")]

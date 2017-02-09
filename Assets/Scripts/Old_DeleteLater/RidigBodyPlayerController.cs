@@ -33,7 +33,7 @@ public class RidigBodyPlayerController : MonoBehaviour
     //private float m_Gravity = 20.0f;
 
     [SerializeField]
-    private Gun m_Gun;
+    //private Gun m_Gun;
 
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
@@ -123,7 +123,7 @@ public class RidigBodyPlayerController : MonoBehaviour
         {
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-            m_Gun.Fire(ray);
+            //m_Gun.Fire(ray);
         }
     }
 

@@ -5,9 +5,13 @@ using UnityEngine;
 public class WeaponArsenal : MonoBehaviour
 {
     [SerializeField]
-    private int m_MaxWeapons = 2;
+    private Player m_Player;
+    private bool m_IsActive = true;
 
     [SerializeField]
+    private int m_MaxWeapons = 2;
+
+    //[SerializeField]
     private int m_CurrentWeaponID = 0;
     private int m_LastWeaponID = -1;
 
@@ -33,8 +37,14 @@ public class WeaponArsenal : MonoBehaviour
 
     private void Start()
     {
+        if (m_Player != null)
+        {
+            m_Player.DeathEvent += OnPlayerDeath;
+            m_Player.RespawnEvent += OnPlayerRespawn;
+        }
+
         //Disable all the weapons
-        foreach(Weapon weapon in m_Weapons)
+        foreach (Weapon weapon in m_Weapons)
         {
             weapon.gameObject.SetActive(false);
 
@@ -48,12 +58,21 @@ public class WeaponArsenal : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (m_Player != null)
+        {
+            m_Player.DeathEvent -= OnPlayerDeath;
+            m_Player.RespawnEvent -= OnPlayerRespawn;
+        }
+
         if (m_Weapons.Count > 0)
             m_Weapons[m_CurrentWeaponID].UpdateAmmoEvent -= OnUpdateAmmo;
     }
 
     private void Update()
     {
+        if (!m_IsActive)
+            return;
+
         //Fire weapons
         if (m_Weapons != null && m_Weapons.Count > 0 && m_CurrentWeaponID >= 0 && m_CurrentWeaponID < m_Weapons.Count)
         {
@@ -225,7 +244,21 @@ public class WeaponArsenal : MonoBehaviour
 
     private void DropWeapon()
     {
+        if (m_CurrentWeaponID == -1 || m_Weapons.Count <= 0)
+            return;
+
         m_Weapons[m_CurrentWeaponID].Drop(m_ThrowPosition.position, m_OwnerCollider);
         RemoveWeapon(m_Weapons[m_CurrentWeaponID]);
+    }
+
+    private void OnPlayerDeath()
+    {
+        m_IsActive = false;
+        DropWeapon();
+    }
+
+    private void OnPlayerRespawn()
+    {
+        m_IsActive = true;
     }
 }

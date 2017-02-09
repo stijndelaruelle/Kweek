@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IMoveableObject
+public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private IDamageableObject m_DamageableObject;
@@ -13,56 +13,22 @@ public class Enemy : MonoBehaviour, IMoveableObject
     private SoldierBehaviour m_AIBehaviour;
 
     [SerializeField]
-    private Animator m_Animator;
-
-    [SerializeField]
-    private Rigidbody m_MainRigidbody;
-    public Rigidbody MainRigidbody
-    {
-        get { return m_MainRigidbody; }
-    }
-
-    //Get component instead of assigning, because assigning these manually is very error prone
-    private Rigidbody[] m_Rigidbodies;
-
-    private RagdollPart[] m_RagdollParts;
-    public RagdollPart[] RagdollParts
-    {
-        get { return m_RagdollParts; }
-    }
-
-    private List<Collider> m_Colliders;
-    public List<Collider> Colliders
-    {
-        get { return m_Colliders; }
-    }
-
-
-    private void Awake()
-    {
-        m_Colliders = new List<Collider>();
-        m_Colliders.AddRange(GetComponents<Collider>());
-        m_Colliders.AddRange(GetComponentsInChildren<Collider>());
-
-        //Enable kinematic (otherwise raycasts will occasionally miss!)
-        m_RagdollParts = GetComponentsInChildren<RagdollPart>();
-        m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
-
-        for (int i = 0; i < m_Rigidbodies.Length; ++i)
-        {
-            m_Rigidbodies[i].isKinematic = true;
-        }
-
-        //Enable our animator
-        m_Animator.enabled = true;
-    }
+    private Ragdoll m_Ragdoll;
 
     private void Start()
     {
         m_DamageableObject.DamageEvent += OnDamage;
         m_DamageableObject.DeathEvent += OnDeath;
 
-        m_AIBehaviour.Setup(m_Colliders);
+        //Enable kinematic (otherwise raycasts will occasionally miss!)
+        m_Ragdoll.SetKinematic(true);
+        m_Ragdoll.SetActive(false);
+
+        List<Collider> colliders = new List<Collider>();
+        colliders.AddRange(GetComponents<Collider>());
+        colliders.AddRange(GetComponentsInChildren<Collider>());
+
+        m_AIBehaviour.Setup(colliders);
     }
 
     private void OnDestroy()
@@ -90,49 +56,11 @@ public class Enemy : MonoBehaviour, IMoveableObject
     {
         Debug.Log("THE enemy DIED!");
 
-        EnableCollisions();
-        EnableRagdoll();
+        m_Ragdoll.SetKinematic(false);
+        m_Ragdoll.SetActive(true);
 
         //m_Animator.SetTrigger("DeathTrigger");
         m_AIBehaviour.OnDeath();
         m_AIBehaviour.enabled = false;
-    }
-
-    private void EnableCollisions()
-    {
-        for (int i = 0; i < m_Rigidbodies.Length; ++i)
-        {
-            m_Rigidbodies[i].isKinematic = false;
-        }
-    }
-
-    public void EnableRagdoll()
-    {
-        m_Animator.enabled = false;
-    }
-
-    public bool IsRagdollEnabled()
-    {
-        return (!m_Animator.enabled);
-    }
-    
-
-    //IMoveableObject
-    public void AddVelocity(Vector3 velocity)
-    {
-        m_Animator.enabled = false;
-
-        for (int i = 0; i < m_Rigidbodies.Length; ++i)
-        {
-            m_Rigidbodies[i].isKinematic = false;
-        }
-
-        m_MainRigidbody.AddForce(velocity);
-        Debug.Log("GOT PUSHED BACK FOR " + velocity);
-    }
-
-    public Vector3 GetCenterOfMass()
-    {
-        return m_MainRigidbody.gameObject.transform.position;
     }
 }

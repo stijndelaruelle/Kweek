@@ -18,6 +18,10 @@ public class Player : MonoBehaviour
         get { return m_WeaponArsenal; }
     }
 
+    //Events
+    public event DeathDelegate DeathEvent;
+    public event DeathDelegate RespawnEvent;
+
     private void Start()
     {
         m_DamageableObject.DeathEvent += OnDeath;
@@ -29,8 +33,30 @@ public class Player : MonoBehaviour
             m_DamageableObject.DeathEvent -= OnDeath;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            Respawn();
+        }
+    }
+
     private void OnDeath()
     {
         Debug.Log("THE PLAYER DIED!");
+
+        if (DeathEvent != null)
+            DeathEvent();
+    }
+
+    private void Respawn()
+    {
+        //For testing purposes, normally you would never respawn but load a gamestate.
+
+        //Max health
+        m_DamageableObject.Heal(m_DamageableObject.MaxHealth);
+
+        if (RespawnEvent != null)
+            RespawnEvent();
     }
 }

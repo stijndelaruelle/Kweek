@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void CameraDelegate();
 public delegate void JumpDelegate();
 public delegate void DuckDelegate(bool isDucking);
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovementController : MonoBehaviour
 {
     public enum PlayerState
     {
         Running,
         Walking,
         Ducking,
-        Airbourne
+        Airbourne,
+        Death
     }
+
+    [SerializeField]
+    private Player m_Player;
 
     [Header("Base Movement Settings")]
     [SerializeField]
@@ -115,7 +120,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private IState m_CurrentState;
-    public string CurrentState
+    public string CurrentStateString
     {
         get { return m_CurrentState.ToString(); }
     }
@@ -126,27 +131,11 @@ public class PlayerController : MonoBehaviour
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
 
-    //Events (only unsafe events because the states must be able to call it. Will change when the state machine gets refactored)
-    private DuckDelegate m_DuckEvent;
-    public DuckDelegate DuckEvent
-    {
-        get { return m_DuckEvent; }
-        set { m_DuckEvent = value; }
-    }
-
-    private JumpDelegate m_JumpEvent;
-    public JumpDelegate JumpEvent
-    {
-        get { return m_JumpEvent; }
-        set { m_JumpEvent = value; }
-    }
-
-    private JumpDelegate m_LandEvent;
-    public JumpDelegate LandEvent
-    {
-        get { return m_LandEvent; }
-        set { m_LandEvent = value; }
-    }
+    //Events (states can access because they are internal classes)
+    public event CameraDelegate UpdateCameraEvent;
+    public event DuckDelegate DuckEvent;
+    public event JumpDelegate JumpEvent;
+    public event JumpDelegate LandEvent;
 
     private void Awake()
     {
@@ -156,24 +145,34 @@ public class PlayerController : MonoBehaviour
         m_States.Add(new WalkState(this));
         m_States.Add(new DuckState(this));
         m_States.Add(new AirborneState(this));
+        m_States.Add(new DeathState(this));
     }
 
     private void Start()
     {
+        if (m_Player != null)
+        {
+            m_Player.DeathEvent += OnPlayerDeath;
+            m_Player.RespawnEvent += OnPlayerRespawn;
+        }
+
         m_CharacterTargetRot = transform.localRotation;
         m_CameraTargetRot = m_Camera.localRotation;
 
         SwitchState(PlayerState.Running);
     }
 
+    private void OnDestroy()
+    {
+        if (m_Player != null)
+        {
+            m_Player.DeathEvent -= OnPlayerDeath;
+            m_Player.RespawnEvent -= OnPlayerRespawn;
+        }
+    }
+
     private void SuperUpdate()
     {
-        //Lock cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        UpdateRotation();
-
         if (m_CurrentState != null)
             m_CurrentState.StateUpdate();
 
@@ -183,8 +182,11 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateRotation()
     {
-        //Rotate player towards mouse
+        //Lock cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
+        //Rotate player towards mouse
         float yRot = Input.GetAxis("Mouse X");// *10;
         float xRot = Input.GetAxis("Mouse Y");// *10;
 
@@ -207,6 +209,9 @@ public class PlayerController : MonoBehaviour
             m_CameraTargetRot = Quaternion.Euler(90.0f * Mathf.Sign(m_CameraTargetRot.x), 0f, 0f);
             m_Camera.localRotation = m_CameraTargetRot;
         }
+
+        if (UpdateCameraEvent != null)
+            UpdateCameraEvent();
     }
 
     public IState SwitchState(PlayerState newState)
@@ -228,6 +233,15 @@ public class PlayerController : MonoBehaviour
         return m_CurrentState;
     }
 
+    private void OnPlayerDeath()
+    {
+        SwitchState(PlayerState.Death);
+    }
+
+    private void OnPlayerRespawn()
+    {
+        SwitchState(PlayerState.Running);
+    }
 
     //Character controller
     private bool AcquiringGround()
@@ -252,9 +266,9 @@ public class PlayerController : MonoBehaviour
     //Ground states
     public class RunState : IState
     {
-        private PlayerController m_Player;
+        private PlayerMovementController m_Player;
 
-        public RunState(PlayerController player)
+        public RunState(PlayerMovementController player)
         {
             m_Player = player;
         }
@@ -264,6 +278,8 @@ public class PlayerController : MonoBehaviour
 
         public void StateUpdate()
         {
+            m_Player.UpdateRotation();
+
             HandleSwitchingStates();
             HandleHorizontalMovement();
         }
@@ -333,9 +349,9 @@ public class PlayerController : MonoBehaviour
 
     public class WalkState : IState
     {
-        private PlayerController m_Player;
+        private PlayerMovementController m_Player;
 
-        public WalkState(PlayerController player)
+        public WalkState(PlayerMovementController player)
         {
             m_Player = player;
         }
@@ -345,6 +361,8 @@ public class PlayerController : MonoBehaviour
 
         public void StateUpdate()
         {
+            m_Player.UpdateRotation();
+
             HandleSwitchingStates();
             HandleHorizontalMovement();
         }
@@ -414,9 +432,9 @@ public class PlayerController : MonoBehaviour
 
     public class DuckState : IState
     {
-        private PlayerController m_Player;
+        private PlayerMovementController m_Player;
 
-        public DuckState(PlayerController player)
+        public DuckState(PlayerMovementController player)
         {
             m_Player = player;
         }
@@ -443,6 +461,8 @@ public class PlayerController : MonoBehaviour
 
         public void StateUpdate()
         {
+            m_Player.UpdateRotation();
+
             HandleSwitchingStates();
             HandleHorizontalMovement();
         }
@@ -511,10 +531,10 @@ public class PlayerController : MonoBehaviour
     //Airborne state
     public class AirborneState : IState
     {
-        private PlayerController m_Player;
+        private PlayerMovementController m_Player;
         private int m_NumberOfJumps = 2;
 
-        public AirborneState(PlayerController player)
+        public AirborneState(PlayerMovementController player)
         {
             m_Player = player;
         }
@@ -535,6 +555,8 @@ public class PlayerController : MonoBehaviour
 
         public void StateUpdate()
         {
+            m_Player.UpdateRotation();
+
             float horizInput = Input.GetAxisRaw("Horizontal");
             float vertInput = Input.GetAxisRaw("Vertical");
             bool isJumping = Input.GetKeyDown(KeyCode.Space);
@@ -595,4 +617,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Deathstate
+    public class DeathState : IState
+    {
+        private PlayerMovementController m_Player;
+
+        public DeathState(PlayerMovementController player)
+        {
+            m_Player = player;
+        }
+
+        public void Enter()
+        {
+            m_Player.OwnCollider.enabled = false;
+        }
+
+        public void Exit()
+        {
+            m_Player.OwnCollider.enabled = true;
+        }
+
+        //The player is dead, do absolutely nothing.
+        public void StateUpdate() { }
+
+        public override string ToString()
+        {
+            return "Dead";
+        }
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraDuckMotion : MonoBehaviour
 {
     [SerializeField]
-    private PlayerController m_Player;
+    private PlayerMovementController m_Player;
 
     [SerializeField]
     private float m_Speed;
@@ -28,15 +28,19 @@ public class CameraDuckMotion : MonoBehaviour
     private void Start()
     {
         m_Player.DuckEvent += OnPlayerDuck;
+        m_Player.UpdateCameraEvent += OnUpdateCameraEvent;
     }
 
     private void OnDestroy()
     {
         if (m_Player != null)
+        {
             m_Player.DuckEvent -= OnPlayerDuck;
+            m_Player.UpdateCameraEvent -= OnUpdateCameraEvent;
+        }
     }
 
-    private void Update()
+    private void OnUpdateCameraEvent()
     {
         if (transform.localPosition != m_CurrentTargetPosition)
         {

@@ -76,7 +76,7 @@ public class RegularDamageBehaviour : IDamageableObject
         //Fire heal event
         CallHealEvent();
     }
-
+ 
     public override IDamageableObject GetMainDamageableObject()
     {
         return this;

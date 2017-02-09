@@ -36,6 +36,7 @@ public class OverhealDamageBehaviour : RegularDamageBehaviour
 
     protected override int ChangeHealth(int health)
     {
+        int prevHealth = m_Health;
         m_Health += health;
 
         int reserveHealth = 0;
@@ -52,11 +53,13 @@ public class OverhealDamageBehaviour : RegularDamageBehaviour
             m_Health = 0;
 
             //Fire death event
-            CallDeathEvent();
+            if (prevHealth != 0)
+                CallDeathEvent();
         }
 
         //Fire healthchange event
-        CallChangeHealthEvent(m_Health);
+        if (m_Health != prevHealth)
+            CallChangeHealthEvent(m_Health);
 
         return reserveHealth;
     }

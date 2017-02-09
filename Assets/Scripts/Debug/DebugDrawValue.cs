@@ -18,7 +18,7 @@ public class DebugDrawValue : MonoBehaviour
     private Text m_Text;
 
     [SerializeField]
-    private PlayerController m_Player;
+    private PlayerMovementController m_Player;
 
     [SerializeField]
     private PlayerValue m_Value;
@@ -41,7 +41,7 @@ public class DebugDrawValue : MonoBehaviour
                 break;
 
             case PlayerValue.CurrentState:
-                m_Text.text += m_Player.CurrentState;
+                m_Text.text += m_Player.CurrentStateString;
                 break;
 
             default:

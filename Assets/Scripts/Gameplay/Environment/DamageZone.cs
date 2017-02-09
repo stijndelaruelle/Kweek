@@ -35,6 +35,7 @@ public class DamageZone : MonoBehaviour
         }
     }
 
+    //Doesn't work when objects suddenly dissapear
     private void OnCollisionEnter(Collision collision)
     {
         IDamageableObject damageableObject = collision.gameObject.GetComponent<IDamageableObject>();

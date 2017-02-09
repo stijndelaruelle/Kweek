@@ -8,15 +8,19 @@ using UnityEngine;
 public class RagdollPart : MonoBehaviour
 {
     [SerializeField]
-    private Enemy m_Enemy;
+    private Ragdoll m_Ragdoll;
     private List<GameObject> m_OtherParts;
 
     private void Start()
     {
         m_OtherParts = new List<GameObject>();
-        foreach (RagdollPart part in m_Enemy.RagdollParts)
+
+        if (m_Ragdoll != null)
         {
-            m_OtherParts.Add(part.gameObject);
+            foreach (RagdollPart part in m_Ragdoll.RagdollParts)
+            {
+                m_OtherParts.Add(part.gameObject);
+            }
         }
     }
 
@@ -25,18 +29,21 @@ public class RagdollPart : MonoBehaviour
         //Play a hit sound
         PlaySurfaceImpactSound(collision);
 
-        if (m_Enemy.IsRagdollEnabled())
-            return;
+        if (m_Ragdoll != null)
+        {
+            if (m_Ragdoll.IsRagdollEnabled())
+                return;
 
-        if (m_OtherParts.Contains(collision.gameObject))
-            return;
+            if (m_OtherParts.Contains(collision.gameObject))
+                return;
 
-        //Don't start ragdolls when we just hit a regular floor (not a slope!)
-        if (collision.contacts[0].normal == Vector3.up)
-            return;
+            //Don't start ragdolls when we just hit a regular floor (not a slope!)
+            if (collision.contacts[0].normal == Vector3.up)
+                return;
 
-        Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
-        m_Enemy.EnableRagdoll();
+            Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
+            m_Ragdoll.SetActive(true);
+        }
     }
 
     private void PlaySurfaceImpactSound(Collision collision)
