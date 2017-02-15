@@ -26,12 +26,19 @@ public class SoldierFireState : IAbstractState
     [SerializeField]
     private float m_SingleShotDistance = 15.0f;
 
+    [Space(10)]
+    [Header("Chest & Hand rotation")]
+    [Space(5)]
+
     [Tooltip ("Degrees per second")]
     [SerializeField]
     private float m_ChestRotationSpeed;
 
     [SerializeField]
-    private float m_ChestRotationOffset;
+    private float m_HorizontalChestRotationOffset;
+
+    [SerializeField]
+    private float m_VerticalChestRotationOffset;
 
     [Space(10)]
     [Header("Scanning")]
@@ -51,7 +58,7 @@ public class SoldierFireState : IAbstractState
     private Collider m_Target;
     private Coroutine m_FireRoutine;
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
-
+    private Quaternion m_LastRightArmLocalRotation;
 
     private void Awake()
     {
@@ -259,26 +266,29 @@ public class SoldierFireState : IAbstractState
             m_Soldier.Animator.SetLookAtPosition(m_Target.bounds.center);
 
             //Rotate the chest
-            Quaternion desiredChestRotation = CalculateLocalBoneRotation(HumanBodyBones.Chest);
-
-            if (m_LastChestLocalRotation == Quaternion.identity)
+            if (m_ChestRotationSpeed > 0)
             {
-                m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
-                                                                    desiredChestRotation,
-                                                                    m_ChestRotationSpeed * Time.deltaTime);
-            }
-            else
-            {
-                m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation,
-                                                                    desiredChestRotation,
-                                                                    m_ChestRotationSpeed * Time.deltaTime);
-            }
+                Quaternion desiredChestRotation = CalculateLocalBoneRotation(HumanBodyBones.Chest, m_HorizontalChestRotationOffset, m_VerticalChestRotationOffset);
 
-            m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+                if (m_LastChestLocalRotation == Quaternion.identity)
+                {
+                    m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
+                                                                        desiredChestRotation,
+                                                                        m_ChestRotationSpeed * Time.deltaTime);
+                }
+                else
+                {
+                    m_LastChestLocalRotation = Quaternion.RotateTowards(m_LastChestLocalRotation,
+                                                                        desiredChestRotation,
+                                                                        m_ChestRotationSpeed * Time.deltaTime);
+                }
+
+                m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+            }
         }
     }
 
-    private Quaternion CalculateLocalBoneRotation(HumanBodyBones boneType)
+    private Quaternion CalculateLocalBoneRotation(HumanBodyBones boneType, float horizOffset, float vertOffset)
     {
         Quaternion desiredRotation;
 
@@ -288,9 +298,9 @@ public class SoldierFireState : IAbstractState
             desiredRotation = Quaternion.LookRotation(direction);
             Vector3 euler = desiredRotation.eulerAngles;
 
-            //Add the transform of the soldier, otherwise things get weird.
-            euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x);
-            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) + m_ChestRotationOffset;
+            //Add the transform of the character, otherwise things get weird.
+            euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x) + vertOffset;
+            euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) + horizOffset;
             euler.y = 0.0f;
 
             desiredRotation = Quaternion.Euler(euler);

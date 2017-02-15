@@ -65,6 +65,21 @@ public class PhysicalProjectile : MonoBehaviour
             {
                 hitObjects.Add(root);
             }
+
+            //Did we hit a rigidbody?
+            Rigidbody rigidBody = colliders[i].transform.gameObject.GetComponent<Rigidbody>();
+            if (rigidBody != null)
+            {
+                Vector3 direction = (colliders[i].bounds.center - transform.position);
+                Vector3 normDirection = direction.normalized;
+
+                float distance = direction.magnitude;
+                float normDistance = distance / m_ExplosionRadius; //0 = super close, 1 = furthest away
+                if (normDistance > 1.0f) normDistance = 1.0f;
+                float inversedNormDistance = 1.0f - normDistance;  //1 = super close, 0 = furthest away (used as a multiplier)
+
+                rigidBody.AddForceAtPosition(normDirection * (m_ExplosionForce * inversedNormDistance), colliders[i].bounds.center);
+            }
         }
 
         //For each unique object do damage & push back calculations
@@ -85,11 +100,13 @@ public class PhysicalProjectile : MonoBehaviour
             if (normDistance > 1.0f) normDistance = 1.0f;
             float inversedNormDistance = 1.0f - normDistance;  //1 = super close, 0 = furthest away (used as a multiplier)
 
-            if (damageableObject != null && damageableObject != directImpactTarget) //directImpactTarget already had his fair share
+            //Did we hit a damageableObjet
+            if (damageableObject != null && damageableObject != directImpactTarget) //directImpactTarget already had his fair share of damage
             {
                 damageableObject.Damage((int)(m_ExplosionDamage * inversedNormDistance));
             }
 
+            //Did we hit a moveableObject?
             if (moveableObject != null)
             {
                 //Always fly up a bit (for fun)

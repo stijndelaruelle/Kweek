@@ -22,9 +22,6 @@ public class SoldierBehaviour : MonoBehaviour
     private WeaponPickup m_WeaponPickup;
 
     [SerializeField]
-    private Transform m_FrontWeaponGrip;
-
-    [SerializeField]
     private Transform m_BackWeaponGrip;
 
     [Space(10)]
@@ -70,8 +67,11 @@ public class SoldierBehaviour : MonoBehaviour
     {
         m_Weapon.Setup(ownerColliders, null);
 
-        m_WeaponPickup.enabled = false;
-        m_WeaponPickup.IgnoreColliders(ownerColliders); //Make sure we don't freak out when becomming a ragdoll
+        if (m_WeaponPickup != null)
+        {
+            m_WeaponPickup.enabled = false;
+            m_WeaponPickup.IgnoreColliders(ownerColliders); //Make sure we don't freak out when becomming a ragdoll
+        }
     }
 
     private void OnDestroy()
@@ -108,7 +108,8 @@ public class SoldierBehaviour : MonoBehaviour
 
     private void OnUpdateWeaponAmmo(int ammoInClip, int reserveAmmo)
     {
-        m_WeaponPickup.Ammo = ammoInClip;
+        if (m_WeaponPickup != null)
+            m_WeaponPickup.Ammo = ammoInClip;
     }
 
     public IState SwitchState(IState newState)
@@ -151,7 +152,7 @@ public class SoldierBehaviour : MonoBehaviour
         if (AnimatorIKEvent != null)
             AnimatorIKEvent(layerIndex);
 
-        //Set the left hand to the weapongrip (layer 1 so we get new positions!)
+        ////Set the left hand to the weapongrip(layer 1 so we get new positions!)
         //if (layerIndex == 1)
         //{
         //    m_Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
@@ -161,7 +162,7 @@ public class SoldierBehaviour : MonoBehaviour
         //    m_Animator.SetIKRotation(AvatarIKGoal.RightHand, m_FrontWeaponGrip.rotation);
         //}
 
-        if (layerIndex == 2)
+        if (layerIndex == 2 && m_BackWeaponGrip != null)
         {
             m_Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
             m_Animator.SetIKPosition(AvatarIKGoal.LeftHand, m_BackWeaponGrip.position);

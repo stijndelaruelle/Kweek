@@ -182,14 +182,14 @@ public class HitScanFireBehaviour : IFireBehaviour
 
         Ray inverseRay = new Ray(ray.origin + ray.direction * range, ray.direction * -1);
 
+        Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);
+        Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
+
         List<RaycastHit> regularList = CustomRaycastAll(ray, range);
         if (regularList.Count == 0)
             return;
 
         List<RaycastHit> inverseList = CustomRaycastAll(inverseRay, range);
-
-        Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 5.0f);
-        Debug.DrawRay(inverseRay.origin, inverseRay.direction * range, Color.yellow, 5.0f);
 
         //Ignore certain colliders (owner)
         if (m_IgnoredColliders != null && m_IgnoredColliders.Count > 0)
@@ -350,6 +350,7 @@ public class HitScanFireBehaviour : IFireBehaviour
     {
         return m_AmmoUseage;
     }
+
 
     public List<RaycastHit> CustomRaycastAll(Ray ray, float range)
     {

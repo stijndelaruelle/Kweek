@@ -18,9 +18,6 @@ public class ProjectileFireBehaviour : IFireBehaviour
     [SerializeField]
     private Transform m_ProjectileSpawn;
 
-    [SerializeField]
-    private PlayerMovementController m_PlayerController;
-
     [Space(10)]
     [Header("Required references")]
     [Space(5)]
@@ -29,9 +26,11 @@ public class ProjectileFireBehaviour : IFireBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
+    private List<Collider> m_IgnoredColliders;
+
     public override void Setup(List<Collider> ignoredColliders)
     {
-        //Use later when we rewrite this part.
+        m_IgnoredColliders = ignoredColliders;
     }
 
     private void Update()
@@ -45,11 +44,11 @@ public class ProjectileFireBehaviour : IFireBehaviour
 
         if (projectile != null)
         {
-            Vector3 targetPosition = originalRay.origin + (originalRay.direction * 1000.0f); //A position far away
-            Vector3 direction = (targetPosition - m_ProjectileSpawn.position).normalized;
+            //Vector3 targetPosition = originalRay.origin + (originalRay.direction * 1000.0f); //A position far away
+            //Vector3 direction = (targetPosition - m_ProjectileSpawn.position).normalized;
 
             //Look at this at a later stage. Controllers have undergone huge changes.
-            //projectile.Fire(m_PlayerController.CurrentVelocity, direction);
+            projectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
 
             //Animation & Cooldown
             m_Animator.SetTrigger(m_TriggerName);
