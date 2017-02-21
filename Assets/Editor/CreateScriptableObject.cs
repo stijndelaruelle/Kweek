@@ -5,6 +5,19 @@ using System.IO;
 
 public class CreateScriptableObject
 {
+    [MenuItem("Assets/Create/Custom/LevelData")]
+    public static void CreateLevelData()
+    {
+        CreateAsset<LevelDataDefinition>();
+    }
+
+    [MenuItem("Assets/Create/Custom/LevelDataList")]
+    public static void CreateLevelListData()
+    {
+        CreateAsset<LevelDataListDefinition>();
+    }
+
+
     [MenuItem("Assets/Create/Custom/SurfaceType")]
     public static void CreateSurfaceType()
     {
