@@ -66,7 +66,8 @@ public class PickupHandler : MonoBehaviour
 
     private void FireChangePickupEvent(IPickup pickup)
     {
-        ChangePickupEvent(pickup);
+        if (ChangePickupEvent != null)
+            ChangePickupEvent(pickup);
     }
 
     private void OnPlayerDeath()

@@ -23,19 +23,6 @@ public class MainMenuOverlay : MonoBehaviour
                 SetVisible(!IsVisible());
             }
         }
-
-        //Alt-tabbing fix (put is somewhere else?)
-        if (Cursor.lockState == CursorLockMode.None)
-        {
-            if (IsVisible())
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-        }
     }
 
     public void Show()

@@ -14,7 +14,7 @@ public class PickupPanel : MonoBehaviour
     [SerializeField]
     private PickupHandler m_PickupHandler;
 
-    private void Awake()
+    private void Start()
     {
         m_PickupHandler.ChangePickupEvent += OnChangePickup;
         m_Visuals.SetActive(false);
