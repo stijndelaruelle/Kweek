@@ -6,9 +6,6 @@ using UnityEngine.UI;
 public class LevelSelectPanel : MonoBehaviour
 {
     [SerializeField]
-    private LevelDataListDefinition m_LevelList;
-
-    [SerializeField]
     private LevelSelectToggle m_TogglePrefab;
 
     [SerializeField]
@@ -29,7 +26,7 @@ public class LevelSelectPanel : MonoBehaviour
         //Create new toggles
         m_LevelSelectToggles = new List<LevelSelectToggle>();
 
-        List<LevelDataDefinition> levelData = m_LevelList.Levels;
+        List<LevelDataDefinition> levelData = LevelManager.Instance.GetLevelDataList();
         for (int i = 0; i < levelData.Count; ++i)
         {
             LevelSelectToggle toggle = GameObject.Instantiate<LevelSelectToggle>(m_TogglePrefab);

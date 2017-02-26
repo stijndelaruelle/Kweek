@@ -72,4 +72,15 @@ public class LevelManager : Singleton<LevelManager>
 
         return (activeScene == currentScene);
     }
+
+
+    public List<LevelDataDefinition> GetLevelDataList()
+    {
+        return m_LevelList.Levels;
+    }
+
+    public LevelDataDefinition GetLevelData(int levelID)
+    {
+        return m_LevelList.GetLevel(levelID);
+    }
 }
