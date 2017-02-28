@@ -37,7 +37,6 @@ public class SaveGame
         get { return m_PlayTime; }
         set { m_PlayTime = value; }
     }
-    private Stopwatch m_StopWatch;
 
     private DirectoryInfo m_DirectoryInfo;
     public DirectoryInfo DirectoryInfo
@@ -52,8 +51,6 @@ public class SaveGame
 
     public SaveGame()
     {
-        m_StopWatch = new Stopwatch();
-
         m_SaveGameName = "Unnamed save file";
         m_LevelID = -1;
         m_PlayTime = 0;
@@ -61,8 +58,6 @@ public class SaveGame
 
     public SaveGame(DirectoryInfo directoryInfo, string metaDataFileName, string saveGameFileName)
     {
-        m_StopWatch = new Stopwatch();
-
         m_DirectoryInfo = directoryInfo;
         m_MetaDataFileName = metaDataFileName;
         m_SaveGameFileName = saveGameFileName;
@@ -157,6 +152,12 @@ public class SaveGame
         if (saveTimeNode == null) { throw new System.Exception("A save game doesn't contain a \"savetime\" node! Source: " + jsonNode.ToString()); }
         m_SaveTime = DateTime.ParseExact(saveTimeNode.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
     }
+
+    //For students, use this function to get the filepath you want to parse
+    public string GetSaveFilePath()
+    {
+        return m_DirectoryInfo.FullName + "/" + m_SaveGameFileName;
+    }
 }
 
 public class SaveGameManager : Singleton<SaveGameManager>
@@ -181,6 +182,8 @@ public class SaveGameManager : Singleton<SaveGameManager>
     {
         get { return m_SaveGames; }
     }
+
+    private SaveGame m_ActiveSaveGame;
 
     //Events
     public event SaveGameDelegate SaveGameAddedEvent;
@@ -217,6 +220,12 @@ public class SaveGameManager : Singleton<SaveGameManager>
             SaveGamesLoadedEvent();
     }
 
+    public void ActivateSaveGame(SaveGame saveGame)
+    {
+        m_ActiveSaveGame = saveGame;
+        //Activate to count the playtime? Who is counting this?
+    }
+
     public void CreateSaveGame(string name)
     {
 
@@ -224,7 +233,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
     public void EditSaveGame(SaveGame saveGame, string name, int levelID, int blabla)
     {
-
+        //TODO
     }
 
     public void DeleteSaveGame(SaveGame saveGame)
@@ -251,6 +260,8 @@ public class SaveGameManager : Singleton<SaveGameManager>
         }
     }
 
+
+    //Utility
     private DirectoryInfo FindOrCreateDirectory(DirectoryInfo rootDirectory, string name)
     {
         if (rootDirectory == null)

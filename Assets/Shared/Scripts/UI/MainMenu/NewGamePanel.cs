@@ -11,9 +11,6 @@ public class NewGamePanel : MonoBehaviour
     [SerializeField]
     private ImageFader m_ImageFader;
 
-    [SerializeField]
-    private MainMenuOverlay m_MainMenuOverlay;
-
     public void StartNewGame()
     {
         m_ImageFader.FadeIn(OnFadeInComplete);
@@ -22,8 +19,6 @@ public class NewGamePanel : MonoBehaviour
     private void OnFadeInComplete()
     {
         LevelManager.Instance.LoadLevel(m_LevelToggleGroup.SelectedLevelData);
-        m_MainMenuOverlay.Hide();
-
         m_ImageFader.SetAlphaMin();
     }
 }

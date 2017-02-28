@@ -18,6 +18,9 @@ public class ManageSaveGamePanel : MonoBehaviour
     [SerializeField]
     private PopupPanel m_PopupWindow;
 
+    [SerializeField]
+    private ImageFader m_ImageFader;
+
     private SaveGame m_SelectedSaveGame = null;
     public SaveGame SelectedSaveGame
     {
@@ -34,10 +37,7 @@ public class ManageSaveGamePanel : MonoBehaviour
         saveGameManager.SaveGamesLoadedEvent += OnSaveGamesLoaded;
 
         m_SaveGameSelectToggles = new List<SaveGameSelectToggle>();
-    }
 
-    private void OnEnable()
-    {
         Refresh();
     }
 
@@ -72,6 +72,7 @@ public class ManageSaveGamePanel : MonoBehaviour
 
     public void LoadSaveGame()
     {
+        m_ImageFader.FadeIn(OnFadeInComplete);
 
     }
 
@@ -96,6 +97,7 @@ public class ManageSaveGamePanel : MonoBehaviour
         return -1;
     }
 
+    //Popup callback
     private void OnDeleteYesClicked()
     {
         SaveGameManager.Instance.DeleteSaveGame(m_SelectedSaveGame);
@@ -180,5 +182,13 @@ public class ManageSaveGamePanel : MonoBehaviour
         }
     }
 
+    //Imagefader callback
+    private void OnFadeInComplete()
+    {
+        SaveGameManager.Instance.ActivateSaveGame(m_SelectedSaveGame);
 
+        //Switch to the correct scene
+        LevelManager.Instance.LoadLevel(m_SelectedSaveGame.LevelID);
+        m_ImageFader.SetAlphaMin();
+    }
 }
