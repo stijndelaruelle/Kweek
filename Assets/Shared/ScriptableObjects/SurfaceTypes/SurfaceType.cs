@@ -37,11 +37,21 @@ public class SurfaceType : MonoBehaviour
         if (m_SurfaceType.BulletImpactEffectPrefab == null)
             return;
 
-        //Spawn the decal (pool this later)
-        Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
-        Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
+        ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_SurfaceType.BulletImpactEffectPrefab);
 
-        Instantiate(m_SurfaceType.BulletImpactEffectPrefab, decalPosition, decalRotation, transform); //Parent it to ourselves
+        if (pool != null)
+        {
+            PoolableObject bulletImpactEffect = pool.ActivateAvailableObject();
+            if (bulletImpactEffect != null)
+            {
+                Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
+                Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
+
+                bulletImpactEffect.transform.position = decalPosition;
+                bulletImpactEffect.transform.rotation = decalRotation;
+                bulletImpactEffect.transform.SetParent(transform);
+            }
+        }
     }
 
     public GameObject SpawnImpactEffect(Vector3 position)
@@ -49,6 +59,21 @@ public class SurfaceType : MonoBehaviour
         if (m_SurfaceType.ImpactEffectPrefab == null)
             return null;
 
-        return Instantiate(m_SurfaceType.ImpactEffectPrefab, position, m_SurfaceType.ImpactEffectPrefab.transform.rotation, transform);
+        ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_SurfaceType.ImpactEffectPrefab);
+
+        if (pool != null)
+        {
+            PoolableObject impactEffect = pool.ActivateAvailableObject();
+            if (impactEffect != null)
+            {
+                impactEffect.transform.position = position;
+                impactEffect.transform.rotation = m_SurfaceType.ImpactEffectPrefab.transform.rotation;
+                impactEffect.transform.SetParent(transform);
+
+                return impactEffect.gameObject;
+            }
+        }
+
+        return null;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletImpactEffect : MonoBehaviour
+public class BulletImpactEffect : PoolableObject
 {
     [SerializeField]
     private List<Sprite> m_Decals;
@@ -27,7 +27,13 @@ public class BulletImpactEffect : MonoBehaviour
     [SerializeField]
     private AudioSource m_AudioSource;
 
-    private void Awake()
+    //PoolableObject
+    public override void Initialize()
+    {
+
+    }
+
+    public override void Activate()
     {
         //Set a random sprite
         if (m_SpriteRenderer != null && m_Decals.Count > 0)
@@ -35,6 +41,7 @@ public class BulletImpactEffect : MonoBehaviour
             int randomDecalID = 0;
             if (m_Decals.Count > 1) randomDecalID = Random.Range(0, m_Decals.Count);
 
+            m_SpriteRenderer.enabled = true;
             m_SpriteRenderer.sprite = m_Decals[randomDecalID];
         }
 
@@ -49,4 +56,14 @@ public class BulletImpactEffect : MonoBehaviour
         }
     }
 
+    public override void Deactivate()
+    {
+        m_SpriteRenderer.enabled = false;
+        m_AudioSource.Stop();
+    }
+
+    public override bool IsAvailable()
+    {
+        return true;
+    }
 }
