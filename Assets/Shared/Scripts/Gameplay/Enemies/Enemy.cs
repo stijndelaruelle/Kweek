@@ -17,18 +17,27 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        m_DamageableObject.DamageEvent += OnDamage;
-        m_DamageableObject.DeathEvent += OnDeath;
+        if (m_DamageableObject != null)
+        {
+            m_DamageableObject.DamageEvent += OnDamage;
+            m_DamageableObject.DeathEvent += OnDeath;
+        }
 
         //Enable kinematic (otherwise raycasts will occasionally miss!)
-        m_Ragdoll.SetKinematic(true);
-        m_Ragdoll.SetActive(false);
+        if (m_Ragdoll != null)
+        {
+            m_Ragdoll.SetKinematic(true);
+            m_Ragdoll.SetActive(false);
+        }
 
-        List<Collider> colliders = new List<Collider>();
-        colliders.AddRange(GetComponents<Collider>());
-        colliders.AddRange(GetComponentsInChildren<Collider>());
+        if (m_AIBehaviour != null)
+        {
+            List<Collider> colliders = new List<Collider>();
+            colliders.AddRange(GetComponents<Collider>());
+            colliders.AddRange(GetComponentsInChildren<Collider>());
 
-        m_AIBehaviour.Setup(colliders);
+            m_AIBehaviour.Setup(colliders);
+        }
     }
 
     private void OnDestroy()
@@ -56,11 +65,17 @@ public class Enemy : MonoBehaviour
     {
         Debug.Log("THE enemy DIED!");
 
-        m_Ragdoll.SetKinematic(false);
-        m_Ragdoll.SetActive(true);
+        if (m_Ragdoll != null)
+        {
+            m_Ragdoll.SetKinematic(false);
+            m_Ragdoll.SetActive(true);
+        }
 
-        //m_Animator.SetTrigger("DeathTrigger");
-        m_AIBehaviour.OnDeath();
-        m_AIBehaviour.enabled = false;
+        if (m_AIBehaviour != null)
+        {
+            //m_Animator.SetTrigger("DeathTrigger");
+            m_AIBehaviour.OnDeath();
+            m_AIBehaviour.enabled = false;
+        }
     }
 }
