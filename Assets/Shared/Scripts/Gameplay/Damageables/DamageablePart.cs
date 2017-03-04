@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +39,11 @@ public class DamageablePart : IDamageableObject
     {
         m_MainObject.Heal(Mathf.CeilToInt(health * m_DamageMultiplier));
         CallHealEvent();
+    }
+
+    public override bool IsDead()
+    {
+        return m_MainObject.IsDead();
     }
 
     public override IDamageableObject GetMainDamageableObject()

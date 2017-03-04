@@ -124,7 +124,9 @@ public class SoldierBehaviour : MonoBehaviour
             m_CurrentState.Exit();
 
         m_CurrentState = newState;
-        m_CurrentState.Enter();
+
+        if (m_CurrentState != null)
+            m_CurrentState.Enter();
 
         return m_CurrentState;
     }
@@ -174,8 +176,14 @@ public class SoldierBehaviour : MonoBehaviour
 
     public void OnDeath()
     {
+        SwitchState(null);
+
+        //Throw the weapon
         m_WeaponPickup.enabled = true;
         m_WeaponPickup.gameObject.transform.parent = null;
         m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
+
+        //Disable our navmesh
+        m_NavMeshAgent.enabled = false;
     }
 }

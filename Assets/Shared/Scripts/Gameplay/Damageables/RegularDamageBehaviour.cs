@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -76,7 +77,12 @@ public class RegularDamageBehaviour : IDamageableObject
         //Fire heal event
         CallHealEvent();
     }
- 
+
+    public override bool IsDead()
+    {
+        return m_HasDied;
+    }
+
     public override IDamageableObject GetMainDamageableObject()
     {
         return this;

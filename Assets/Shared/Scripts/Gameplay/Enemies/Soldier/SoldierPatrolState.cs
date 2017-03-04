@@ -83,7 +83,9 @@ public class SoldierPatrolState : IAbstractState
             return;
 
         NavMeshAgent agent = m_Soldier.NavMeshAgent;
-        Animator animator = m_Soldier.Animator;
+
+        if (agent == null)
+            return;
 
         //Check if we reached our destination
         if (agent.remainingDistance <= 0.5f)

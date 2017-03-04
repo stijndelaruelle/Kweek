@@ -40,7 +40,7 @@ public class DamageZone : MonoBehaviour
     {
         IDamageableObject damageableObject = collision.gameObject.GetComponent<IDamageableObject>();
 
-        if (damageableObject != null)
+        if (damageableObject != null && damageableObject.IsDead() == false)
         {
             if (m_DamageableObjects.Contains(damageableObject) == false)
             {

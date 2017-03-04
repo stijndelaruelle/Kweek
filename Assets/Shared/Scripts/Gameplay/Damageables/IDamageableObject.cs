@@ -49,5 +49,8 @@ public abstract class IDamageableObject : MonoBehaviour
 
     public abstract int Damage(int health);
     public abstract void Heal(int health);
+
+    public abstract bool IsDead();
+
     public abstract IDamageableObject GetMainDamageableObject();
 }

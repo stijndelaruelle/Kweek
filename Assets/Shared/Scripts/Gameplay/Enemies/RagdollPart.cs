@@ -26,15 +26,15 @@ public class RagdollPart : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Play a hit sound
-        PlaySurfaceImpactSound(collision);
-
         if (m_Ragdoll != null)
         {
-            if (m_Ragdoll.IsRagdollEnabled())
+            if (m_OtherParts.Contains(collision.gameObject))
                 return;
 
-            if (m_OtherParts.Contains(collision.gameObject))
+            //Play a hit sound
+            PlaySurfaceImpactSound(collision);
+
+            if (m_Ragdoll.IsRagdollEnabled())
                 return;
 
             //Don't start ragdolls when we just hit a regular floor (not a slope!)
