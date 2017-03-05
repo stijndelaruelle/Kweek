@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnvironmentSound : MonoBehaviour
+public class EnvironmentSound : PoolableObject
 {
     [SerializeField]
     private List<AudioClip> m_AudioClips;
@@ -18,7 +18,13 @@ public class EnvironmentSound : MonoBehaviour
     [SerializeField]
     private AudioSource m_AudioSource;
 
-    private void Awake()
+    //PoolableObject
+    public override void Initialize()
+    {
+
+    }
+
+    public override void Activate()
     {
         //Play a random hit sound
         if (m_AudioSource != null && m_AudioClips.Count > 0)
@@ -28,20 +34,16 @@ public class EnvironmentSound : MonoBehaviour
 
             m_AudioSource.clip = m_AudioClips[randomClipID];
             m_AudioSource.Play();
-
-            StartCoroutine(DestroyRoutine());
-        }
-        else
-        {
-            Destroy(this.gameObject);
         }
     }
 
-    //Should be pooled in the future
-    private IEnumerator DestroyRoutine()
+    public override void Deactivate()
     {
-        yield return new WaitForSeconds(m_AudioSource.clip.length);
-        Destroy(this.gameObject);
+        m_AudioSource.Stop();
     }
 
+    public override bool IsAvailable()
+    {
+        return true;
+    }
 }

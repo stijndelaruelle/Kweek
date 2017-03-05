@@ -2,21 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletImpactEffect : PoolableObject
+[RequireComponent (typeof(SpriteRenderer))]
+[RequireComponent(typeof(AudioSource))]
+public class WeaponImpactEffect : PoolableObject
 {
     [SerializeField]
-    private List<Sprite> m_Decals;
-    public List<Sprite> Decals
-    {
-        get { return m_Decals; }
-    }
-
-    [SerializeField]
-    private List<AudioClip> m_AudioClips;
-    public List<AudioClip> AudioClips
-    {
-        get { return m_AudioClips; }
-    }
+    private WeaponImpactEffectDefinition m_Definition;
 
     [Space(5)]
     [Header ("Required references")]
@@ -27,6 +18,11 @@ public class BulletImpactEffect : PoolableObject
     [SerializeField]
     private AudioSource m_AudioSource;
 
+    public void InitializeWeaponImpactEffect(WeaponImpactEffectDefinition definition)
+    {
+        m_Definition = definition;
+    }
+
     //PoolableObject
     public override void Initialize()
     {
@@ -36,22 +32,22 @@ public class BulletImpactEffect : PoolableObject
     public override void Activate()
     {
         //Set a random sprite
-        if (m_SpriteRenderer != null && m_Decals.Count > 0)
+        if (m_SpriteRenderer != null && m_Definition.Decals.Count > 0)
         {
             int randomDecalID = 0;
-            if (m_Decals.Count > 1) randomDecalID = Random.Range(0, m_Decals.Count);
+            if (m_Definition.Decals.Count > 1) randomDecalID = Random.Range(0, m_Definition.Decals.Count);
 
             m_SpriteRenderer.enabled = true;
-            m_SpriteRenderer.sprite = m_Decals[randomDecalID];
+            m_SpriteRenderer.sprite = m_Definition.Decals[randomDecalID];
         }
 
         //Play a random hit sound
-        if (m_AudioSource != null && m_AudioClips.Count > 0)
+        if (m_AudioSource != null && m_Definition.AudioClips.Count > 0)
         {
             int randomClipID = 0;
-            if (m_AudioClips.Count > 1) randomClipID = Random.Range(0, m_AudioClips.Count);
+            if (m_Definition.AudioClips.Count > 1) randomClipID = Random.Range(0, m_Definition.AudioClips.Count);
 
-            m_AudioSource.clip = m_AudioClips[randomClipID];
+            m_AudioSource.clip = m_Definition.AudioClips[randomClipID];
             m_AudioSource.Play();
         }
     }

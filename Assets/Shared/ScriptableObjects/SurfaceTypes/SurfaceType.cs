@@ -34,14 +34,14 @@ public class SurfaceType : MonoBehaviour
 
     public void SpawnBulletImpactEffect(RaycastHit hitInfo)
     {
-        if (m_SurfaceType.BulletImpactEffectPrefab == null)
+        if (m_SurfaceType.WeaponImpactEffectPrefab == null)
             return;
 
-        ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_SurfaceType.BulletImpactEffectPrefab);
+        ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_SurfaceType.WeaponImpactEffectPrefab);
 
-        if (pool != null)
+        if (pool != null && pool.IsPoolType<WeaponImpactEffect>())
         {
-            PoolableObject bulletImpactEffect = pool.ActivateAvailableObject();
+            WeaponImpactEffect bulletImpactEffect = pool.GetAvailableObject() as WeaponImpactEffect;
             if (bulletImpactEffect != null)
             {
                 Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
@@ -50,6 +50,9 @@ public class SurfaceType : MonoBehaviour
                 bulletImpactEffect.transform.position = decalPosition;
                 bulletImpactEffect.transform.rotation = decalRotation;
                 bulletImpactEffect.transform.SetParent(transform);
+
+                bulletImpactEffect.InitializeWeaponImpactEffect(m_SurfaceType.BulletImpactEffectDefinition);
+                bulletImpactEffect.Activate();
             }
         }
     }

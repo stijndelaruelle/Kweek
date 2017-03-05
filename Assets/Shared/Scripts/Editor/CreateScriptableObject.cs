@@ -30,6 +30,12 @@ public class CreateScriptableObject
         CreateAsset<AmmoTypeDefinition>();
     }
 
+    [MenuItem("Assets/Create/Custom/Weapon Impact Effect")]
+    public static void CreateWeaponImpactEffect()
+    {
+        CreateAsset<WeaponImpactEffectDefinition>();
+    }
+
     public static void CreateAsset<T>() where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();

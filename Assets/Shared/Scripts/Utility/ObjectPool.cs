@@ -123,7 +123,7 @@ public class ObjectPool : MonoBehaviour
         return pooledObject;
     }
 
-    private PoolableObject GetAvailableObject()
+    public PoolableObject GetAvailableObject()
     {
         //Using this function, the pool will never grow
         if (m_PooledObjects.Count <= 0)
@@ -140,7 +140,7 @@ public class ObjectPool : MonoBehaviour
         return pooledObject;
     }
 
-    private PoolableObject GetAvailableObjectNonDisruptive()
+    public PoolableObject GetAvailableObjectNonDisruptive()
     {
         if (m_PooledObjects.Count <= 0)
             return null;
