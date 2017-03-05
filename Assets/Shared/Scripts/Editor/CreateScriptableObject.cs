@@ -36,6 +36,12 @@ public class CreateScriptableObject
         CreateAsset<ImpactEffectDefinition>();
     }
 
+    [MenuItem("Assets/Create/Custom/Bullet Shell")]
+    public static void CreateBulletShell()
+    {
+        CreateAsset<BulletShellDefinition>();
+    }
+
     public static void CreateAsset<T>() where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();

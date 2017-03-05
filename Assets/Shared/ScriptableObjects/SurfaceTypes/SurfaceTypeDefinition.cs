@@ -45,7 +45,7 @@ public class SurfaceTypeDefinition : ScriptableObject
     [Header("Impact effects")]
     [Space(5)]
     [SerializeField]
-    private PoolableObject m_ImpactEffectPrefab;
+    private PoolableObject m_ImpactEffectPrefab;     //Should be simplified to clean up the inspector
     public PoolableObject ImpactEffectPrefab
     {
         get { return m_ImpactEffectPrefab; }

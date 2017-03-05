@@ -7,8 +7,12 @@ public class BulletShellEjector : MonoBehaviour
     [SerializeField]
     private Weapon m_Weapon;
 
+    //Should be simplified to clean up the inspector
     [SerializeField]
-    private BulletShell m_BulletShell;
+    private BulletShell m_BulletShellPrefab;
+
+    [SerializeField]
+    private BulletShellDefinition m_BulletShellDefinition;
 
     [SerializeField]
     private float m_EjectSpeed;
@@ -56,10 +60,25 @@ public class BulletShellEjector : MonoBehaviour
 
     private void EjectShell()
     {
-        BulletShell bulletShell = GameObject.Instantiate(m_BulletShell, transform.position, transform.rotation *  m_BulletShell.transform.rotation);
+        ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_BulletShellPrefab);
 
-        bulletShell.transform.parent = transform;
+        if (pool != null && pool.IsPoolType<BulletShell>())
+        {
+            BulletShell bulletShell = pool.GetAvailableObject() as BulletShell;
+            if (bulletShell != null)
+            {
+                bulletShell.transform.position = transform.position;
+                bulletShell.transform.rotation = transform.rotation * m_BulletShellPrefab.transform.rotation;
+                bulletShell.transform.SetParent(transform);
 
-        bulletShell.Eject(transform.right * m_EjectSpeed, m_Weapon.OwnerCollider);
+                bulletShell.InitializeBulletShell(m_BulletShellDefinition);
+                bulletShell.Activate();
+                bulletShell.Eject(transform.right * m_EjectSpeed, m_Weapon.OwnerCollider);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No bullet shell pool found for " + m_BulletShellPrefab.name);
+        }
     }
 }
