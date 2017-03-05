@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponImpactEffectDefinition : ScriptableObject
+public class ImpactEffectDefinition : ScriptableObject
 {
     [SerializeField]
     private List<Sprite> m_Decals;

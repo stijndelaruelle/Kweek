@@ -32,48 +32,45 @@ public class SurfaceType : MonoBehaviour
         get { return m_SurfaceType.FootstepSounds; }
     }
 
-    public void SpawnBulletImpactEffect(RaycastHit hitInfo)
+
+    public GameObject SpawnBulletImpactEffect(RaycastHit hitInfo)
     {
-        if (m_SurfaceType.WeaponImpactEffectPrefab == null)
-            return;
-
-        ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_SurfaceType.WeaponImpactEffectPrefab);
-
-        if (pool != null && pool.IsPoolType<WeaponImpactEffect>())
-        {
-            WeaponImpactEffect bulletImpactEffect = pool.GetAvailableObject() as WeaponImpactEffect;
-            if (bulletImpactEffect != null)
-            {
-                Vector3 decalPosition = hitInfo.point + (hitInfo.normal * 0.01f); //Offset the decal a bit from the wall
-                Quaternion decalRotation = Quaternion.LookRotation(hitInfo.normal, Vector3.up);
-
-                bulletImpactEffect.transform.position = decalPosition;
-                bulletImpactEffect.transform.rotation = decalRotation;
-                bulletImpactEffect.transform.SetParent(transform);
-
-                bulletImpactEffect.InitializeWeaponImpactEffect(m_SurfaceType.BulletImpactEffectDefinition);
-                bulletImpactEffect.Activate();
-            }
-        }
+        return SpawnImpactEffect(m_SurfaceType.BulletImpactEffectDefinition, hitInfo.point, hitInfo.normal);
     }
 
-    public GameObject SpawnImpactEffect(Vector3 position)
+    public GameObject SpawnMeleeImpactEffect(RaycastHit hitInfo)
+    {
+        return SpawnImpactEffect(m_SurfaceType.MeleeImpactEffectDefinition, hitInfo.point, hitInfo.normal);
+    }
+
+    public GameObject SpawnCharacterImpactEffect(Vector3 position)
+    {
+        return SpawnImpactEffect(m_SurfaceType.CharacterImpactEffectDefinition, position, Vector3.zero);
+    }
+
+    private GameObject SpawnImpactEffect(ImpactEffectDefinition impactDefinition, Vector3 position, Vector3 normal)
     {
         if (m_SurfaceType.ImpactEffectPrefab == null)
             return null;
 
         ObjectPool pool = ObjectPoolManager.Instance.GetPool(m_SurfaceType.ImpactEffectPrefab);
 
-        if (pool != null)
+        if (pool != null && pool.IsPoolType<ImpactEffect>())
         {
-            PoolableObject impactEffect = pool.ActivateAvailableObject();
-            if (impactEffect != null)
+            ImpactEffect bulletImpactEffect = pool.GetAvailableObject() as ImpactEffect;
+            if (bulletImpactEffect != null)
             {
-                impactEffect.transform.position = position;
-                impactEffect.transform.rotation = m_SurfaceType.ImpactEffectPrefab.transform.rotation;
-                impactEffect.transform.SetParent(transform);
+                Vector3 decalPosition = position + (normal * 0.01f); //Offset the decal a bit from the wall
+                Quaternion decalRotation = Quaternion.LookRotation(normal, Vector3.up);
 
-                return impactEffect.gameObject;
+                bulletImpactEffect.transform.position = decalPosition;
+                bulletImpactEffect.transform.rotation = decalRotation;
+                bulletImpactEffect.transform.SetParent(transform);
+
+                bulletImpactEffect.InitializeImpactEffect(impactDefinition);
+                bulletImpactEffect.Activate();
+
+                return bulletImpactEffect.gameObject;
             }
         }
 

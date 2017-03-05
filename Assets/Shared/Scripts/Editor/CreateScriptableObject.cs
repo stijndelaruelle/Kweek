@@ -30,10 +30,10 @@ public class CreateScriptableObject
         CreateAsset<AmmoTypeDefinition>();
     }
 
-    [MenuItem("Assets/Create/Custom/Weapon Impact Effect")]
-    public static void CreateWeaponImpactEffect()
+    [MenuItem("Assets/Create/Custom/Impact Effect")]
+    public static void CreateImpactEffect()
     {
-        CreateAsset<WeaponImpactEffectDefinition>();
+        CreateAsset<ImpactEffectDefinition>();
     }
 
     public static void CreateAsset<T>() where T : ScriptableObject

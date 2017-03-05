@@ -42,39 +42,37 @@ public class SurfaceTypeDefinition : ScriptableObject
     }
 
     [Space(10)]
-    [Header("Weapon Impact effects")]
-    [Space(5)]
-    [SerializeField]
-    private PoolableObject m_WeaponImpactEffectPrefab;
-    public PoolableObject WeaponImpactEffectPrefab
-    {
-        get { return m_WeaponImpactEffectPrefab; }
-    }
-
-    [Tooltip("Decal left behind by a bullet that hits this surface type.")]
-    [SerializeField]
-    private WeaponImpactEffectDefinition m_BulletImpactEffectDefinition;
-    public WeaponImpactEffectDefinition BulletImpactEffectDefinition
-    {
-        get { return m_BulletImpactEffectDefinition; }
-    }
-
-    [Tooltip("Decal left behind when a melee attack hits this surface type.")]
-    [SerializeField]
-    private WeaponImpactEffectDefinition m_MeleeImpactEffectDefinition;
-    public WeaponImpactEffectDefinition MeleeImpactEffectDefinition
-    {
-        get { return m_MeleeImpactEffectDefinition; }
-    }
-
-    [Space(10)]
-    [Header("Impact effect")]
+    [Header("Impact effects")]
     [Space(5)]
     [SerializeField]
     private PoolableObject m_ImpactEffectPrefab;
     public PoolableObject ImpactEffectPrefab
     {
         get { return m_ImpactEffectPrefab; }
+    }
+
+    [Tooltip("Impact effect left behind by a bullet that hits this surface type.")]
+    [SerializeField]
+    private ImpactEffectDefinition m_BulletImpactEffectDefinition;
+    public ImpactEffectDefinition BulletImpactEffectDefinition
+    {
+        get { return m_BulletImpactEffectDefinition; }
+    }
+
+    [Tooltip("Impact effect left behind when a melee attack hits this surface type.")]
+    [SerializeField]
+    private ImpactEffectDefinition m_MeleeImpactEffectDefinition;
+    public ImpactEffectDefinition MeleeImpactEffectDefinition
+    {
+        get { return m_MeleeImpactEffectDefinition; }
+    }
+
+    [Tooltip("Impact effect left behind when a character hits this surface type.")]
+    [SerializeField]
+    private ImpactEffectDefinition m_CharacterImpactEffectDefinition;
+    public ImpactEffectDefinition CharacterImpactEffectDefinition
+    {
+        get { return m_CharacterImpactEffectDefinition; }
     }
 
     [Space(10)]

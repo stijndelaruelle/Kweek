@@ -102,7 +102,7 @@ public class PlayerFootstepEffect : MonoBehaviour
         SurfaceType surfaceType = GetSurfaceType();
         if (surfaceType != null)
         {
-            surfaceType.SpawnImpactEffect(m_Player.transform.position);
+            surfaceType.SpawnCharacterImpactEffect(m_Player.transform.position);
         }
     }
 

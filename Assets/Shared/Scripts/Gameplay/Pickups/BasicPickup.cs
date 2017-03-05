@@ -137,7 +137,7 @@ public class BasicPickup : IPickup
         SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            m_UsedImpactEffect = surfaceType.SpawnImpactEffect(collision.contacts[0].point);
+            m_UsedImpactEffect = surfaceType.SpawnCharacterImpactEffect(collision.contacts[0].point);
         }
     }
 
