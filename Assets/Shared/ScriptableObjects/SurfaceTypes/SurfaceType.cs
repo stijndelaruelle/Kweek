@@ -33,14 +33,14 @@ public class SurfaceType : MonoBehaviour
     }
 
 
-    public GameObject SpawnBulletImpactEffect(RaycastHit hitInfo)
+    public GameObject SpawnBulletImpactEffect(Vector3 position, Vector3 normal)
     {
-        return SpawnImpactEffect(m_SurfaceType.BulletImpactEffectDefinition, hitInfo.point, hitInfo.normal);
+        return SpawnImpactEffect(m_SurfaceType.BulletImpactEffectDefinition, position, normal);
     }
 
-    public GameObject SpawnMeleeImpactEffect(RaycastHit hitInfo)
+    public GameObject SpawnMeleeImpactEffect(Vector3 position, Vector3 normal)
     {
-        return SpawnImpactEffect(m_SurfaceType.MeleeImpactEffectDefinition, hitInfo.point, hitInfo.normal);
+        return SpawnImpactEffect(m_SurfaceType.MeleeImpactEffectDefinition, position, normal);
     }
 
     public GameObject SpawnCharacterImpactEffect(Vector3 position)

@@ -9,10 +9,10 @@ public class Weapon : MonoBehaviour
     [Header("Weapon Behaviours")]
     [Space(5)]
     [SerializeField]
-    private IFireBehaviour m_FireBehaviour;
+    private IWeaponUseBehaviour m_UseBehaviour;
 
     [SerializeField]
-    private IFireBehaviour m_AltFireBehaviour;
+    private IWeaponUseBehaviour m_AltUseBehaviour;
 
     [SerializeField]
     private IAmmoUseBehaviour m_AmmoUseBehaviour;
@@ -41,7 +41,7 @@ public class Weapon : MonoBehaviour
     }
 
     [Space(10)]
-    [Header("Animation")]
+    [Header("Switching animation")]
     [Space(5)]
     [SerializeField]
     private Animator m_Animator;
@@ -53,7 +53,7 @@ public class Weapon : MonoBehaviour
     }
 
     //Events
-    public event WeaponFireDelegate WeaponFireEvent;
+    public event WeaponUseDelegate WeaponFireEvent;
     public event UpdateAmmoDelegate UpdateAmmoEvent;
 
     public event SwitchWeaponCallback StartSwitchInEvent;
@@ -71,8 +71,8 @@ public class Weapon : MonoBehaviour
     {
         m_OwnerColliders = ownerColliders;
 
-        if (m_FireBehaviour != null)    { m_FireBehaviour.Setup(ownerColliders); }
-        if (m_AltFireBehaviour != null) { m_AltFireBehaviour.Setup(ownerColliders); }
+        if (m_UseBehaviour != null)    { m_UseBehaviour.Setup(ownerColliders); }
+        if (m_AltUseBehaviour != null) { m_AltUseBehaviour.Setup(ownerColliders); }
 
         if (m_AmmoUseBehaviour != null)
         {
@@ -82,20 +82,30 @@ public class Weapon : MonoBehaviour
     }
 
     //Shooting
-    public bool Fire(Ray originalRay)
+    public bool Use()
     {
-        if (m_IsSwitching)
-            return false;
-
-        return ExecuteFireBehaviour(m_FireBehaviour, originalRay);
+        return Use(new Ray());
     }
 
-    public bool AltFire(Ray originalRay)
+    public bool Use(Ray originalRay)
     {
         if (m_IsSwitching)
             return false;
 
-        return ExecuteFireBehaviour(m_AltFireBehaviour, originalRay);
+        return ExecuteWeaponUseBehaviour(m_UseBehaviour, originalRay);
+    }
+
+    public bool AltUse()
+    {
+        return AltUse(new Ray());
+    }
+
+    public bool AltUse(Ray originalRay)
+    {
+        if (m_IsSwitching)
+            return false;
+
+        return ExecuteWeaponUseBehaviour(m_AltUseBehaviour, originalRay);
     }
 
     public void PerformAction()
@@ -103,13 +113,13 @@ public class Weapon : MonoBehaviour
         m_AmmoUseBehaviour.PerformAction();
     }
 
-    private bool ExecuteFireBehaviour(IFireBehaviour fireBehaviour, Ray originalRay)
+    private bool ExecuteWeaponUseBehaviour(IWeaponUseBehaviour fireBehaviour, Ray originalRay)
     {
         //Check if we can fire
-        if (m_FireBehaviour != null && m_FireBehaviour.CanFire() == false)
+        if (m_UseBehaviour != null && m_UseBehaviour.CanUse() == false)
             return false;
 
-        if (m_AltFireBehaviour != null && m_AltFireBehaviour.CanFire() == false)
+        if (m_AltUseBehaviour != null && m_AltUseBehaviour.CanUse() == false)
             return false;
 
         if (m_AmmoUseBehaviour != null && m_AmmoUseBehaviour.CanUse() == false)
@@ -120,7 +130,7 @@ public class Weapon : MonoBehaviour
 
         //Fire the weapon
         if (fireBehaviour != null)
-            fireBehaviour.Fire(originalRay);
+            fireBehaviour.Use(originalRay);
 
         //Shooting consequences
         if (m_AmmoUseBehaviour != null)

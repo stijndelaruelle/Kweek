@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class HitScanFireBehaviour : IFireBehaviour
+public class HitScanFireBehaviour : IWeaponUseBehaviour
 {
     [Header("General")]
     [Space(5)]
@@ -83,9 +83,9 @@ public class HitScanFireBehaviour : IFireBehaviour
         HandleRecoilCooldown();
     }
 
-    public override void Fire(Ray originalRay)
+    public override void Use(Ray originalRay)
     {
-        if (!CanFire())
+        if (!CanUse())
             return;
 
         Vector3 forward = originalRay.direction;
@@ -164,7 +164,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         SurfaceType surfaceType = go.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            surfaceType.SpawnBulletImpactEffect(hitInfo);
+            surfaceType.SpawnBulletImpactEffect(hitInfo.point, hitInfo.normal);
         }
 
         //Did we hit a rigidbody?
@@ -249,7 +249,7 @@ public class HitScanFireBehaviour : IFireBehaviour
                 if (surfaceType != null)
                 {
                     //Paint decal on the front side
-                    surfaceType.SpawnBulletImpactEffect(hitInfo);
+                    surfaceType.SpawnBulletImpactEffect(hitInfo.point, hitInfo.normal);
 
                     if (inverseHitInfo.collider != null) //Possible if we don't end up shooting all the way trough an object
                     {
@@ -265,7 +265,7 @@ public class HitScanFireBehaviour : IFireBehaviour
                         }
 
                         //Paint decal on the backside if we reached it
-                        if (currentDamage > 0.0f) { surfaceType.SpawnBulletImpactEffect(inverseHitInfo); }
+                        if (currentDamage > 0.0f) { surfaceType.SpawnBulletImpactEffect(inverseHitInfo.point, inverseHitInfo.normal); }
                     }
                     else
                     {
@@ -341,7 +341,7 @@ public class HitScanFireBehaviour : IFireBehaviour
         }
     }
 
-    public override bool CanFire()
+    public override bool CanUse()
     {
         return (m_ShootCooldownTimer == 0.0f);
     }

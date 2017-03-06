@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileFireBehaviour : IFireBehaviour
+public class ProjectileFireBehaviour : IWeaponUseBehaviour
 {
     [SerializeField]
     private float m_ShootCooldown = 0.0f;
@@ -38,7 +38,7 @@ public class ProjectileFireBehaviour : IFireBehaviour
         HandleShootingCooldown();
     }
 
-    public override void Fire(Ray originalRay)
+    public override void Use(Ray originalRay)
     {
         PhysicalProjectile projectile = GameObject.Instantiate<PhysicalProjectile>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
 
@@ -69,7 +69,7 @@ public class ProjectileFireBehaviour : IFireBehaviour
         }
     }
 
-    public override bool CanFire()
+    public override bool CanUse()
     {
         return (m_ShootCooldownTimer == 0.0f);
     }

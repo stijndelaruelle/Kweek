@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SoldierBehaviour : MonoBehaviour
+public class SoldierBehaviour : EnemyBehaviour
 {
-    [SerializeField]
-    private IAbstractState m_InitialState;
-
     [Space(10)]
     [Header("Weapon")]
     [Space(5)]
@@ -24,47 +21,24 @@ public class SoldierBehaviour : MonoBehaviour
     [SerializeField]
     private Transform m_BackWeaponGrip;
 
-    [Space(10)]
-    [Header("Required references")]
-    [Space(5)]
-    [SerializeField]
-    private Animator m_Animator;
-    public Animator Animator
+    protected override void Start()
     {
-        get { return m_Animator; }
-    }
-
-    [SerializeField]
-    private NavMeshAgent m_NavMeshAgent;
-    public NavMeshAgent NavMeshAgent
-    {
-        get { return m_NavMeshAgent; }
-    }
-
-    [SerializeField]
-    private UnityMethodsForwarder m_Forwarder;
-
-    private IState m_CurrentState;
-
-    private float m_LastSpeed; //Sometines the velocity can spike, if so reset to this value
-
-    //Events
-    public event TriggerDelegate TriggerEnterEvent;
-    public event TriggerDelegate TriggerStayEvent;
-    public event TriggerDelegate TriggerExitEvent;
-    public event AnimatorIKDelegate AnimatorIKEvent;
-
-
-    private void Start()
-    {
+        base.Start();
         m_Weapon.UpdateAmmoEvent += OnUpdateWeaponAmmo;
-        m_Forwarder.AnimatorIKEvent += OnAnimatorIK;
-
-        SwitchState(m_InitialState);
     }
 
-    public void Setup(List<Collider> ownerColliders)
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
+        if (m_Weapon != null)
+            m_Weapon.UpdateAmmoEvent -= OnUpdateWeaponAmmo;
+    }
+
+    public override void Setup(List<Collider> ownerColliders)
+    {
+        base.Setup(ownerColliders);
+
         m_Weapon.Setup(ownerColliders, null);
 
         if (m_WeaponPickup != null)
@@ -74,37 +48,15 @@ public class SoldierBehaviour : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    public override void OnDeath()
     {
-        if (m_Weapon != null)
-            m_Weapon.UpdateAmmoEvent -= OnUpdateWeaponAmmo;
+        base.OnDeath();
 
-        if (m_Forwarder != null)
-            m_Forwarder.AnimatorIKEvent -= OnAnimatorIK;
+        //Throw the weapon
+        m_WeaponPickup.enabled = true;
+        m_WeaponPickup.gameObject.transform.parent = null;
+        m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
     }
-
-    private void Update()
-    {
-        if (m_CurrentState != null)
-            m_CurrentState.StateUpdate();
-
-        HandleMovementAnimation();
-    }
-
-    private void HandleMovementAnimation()
-    {
-        //Walking animation
-        float currentSpeed = m_NavMeshAgent.velocity.magnitude;
-
-        //Every once in a while the velocity will spike (fix this)
-        if (currentSpeed > m_NavMeshAgent.speed) { currentSpeed = m_LastSpeed; }
-        m_LastSpeed = currentSpeed;
-
-        m_Animator.SetFloat("VelocityX", 0.0f);
-        m_Animator.SetFloat("VelocityZ", currentSpeed);
-    }
-
-
 
     private void OnUpdateWeaponAmmo(int ammoInClip, int reserveAmmo)
     {
@@ -112,47 +64,9 @@ public class SoldierBehaviour : MonoBehaviour
             m_WeaponPickup.Ammo = ammoInClip;
     }
 
-    public IState SwitchState(IState newState)
+    protected override void OnAnimatorIK(int layerIndex)
     {
-        if (m_CurrentState == newState)
-        {
-            Debug.LogWarning("State is trying to switch to itself, something is wrong.");
-            return m_CurrentState;
-        }
-
-        if (m_CurrentState != null)
-            m_CurrentState.Exit();
-
-        m_CurrentState = newState;
-
-        if (m_CurrentState != null)
-            m_CurrentState.Enter();
-
-        return m_CurrentState;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (TriggerEnterEvent != null)
-            TriggerEnterEvent(other);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (TriggerStayEvent != null)
-            TriggerStayEvent(other);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (TriggerExitEvent != null)
-            TriggerExitEvent(other);
-    }
-
-    private void OnAnimatorIK(int layerIndex)
-    {
-        if (AnimatorIKEvent != null)
-            AnimatorIKEvent(layerIndex);
+        base.OnAnimatorIK(layerIndex);
 
         ////Set the left hand to the weapongrip(layer 1 so we get new positions!)
         //if (layerIndex == 1)
@@ -172,18 +86,5 @@ public class SoldierBehaviour : MonoBehaviour
             m_Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
             m_Animator.SetIKRotation(AvatarIKGoal.LeftHand, m_BackWeaponGrip.rotation);
         }
-    }
-
-    public void OnDeath()
-    {
-        SwitchState(null);
-
-        //Throw the weapon
-        m_WeaponPickup.enabled = true;
-        m_WeaponPickup.gameObject.transform.parent = null;
-        m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
-
-        //Disable our navmesh
-        m_NavMeshAgent.enabled = false;
     }
 }

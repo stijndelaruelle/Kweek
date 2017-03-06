@@ -78,8 +78,8 @@ public class WeaponArsenal : MonoBehaviour
         {
             Ray originalRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-            if (Input.GetMouseButton(0)) { m_Weapons[m_CurrentWeaponID].Fire(originalRay); }
-            if (Input.GetMouseButton(1)) { m_Weapons[m_CurrentWeaponID].AltFire(originalRay); }
+            if (Input.GetMouseButton(0)) { m_Weapons[m_CurrentWeaponID].Use(originalRay); }
+            if (Input.GetMouseButton(1)) { m_Weapons[m_CurrentWeaponID].AltUse(originalRay); }
 
             if (Input.GetKeyDown(KeyCode.R)) { m_Weapons[m_CurrentWeaponID].PerformAction(); }
         }

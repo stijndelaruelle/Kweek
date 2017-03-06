@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(SoldierBehaviour))]
-public class SoldierChaseState : IAbstractState
+[RequireComponent(typeof(EnemyBehaviour))]
+public class SoldierSearchChaseState : IAbstractState
 {
-    private SoldierBehaviour m_Soldier;
+    private EnemyBehaviour m_Soldier;
 
     [Header("Movement")]
     [Space(5)]
@@ -38,7 +38,7 @@ public class SoldierChaseState : IAbstractState
     {
         //Assigning this manually clutters the inspector a LOT!
         //If we, at some point, want to detach state objects from their behaviour, revert this.
-        m_Soldier = GetComponent<SoldierBehaviour>();
+        m_Soldier = GetComponent<EnemyBehaviour>();
     }
 
     public override void Enter()

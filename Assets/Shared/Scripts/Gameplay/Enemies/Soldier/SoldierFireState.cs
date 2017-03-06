@@ -50,7 +50,7 @@ public class SoldierFireState : IAbstractState
     private float m_ViewAngle;
 
     [SerializeField]
-    private SoldierChaseState m_ChaseState;
+    private SoldierSearchChaseState m_ChaseState;
 
     private bool m_IsInFireStance = false;
     private bool m_IsSwitchingOut = false;
@@ -161,7 +161,7 @@ public class SoldierFireState : IAbstractState
     private bool ShootOnce()
     {
         Ray fireRay = new Ray(m_FirePosition.position, m_FirePosition.forward);
-        return m_Soldier.Weapon.Fire(fireRay);
+        return m_Soldier.Weapon.Use(fireRay);
     }
 
 

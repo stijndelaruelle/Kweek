@@ -7,10 +7,8 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private IDamageableObject m_DamageableObject;
 
-    //[SerializeField]
-    //private IAIBehaviour m_AIBehaviour; //The time will come...
     [SerializeField]
-    private SoldierBehaviour m_AIBehaviour;
+    private IAIBehaviour m_AIBehaviour;
 
     [SerializeField]
     private Ragdoll m_Ragdoll;

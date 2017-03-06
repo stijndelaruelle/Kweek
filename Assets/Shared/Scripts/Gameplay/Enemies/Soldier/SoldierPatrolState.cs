@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(SoldierBehaviour))]
+[RequireComponent(typeof(EnemyBehaviour))]
 public class SoldierPatrolState : IAbstractState
 {
-    private SoldierBehaviour m_Soldier;
+    private EnemyBehaviour m_Soldier;
 
     [Header("Movement")]
     [Space(5)]

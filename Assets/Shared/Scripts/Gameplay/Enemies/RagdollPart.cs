@@ -34,15 +34,16 @@ public class RagdollPart : MonoBehaviour
             //Play a hit sound
             PlaySurfaceImpactSound(collision);
 
-            if (m_Ragdoll.IsRagdollEnabled())
-                return;
+            //Used for when death animations collide with the world collision
+            //if (m_Ragdoll.IsRagdollEnabled())
+            //    return;
 
-            //Don't start ragdolls when we just hit a regular floor (not a slope!)
-            if (collision.contacts[0].normal == Vector3.up)
-                return;
+            ////Don't start ragdolls when we just hit a regular floor (not a slope!)
+            //if (collision.contacts[0].normal == Vector3.up)
+            //    return;
 
-            Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
-            m_Ragdoll.SetActive(true);
+            //Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
+            //m_Ragdoll.SetActive(true);
         }
     }
 

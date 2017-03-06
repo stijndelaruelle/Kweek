@@ -56,6 +56,9 @@ public class BulletShell : PoolableObject
 
     private void Update()
     {
+        if (m_Definition == null)
+            return;
+
         if (m_Definition.DelayedDecouple && m_DecoupleTimer > 0.0f)
         {
             m_DecoupleTimer -= Time.deltaTime;
