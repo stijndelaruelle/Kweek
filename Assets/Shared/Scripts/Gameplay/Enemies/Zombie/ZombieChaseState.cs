@@ -54,11 +54,23 @@ public class ZombieChaseState : IAbstractState
             return;
 
         //Check if we reached our destination
-        m_Zombie.NavMeshAgent.destination = m_Target.position;
-        if (agent.remainingDistance <= 0.75f)
+        //Find a spot a little in front of our target
+        Vector3 targetPos = m_Target.position + (m_Target.forward * 1.0f);
+        m_Zombie.NavMeshAgent.destination = targetPos;
+
+        float distance = (transform.position - m_Target.position).magnitude;
+        if (distance < m_AttackState.AttackDistance)
         {
+            m_AttackState.SetTarget(m_Target);
             m_Zombie.SwitchState(m_AttackState);
         }
+
+        //m_Zombie.NavMeshAgent.destination = targetPos;
+        //if (agent.remainingDistance <= 1.1f)
+        //{
+        //    m_AttackState.SetTarget(m_Target);
+        //    m_Zombie.SwitchState(m_AttackState);
+        //}
     }
 
     public void SetTarget(Transform target)
