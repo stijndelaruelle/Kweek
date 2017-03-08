@@ -58,7 +58,8 @@ public class PhysicalProjectile : MonoBehaviour
         {
             IDamageableObject root = null;
 
-            DamageablePart damageablePart = colliders[i].transform.gameObject.GetComponent<DamageablePart>();
+            //TODO FIX THIS CODE TO ALSO USE IDamageableObjects!
+            DamageablePart damageablePart = colliders[i].gameObject.GetComponent<DamageablePart>();
             if (damageablePart != null) root = damageablePart.MainObject;
 
             if (root != null && !hitObjects.Contains(root))
