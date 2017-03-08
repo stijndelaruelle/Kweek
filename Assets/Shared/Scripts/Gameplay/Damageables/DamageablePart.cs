@@ -29,16 +29,20 @@ public class DamageablePart : IDamageableObject
 
     public override int Damage(int health)
     {
-        int reserveDamage = m_MainObject.Damage(Mathf.CeilToInt(health * m_DamageMultiplier));
-        CallDamageEvent();
+        int actualDamage = Mathf.CeilToInt(health * m_DamageMultiplier);
+
+        int reserveDamage = m_MainObject.Damage(actualDamage);
+        CallDamageEvent(actualDamage);
 
         return reserveDamage;
     }
 
     public override void Heal(int health)
     {
-        m_MainObject.Heal(Mathf.CeilToInt(health * m_DamageMultiplier));
-        CallHealEvent();
+        int actualHealing = Mathf.CeilToInt(health * m_DamageMultiplier);
+
+        m_MainObject.Heal(actualHealing);
+        CallHealEvent(actualHealing);
     }
 
     public override bool IsDead()

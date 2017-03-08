@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
 
 
     //Damage handling
-    private void OnDamage()
+    private void OnDamage(int removedHealth)
     {
         if (m_DamageableObject.Health > 0)
         {

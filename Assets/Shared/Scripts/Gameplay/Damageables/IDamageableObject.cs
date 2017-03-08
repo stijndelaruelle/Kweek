@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void DamageDelegate();
-public delegate void HealDelegate();
-public delegate void ChangeHealthDelegate(int health);
+public delegate void DamageDelegate(int removedHealth);
+public delegate void HealDelegate(int addedHealth);
+public delegate void ChangeHealthDelegate(int currentHeath);
 public delegate void DeathDelegate();
 
 public abstract class IDamageableObject : MonoBehaviour
@@ -16,15 +16,15 @@ public abstract class IDamageableObject : MonoBehaviour
     public event ChangeHealthDelegate ChangeHealthEvent;
     public event DeathDelegate DeathEvent;
 
-    protected void CallDamageEvent()
+    protected void CallDamageEvent(int removedHealth)
     {
         if (DamageEvent != null)
-            DamageEvent();
+            DamageEvent(removedHealth);
     }
-    protected void CallHealEvent()
+    protected void CallHealEvent(int addedHealth)
     {
         if (HealEvent != null)
-            HealEvent();
+            HealEvent(addedHealth);
     }
     protected void CallChangeHealthEvent(int health)
     {

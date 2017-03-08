@@ -78,6 +78,9 @@ public class BulletShell : PoolableObject
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (m_Definition == null)
+            return;
+
         if (m_Definition.AudioClips.Count <= 0 || m_HasPlayedClip == true)
             return;
 

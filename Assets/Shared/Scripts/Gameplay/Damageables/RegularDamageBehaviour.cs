@@ -62,7 +62,7 @@ public class RegularDamageBehaviour : IDamageableObject
         int reserveHealth =  ChangeHealth(-health);
 
         //Fire damage event
-        CallDamageEvent();
+        CallDamageEvent(health);
 
         return reserveHealth;
     }
@@ -75,7 +75,7 @@ public class RegularDamageBehaviour : IDamageableObject
         ChangeHealth(health);
 
         //Fire heal event
-        CallHealEvent();
+        CallHealEvent(health);
     }
 
     public override bool IsDead()
