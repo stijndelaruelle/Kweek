@@ -52,10 +52,13 @@ public class SoldierBehaviour : EnemyBehaviour
     {
         base.OnDeath();
 
-        //Throw the weapon
-        m_WeaponPickup.enabled = true;
-        m_WeaponPickup.gameObject.transform.parent = null;
-        m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
+        if (m_WeaponPickup != null)
+        {
+            //Throw the weapon
+            m_WeaponPickup.enabled = true;
+            m_WeaponPickup.gameObject.transform.parent = null;
+            m_WeaponPickup.Drop(transform.forward.Copy() * 500.0f, null);
+        }
     }
 
     private void OnUpdateWeaponAmmo(int ammoInClip, int reserveAmmo)
