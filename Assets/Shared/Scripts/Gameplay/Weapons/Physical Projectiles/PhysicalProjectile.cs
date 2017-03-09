@@ -58,9 +58,8 @@ public class PhysicalProjectile : MonoBehaviour
         {
             IDamageableObject root = null;
 
-            //TODO FIX THIS CODE TO ALSO USE IDamageableObjects!
-            DamageablePart damageablePart = colliders[i].gameObject.GetComponent<DamageablePart>();
-            if (damageablePart != null) root = damageablePart.MainObject;
+            IDamageableObject damageableObject = colliders[i].gameObject.GetComponent<IDamageableObject>();
+            if (damageableObject != null) root = damageableObject.GetMainDamageableObject();
 
             if (root != null && !hitObjects.Contains(root))
             {
@@ -102,9 +101,16 @@ public class PhysicalProjectile : MonoBehaviour
             float inversedNormDistance = 1.0f - normDistance;  //1 = super close, 0 = furthest away (used as a multiplier)
 
             //Did we hit a damageableObjet
-            if (damageableObject != null && damageableObject != directImpactTarget) //directImpactTarget already had his fair share of damage
+            if (damageableObject != null) //directImpactTarget already had his fair share of damage
             {
-                damageableObject.Damage((int)(m_ExplosionDamage * inversedNormDistance));
+                if (damageableObject == directImpactTarget)
+                {
+                    damageableObject.Damage(m_DirectImpactDamage);
+                }
+                else
+                {
+                    damageableObject.Damage((int)(m_ExplosionDamage * inversedNormDistance));
+                }
             }
 
             //Did we hit a moveableObject?

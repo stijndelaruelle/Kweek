@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyBehaviour))]
-public class SoldierSearchChaseState : IAbstractState
+public class BasicPatrolState : IAbstractState
 {
     private EnemyBehaviour m_Soldier;
 
@@ -12,11 +12,11 @@ public class SoldierSearchChaseState : IAbstractState
     [Space(5)]
     [SerializeField]
     private float m_MovementSpeed;
-    private Vector3 m_TargetPosition;
 
     [SerializeField]
-    private float m_MinChaseTime = 1.0f; //Fixes some back and forth state switching.
-    private float m_ChaseTimer;
+    private Transform m_TargetTransform;
+    private Vector3 m_TargetPosition;
+    private Vector3 m_StartPosition;
 
     [Space(10)]
     [Header("Scanning")]
@@ -28,33 +28,40 @@ public class SoldierSearchChaseState : IAbstractState
     private float m_ViewAngle;
 
     [SerializeField]
-    private SoldierPatrolState m_PatrolState;
-
-    [SerializeField]
-    private SoldierFireState m_FireState;
-
+    private IAbstractTargetState m_FireState;
 
     private void Awake()
     {
         //Assigning this manually clutters the inspector a LOT!
         //If we, at some point, want to detach state objects from their behaviour, revert this.
-        m_Soldier = GetComponent<EnemyBehaviour>();
+        m_Soldier = GetComponent<EnemyWeaponPickupBehaviour>();
+
+        m_StartPosition = transform.position;
+
+        if (m_TargetTransform != null)
+            m_TargetPosition = m_TargetTransform.position;
     }
 
     public override void Enter()
     {
-        Debug.Log("Entered Chase state!");
-        
+        Debug.Log("Entered patrolling state!");
+
         m_Soldier.TriggerStayEvent += OnStateTriggerStay;
 
-        m_Soldier.NavMeshAgent.Resume();
-        m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
-        m_Soldier.NavMeshAgent.destination = m_TargetPosition;
+        if (m_TargetTransform != null)
+        {
+            m_Soldier.NavMeshAgent.destination = m_TargetPosition;
+            m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
+
+            m_Soldier.NavMeshAgent.Resume();
+        }
+        else
+        {
+            m_Soldier.NavMeshAgent.Stop();
+        }
 
         m_Soldier.Animator.enabled = true;
         m_Soldier.Animator.SetTrigger("MovementTrigger");
-
-        m_ChaseTimer = 0.0f;
     }
 
     public override void Exit()
@@ -68,20 +75,26 @@ public class SoldierSearchChaseState : IAbstractState
     public override void StateUpdate()
     {
         HandleMovement();
-
-        m_ChaseTimer += Time.deltaTime;
     }
 
     private void HandleMovement()
     {
+        if (m_StartPosition == m_TargetPosition)
+            return;
+
         NavMeshAgent agent = m_Soldier.NavMeshAgent;
-        Animator animator = m_Soldier.Animator;
+
+        if (agent == null)
+            return;
 
         //Check if we reached our destination
         if (agent.remainingDistance <= 0.5f)
         {
-            //If we still didn't switch to the fire state at this point, we lost the player. Go back to patrolling
-            m_Soldier.SwitchState(m_PatrolState);
+            Vector3 temp = m_TargetPosition.Copy();
+            m_TargetPosition = m_StartPosition;
+            m_StartPosition = temp;
+
+            agent.destination = m_TargetPosition;
         }
     }
 
@@ -105,24 +118,18 @@ public class SoldierSearchChaseState : IAbstractState
                 RaycastHit hitInfo;
                 bool success = Physics.Raycast(ray, out hitInfo);
 
-                if (success && hitInfo.collider == other && m_ChaseTimer >= m_MinChaseTime)
+                if (success && hitInfo.collider == other)
                 {
                     //Change to the firing state
                     m_Soldier.SwitchState(m_FireState);
-                    m_FireState.SetTarget(other);
+                    m_FireState.SetTarget(other.bounds.center);
                 }
             }
         }
     }
 
-    public void SetTarget(Vector3 targetPosition)
-    {
-        m_TargetPosition = targetPosition;
-        m_Soldier.NavMeshAgent.destination = m_TargetPosition;
-    }
-
     public override string ToString()
     {
-        return "Chasing";
+        return "Patrolling";
     }
 }

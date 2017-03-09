@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileFireBehaviour : IWeaponUseBehaviour
+public class ChargeShotFireBehaviour : IWeaponUseBehaviour
 {
     [SerializeField]
     private float m_ShootCooldown = 0.0f;
     private float m_ShootCooldownTimer;
 
-    [Tooltip("How much ammo does firing the gun 1 time take.")]
+    [Tooltip("How much ammo does changing the gun for 1 second take")]
     [SerializeField]
     private int m_AmmoUseage = 1;
+    private float m_ChargeTimer = 0.0f;
+
+    [MinMaxRange(5f, 10f)]
+    // inspector slider can move between these values
+    public MinMaxRange speed;
 
     [SerializeField]
-    private PhysicalProjectile m_Projectile;
+    private PhysicalProjectile m_ProjectilePrefab;
+    private PhysicalProjectile m_CurrentProjectile;
 
     [SerializeField]
     private Transform m_ProjectileSpawn;
@@ -35,30 +41,48 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
 
     private void Update()
     {
+        HandleCharging();
         HandleShootingCooldown();
     }
 
     public override void Use(Ray originalRay)
     {
-        PhysicalProjectile projectile = GameObject.Instantiate<PhysicalProjectile>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
-
-        if (projectile != null)
+        //Create new projectile
+        if (m_CurrentProjectile != null)
         {
-            //Vector3 targetPosition = originalRay.origin + (originalRay.direction * 1000.0f); //A position far away
-            //Vector3 direction = (targetPosition - m_ProjectileSpawn.position).normalized;
-
-            //Look at this at a later stage. Controllers have undergone huge changes.
-            projectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
-
-            //Animation & Cooldown
-            m_Animator.SetTrigger(m_TriggerName);
-            m_ShootCooldownTimer = m_ShootCooldown;
+            m_CurrentProjectile = GameObject.Instantiate<PhysicalProjectile>(m_ProjectilePrefab, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
+            m_ChargeTimer = 0.0f;
         }
+
+        //Detonate projectile
     }
 
     public override void StopUse(Ray originalRay)
     {
-        //This weapon has no need for this, however it's still generic enough to be included in the interface.
+        if (m_CurrentProjectile == null)
+            return;
+
+        //Look at this at a later stage. Controllers have undergone huge changes.
+        m_CurrentProjectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
+
+        //Animation & Cooldown
+        m_Animator.SetTrigger(m_TriggerName);
+        m_ShootCooldownTimer = m_ShootCooldown;
+    }
+
+    private void HandleCharging()
+    {
+        if (m_CurrentProjectile == null)
+            return;
+
+        //Make bigger
+        //m_CurrentProjectile.transform.localScale = new Vector3()
+
+        //Increase damage
+        m_ChargeTimer += Time.deltaTime;
+
+        //Use ammo callback?
+
     }
 
     private void HandleShootingCooldown()

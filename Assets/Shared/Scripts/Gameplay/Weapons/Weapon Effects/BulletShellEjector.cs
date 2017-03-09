@@ -24,13 +24,13 @@ public class BulletShellEjector : MonoBehaviour
     private void Start()
     {
         if (m_Weapon != null)
-            m_Weapon.WeaponFireEvent += OnWeaponFire;
+            m_Weapon.WeaponUseEvent += OnWeaponFire;
     }
 
     private void OnDestroy()
     {
         if (m_Weapon != null)
-            m_Weapon.WeaponFireEvent -= OnWeaponFire;
+            m_Weapon.WeaponUseEvent -= OnWeaponFire;
     }
 
     private void Update()

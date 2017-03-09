@@ -17,3 +17,8 @@ public abstract class IAbstractState : MonoBehaviour, IState
     public abstract void Enter();
     public abstract void Exit();
 }
+
+public abstract class IAbstractTargetState : IAbstractState
+{
+    public abstract void SetTarget(Vector3 position);
+}

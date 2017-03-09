@@ -79,6 +79,11 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
         m_UseCooldownTimer = m_UseCooldown;
     }
 
+    public override void StopUse(Ray originalRay)
+    {
+        //This weapon has no need for this, however it's still generic enough to be included in the interface.
+    }
+
     public override bool CanUse()
     {
         return (m_UseCooldownTimer == 0.0f);

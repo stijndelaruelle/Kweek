@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SoldierBehaviour : EnemyBehaviour
+public class EnemyWeaponPickupBehaviour : EnemyBehaviour
 {
     [Space(10)]
     [Header("Weapon")]

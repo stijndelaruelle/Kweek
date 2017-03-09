@@ -53,7 +53,8 @@ public class Weapon : MonoBehaviour
     }
 
     //Events
-    public event WeaponUseDelegate WeaponFireEvent;
+    public event WeaponUseDelegate WeaponUseEvent;
+    public event WeaponUseDelegate WeaponStopUseEvent;
     public event UpdateAmmoDelegate UpdateAmmoEvent;
 
     public event SwitchWeaponCallback StartSwitchInEvent;
@@ -81,7 +82,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    //Shooting
+    //Using (firing/swinging/starting to charge...)
     public bool Use()
     {
         return Use(new Ray());
@@ -94,6 +95,20 @@ public class Weapon : MonoBehaviour
 
         return ExecuteWeaponUseBehaviour(m_UseBehaviour, originalRay);
     }
+
+    public bool StopUse()
+    {
+        return StopUse(new Ray());
+    }
+
+    public bool StopUse(Ray originalRay)
+    {
+        if (m_IsSwitching)
+            return false;
+
+        return ExecuteWeaponStopUseBehaviour(m_UseBehaviour, originalRay);
+    }
+
 
     public bool AltUse()
     {
@@ -108,10 +123,25 @@ public class Weapon : MonoBehaviour
         return ExecuteWeaponUseBehaviour(m_AltUseBehaviour, originalRay);
     }
 
+    public bool AltStopUse()
+    {
+        return AltStopUse(new Ray());
+    }
+
+    public bool AltStopUse(Ray originalRay)
+    {
+        if (m_IsSwitching)
+            return false;
+
+        return ExecuteWeaponStopUseBehaviour(m_AltUseBehaviour, originalRay);
+    }
+
+    //Mostly used for reloading, could become an array (f.e. weapon bashing)
     public void PerformAction()
     {
         m_AmmoUseBehaviour.PerformAction();
     }
+
 
     private bool ExecuteWeaponUseBehaviour(IWeaponUseBehaviour fireBehaviour, Ray originalRay)
     {
@@ -128,7 +158,7 @@ public class Weapon : MonoBehaviour
         if (m_IsSwitching)
             return false;
 
-        //Fire the weapon
+        //Use the weapon
         if (fireBehaviour != null)
             fireBehaviour.Use(originalRay);
 
@@ -136,7 +166,34 @@ public class Weapon : MonoBehaviour
         if (m_AmmoUseBehaviour != null)
             m_AmmoUseBehaviour.UseAmmo(fireBehaviour.GetAmmoUseage());
 
-        FireWeaponFireEvent();
+        FireWeaponUseEvent();
+        return true;
+    }
+
+    private bool ExecuteWeaponStopUseBehaviour(IWeaponUseBehaviour fireBehaviour, Ray originalRay)
+    {
+        //Check if we can fire
+        if (m_UseBehaviour != null && m_UseBehaviour.CanUse() == false)
+            return false;
+
+        if (m_AltUseBehaviour != null && m_AltUseBehaviour.CanUse() == false)
+            return false;
+
+        if (m_AmmoUseBehaviour != null && m_AmmoUseBehaviour.CanUse() == false)
+            return false;
+
+        if (m_IsSwitching)
+            return false;
+
+        //Stop using the weapon
+        if (fireBehaviour != null)
+            fireBehaviour.StopUse(originalRay);
+
+        //Shooting consequences
+        if (m_AmmoUseBehaviour != null)
+            m_AmmoUseBehaviour.UseAmmo(fireBehaviour.GetAmmoUseage());
+
+        FireWeaponStopUseEvent();
         return true;
     }
 
@@ -208,10 +265,16 @@ public class Weapon : MonoBehaviour
     }
 
     //Event
-    public void FireWeaponFireEvent()
+    public void FireWeaponUseEvent()
     {
-        if (WeaponFireEvent != null)
-            WeaponFireEvent();
+        if (WeaponUseEvent != null)
+            WeaponUseEvent();
+    }
+
+    public void FireWeaponStopUseEvent()
+    {
+        if (WeaponStopUseEvent != null)
+            WeaponStopUseEvent();
     }
 
     private void OnUpdateAmmo(int ammoInClip, int ammoInReserve)

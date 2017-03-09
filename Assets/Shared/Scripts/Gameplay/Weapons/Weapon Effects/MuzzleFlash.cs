@@ -27,7 +27,7 @@ public class MuzzleFlash : MonoBehaviour
     private void Start()
     {
         if (m_Weapon != null)
-            m_Weapon.WeaponFireEvent += OnWeaponFire;
+            m_Weapon.WeaponUseEvent += OnWeaponFire;
 
         m_Material = m_MeshRenderer.material;
 
@@ -37,7 +37,7 @@ public class MuzzleFlash : MonoBehaviour
     private void OnDestroy()
     {
         if (m_Weapon != null)
-            m_Weapon.WeaponFireEvent -= OnWeaponFire;
+            m_Weapon.WeaponUseEvent -= OnWeaponFire;
     }
 
     private void Update()

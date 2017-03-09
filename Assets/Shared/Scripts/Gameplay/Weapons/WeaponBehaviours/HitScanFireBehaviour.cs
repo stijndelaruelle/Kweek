@@ -135,6 +135,11 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
         m_RecoilCooldownTimer = m_RecoilCooldownRate.Evaluate(m_CurrentRecoilBullet);
     }
 
+    public override void StopUse(Ray originalRay)
+    {
+        //This weapon has no need for this, however it's still generic enough to be included in the interface.
+    }
+
     public void FireRay(Ray ray, float range)
     {
         //Fire a single ray (get only the first target)

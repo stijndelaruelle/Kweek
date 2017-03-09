@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyWeaponPickupBehaviour))]
-public class SoldierFireState : IAbstractTargetState
+public class RobotFireState : IAbstractTargetState
 {
     private EnemyWeaponPickupBehaviour m_Soldier;
 
@@ -20,17 +20,11 @@ public class SoldierFireState : IAbstractTargetState
     [SerializeField]
     private float m_MaxShootRange = 5.0f;
 
-    [SerializeField]
-    private float m_BurstDistance = 5.0f;
-
-    [SerializeField]
-    private float m_SingleShotDistance = 15.0f;
-
     [Space(10)]
     [Header("Chest & Hand rotation")]
     [Space(5)]
 
-    [Tooltip ("Degrees per second")]
+    [Tooltip("Degrees per second")]
     [SerializeField]
     private float m_ChestRotationSpeed;
 
@@ -123,47 +117,9 @@ public class SoldierFireState : IAbstractTargetState
             SwitchOut();
         }
 
-        //Full auto
-        if (distance < m_BurstDistance)
-        {
-            ShootOnce();
-            return;
-        }
-
-        //Burstfire
-        if (distance < m_SingleShotDistance)
-        {
-            m_FireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine(3));
-            return;
-        }
-
-        //Single shot
-        m_FireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine(1));
-        return;
-    }
-
-    private IEnumerator FireBurstRoutine(int numberOfBullets)
-    {
-        int bulletsFired = 0;
-
-        while (bulletsFired < numberOfBullets)
-        {
-            bool success = ShootOnce();
-            if (success) { bulletsFired++; }
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        yield return new WaitForSeconds(1.0f);
-        m_FireRoutine = null;
-    }
-
-    private bool ShootOnce()
-    {
         Ray fireRay = new Ray(m_FirePosition.position, m_FirePosition.forward);
-        return m_Soldier.Weapon.Use(fireRay);
+        m_Soldier.Weapon.Use(fireRay);
     }
-
 
     //Switching
     private void HandleSwitchIn()
