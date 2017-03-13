@@ -193,6 +193,7 @@ public class RobotFireState : IAbstractTargetState
         {
             StopWeaponCharging();
             StopCoroutine(m_ChargeRoutine);
+            m_ChargeRoutine = null;
         }
     }
 
