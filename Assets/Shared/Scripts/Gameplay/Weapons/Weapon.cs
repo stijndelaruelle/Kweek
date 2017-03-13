@@ -160,7 +160,11 @@ public class Weapon : MonoBehaviour
 
         //Use the weapon
         if (fireBehaviour != null)
-            fireBehaviour.Use(originalRay);
+        {
+            bool success = fireBehaviour.Use(originalRay);
+            if (success == false)
+                return false;
+        }
 
         //Shooting consequences
         if (m_AmmoUseBehaviour != null)
@@ -187,7 +191,11 @@ public class Weapon : MonoBehaviour
 
         //Stop using the weapon
         if (fireBehaviour != null)
-            fireBehaviour.StopUse(originalRay);
+        {
+            bool success = fireBehaviour.StopUse(originalRay);
+            if (success == false)
+                return false;
+        }
 
         //Shooting consequences
         if (m_AmmoUseBehaviour != null)

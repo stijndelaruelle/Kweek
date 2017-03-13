@@ -10,7 +10,7 @@ public class MinMaxRangeDrawer : PropertyDrawer
 {
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return base.GetPropertyHeight(property, label) + 16;
+        return base.GetPropertyHeight(property, label);
     }
 
     // Draw the property inside the given rect
@@ -29,19 +29,15 @@ public class MinMaxRangeDrawer : PropertyDrawer
         float newMin = minValue.floatValue;
         float newMax = maxValue.floatValue;
 
-        float xDivision = position.width * 0.33f;
-        float yDivision = position.height * 0.5f;
-        EditorGUI.LabelField(new Rect(position.x, position.y, xDivision, yDivision), label);
+        float minBoxX = (position.width * 0.445f);
+        float maxBoxX = position.width - 37.0f;
 
-        EditorGUI.LabelField(new Rect(position.x, position.y + yDivision, position.width, yDivision), range.MinLimit.ToString("0.##"));
-        EditorGUI.LabelField(new Rect(position.x + position.width - 28f, position.y + yDivision, position.width, yDivision), range.MaxLimit.ToString("0.##"));
-        EditorGUI.MinMaxSlider(new Rect(position.x + 24f, position.y + yDivision, position.width - 48f, yDivision), ref newMin, ref newMax, range.MinLimit, range.MaxLimit);
+        EditorGUI.LabelField(new Rect(position.x, position.y, position.width - minBoxX, position.height), label);
 
-        EditorGUI.LabelField(new Rect(position.x + xDivision, position.y, xDivision, yDivision), "From: ");
-        newMin = Mathf.Clamp(EditorGUI.FloatField(new Rect(position.x + xDivision + 30, position.y, xDivision - 30, yDivision), newMin), range.MinLimit, newMax);
+        newMin = Mathf.Clamp(EditorGUI.FloatField(new Rect(minBoxX, position.y, 52.0f, position.height), newMin), range.MinLimit, newMax);
+        newMax = Mathf.Clamp(EditorGUI.FloatField(new Rect(maxBoxX, position.y, 52.0f, position.height), newMax), newMin, range.MaxLimit);
 
-        EditorGUI.LabelField(new Rect(position.x + xDivision * 2f, position.y, xDivision, yDivision), "To: ");
-        newMax = Mathf.Clamp(EditorGUI.FloatField(new Rect(position.x + xDivision * 2f + 24, position.y, xDivision - 24, yDivision), newMax), newMin, range.MaxLimit);
+        EditorGUI.MinMaxSlider(new Rect(minBoxX + 57.0f, position.y, maxBoxX - (minBoxX + 65.0f), position.height), ref newMin, ref newMax, range.MinLimit, range.MaxLimit);
 
         minValue.floatValue = newMin;
         maxValue.floatValue = newMax;

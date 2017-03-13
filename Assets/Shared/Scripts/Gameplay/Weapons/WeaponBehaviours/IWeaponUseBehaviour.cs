@@ -14,8 +14,8 @@ public abstract class IWeaponUseBehaviour : MonoBehaviour
 {
     public abstract void Setup(List<Collider> ownerCollider);
 
-    public abstract void Use(Ray originalRay);
-    public abstract void StopUse(Ray originalRay);
+    public abstract bool Use(Ray originalRay);
+    public abstract bool StopUse(Ray originalRay);
 
     public abstract bool CanUse();
     public abstract int GetAmmoUseage();

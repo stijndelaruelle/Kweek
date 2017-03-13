@@ -8,18 +8,13 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
     private float m_ShootCooldown = 0.0f;
     private float m_ShootCooldownTimer;
 
-    [Tooltip("How much ammo does changing the gun for 1 second take")]
+    [Tooltip("How much ammo does chargeing the gun for 1 second take")]
     [SerializeField]
     private int m_AmmoUseage = 1;
-    private float m_ChargeTimer = 0.0f;
-
-    [MinMaxRange(5f, 10f)]
-    // inspector slider can move between these values
-    public MinMaxRange speed;
 
     [SerializeField]
-    private PhysicalProjectile m_ProjectilePrefab;
-    private PhysicalProjectile m_CurrentProjectile;
+    private ChargeableProjectile m_ProjectilePrefab;
+    private ChargeableProjectile m_CurrentProjectile;
 
     [SerializeField]
     private Transform m_ProjectileSpawn;
@@ -41,48 +36,48 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
 
     private void Update()
     {
-        HandleCharging();
         HandleShootingCooldown();
     }
 
-    public override void Use(Ray originalRay)
+    public override bool Use(Ray originalRay)
     {
         //Create new projectile
-        if (m_CurrentProjectile != null)
+        if (m_CurrentProjectile == null)
         {
-            m_CurrentProjectile = GameObject.Instantiate<PhysicalProjectile>(m_ProjectilePrefab, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
-            m_ChargeTimer = 0.0f;
+            m_CurrentProjectile = GameObject.Instantiate<ChargeableProjectile>(m_ProjectilePrefab, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation, m_ProjectileSpawn);
+            m_CurrentProjectile.StartCharging();
         }
 
-        //Detonate projectile
+        //TODO: Detonate projectile
+
+        return true;
     }
 
-    public override void StopUse(Ray originalRay)
+    public override bool StopUse(Ray originalRay)
     {
         if (m_CurrentProjectile == null)
-            return;
+            return false;
+
+        if (m_CurrentProjectile.CanFire() == false)
+            return false;
 
         //Look at this at a later stage. Controllers have undergone huge changes.
-        m_CurrentProjectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
+        m_CurrentProjectile.transform.parent = null;
+        bool success = m_CurrentProjectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
+
+        if (success == false)
+            return false;
 
         //Animation & Cooldown
-        m_Animator.SetTrigger(m_TriggerName);
+        if (m_Animator != null)
+        {
+            m_Animator.SetTrigger(m_TriggerName);
+        }
+        
         m_ShootCooldownTimer = m_ShootCooldown;
-    }
+        m_CurrentProjectile = null;
 
-    private void HandleCharging()
-    {
-        if (m_CurrentProjectile == null)
-            return;
-
-        //Make bigger
-        //m_CurrentProjectile.transform.localScale = new Vector3()
-
-        //Increase damage
-        m_ChargeTimer += Time.deltaTime;
-
-        //Use ammo callback?
-
+        return true;
     }
 
     private void HandleShootingCooldown()

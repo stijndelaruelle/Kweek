@@ -42,6 +42,17 @@ public class MinMaxRange
         set { m_Max = value; }
     }
 
+    public float GetValue(float t)
+    {
+        if (t <= 0.0f)
+            return m_Min;
+
+        if (t >= 1.0f)
+            return m_Max;
+
+        return Mathf.Lerp(m_Min, m_Max, t);
+    }
+
     public float GetRandomValue()
     {
         return Random.Range(m_Min, m_Max);

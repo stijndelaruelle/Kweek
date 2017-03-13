@@ -83,10 +83,10 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
         HandleRecoilCooldown();
     }
 
-    public override void Use(Ray originalRay)
+    public override bool Use(Ray originalRay)
     {
         if (!CanUse())
-            return;
+            return false;
 
         Vector3 forward = originalRay.direction;
         Vector3 right = new Vector3(-forward.z, 0.0f, forward.x);
@@ -133,11 +133,14 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
         //Recoil
         m_CurrentRecoilBullet += 1;
         m_RecoilCooldownTimer = m_RecoilCooldownRate.Evaluate(m_CurrentRecoilBullet);
+
+        return true;
     }
 
-    public override void StopUse(Ray originalRay)
+    public override bool StopUse(Ray originalRay)
     {
         //This weapon has no need for this, however it's still generic enough to be included in the interface.
+        return true;
     }
 
     public void FireRay(Ray ray, float range)

@@ -38,7 +38,7 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
         HandleShootingCooldown();
     }
 
-    public override void Use(Ray originalRay)
+    public override bool Use(Ray originalRay)
     {
         PhysicalProjectile projectile = GameObject.Instantiate<PhysicalProjectile>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
 
@@ -53,12 +53,16 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
             //Animation & Cooldown
             m_Animator.SetTrigger(m_TriggerName);
             m_ShootCooldownTimer = m_ShootCooldown;
+            return true;
         }
+
+        return false;
     }
 
-    public override void StopUse(Ray originalRay)
+    public override bool StopUse(Ray originalRay)
     {
         //This weapon has no need for this, however it's still generic enough to be included in the interface.
+        return true;
     }
 
     private void HandleShootingCooldown()
