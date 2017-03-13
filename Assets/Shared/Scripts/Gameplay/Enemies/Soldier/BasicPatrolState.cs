@@ -122,7 +122,7 @@ public class BasicPatrolState : IAbstractState
                 {
                     //Change to the firing state
                     m_Soldier.SwitchState(m_FireState);
-                    m_FireState.SetTarget(other.bounds.center);
+                    m_FireState.SetTarget(other.gameObject);
                 }
             }
         }

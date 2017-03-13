@@ -52,7 +52,7 @@ public class RobotFireState : IAbstractTargetState
     private bool m_IsInFireStance = false;
     private bool m_IsSwitchingOut = false;
 
-    private Vector3 m_Target;
+    private GameObject m_Target;
     private Coroutine m_ChargeRoutine;
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
     private Quaternion m_LastRightArmLocalRotation;
@@ -75,7 +75,7 @@ public class RobotFireState : IAbstractTargetState
         //Stop the character from moving, both gamewise as visually
         m_Robot.NavMeshAgent.Stop();
 
-        m_Target = Vector3.zero;
+        m_Target = null;
         m_FireDelayTimer = m_FireDelay;
         m_IsInFireStance = false;
         m_IsSwitchingOut = false;
@@ -91,12 +91,6 @@ public class RobotFireState : IAbstractTargetState
         m_Robot.TriggerStayEvent -= OnStateTriggerStay;
         m_Robot.TriggerExitEvent -= OnStateTriggerExit;
         m_Robot.AnimatorIKEvent -= OnStateAnimatorIK;
-
-        if (m_ChargeRoutine != null)
-        {
-            StopWeaponCharging();
-            StopCoroutine(m_ChargeRoutine);
-        }
     }
 
     public override void StateUpdate()
@@ -117,7 +111,7 @@ public class RobotFireState : IAbstractTargetState
             return;
 
         //Check the distance between us and the target
-        Vector3 diff = m_Target - m_FirePosition.position;
+        Vector3 diff = m_Target.transform.position - m_FirePosition.position;
         float distance = diff.magnitude;
 
         //If we are too far away, chase to the position!
@@ -194,12 +188,18 @@ public class RobotFireState : IAbstractTargetState
         m_FireDelayTimer = 0.0f;
         m_IsSwitchingOut = true;
         m_Robot.Animator.SetTrigger("MovementTrigger");
+
+        if (m_ChargeRoutine != null)
+        {
+            StopWeaponCharging();
+            StopCoroutine(m_ChargeRoutine);
+        }
     }
 
     private void OnStateTriggerStay(Collider other)
     {
         //Check if it's the player
-        if (other.bounds.center == m_Target)
+        if (other.gameObject.transform == m_Target)
         {
             //If so check if he's within the specified angle
             Vector3 diffPos = other.transform.position - m_Robot.transform.position;
@@ -238,7 +238,7 @@ public class RobotFireState : IAbstractTargetState
 
     public void OnStateTriggerExit(Collider other)
     {
-        if (other.bounds.center == m_Target)
+        if (other.gameObject == m_Target)
         {
             //Change to the chasing state
             SwitchOut();
@@ -252,7 +252,7 @@ public class RobotFireState : IAbstractTargetState
             //Rotate the head
             float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
             m_Robot.Animator.SetLookAtWeight(normTimer);
-            m_Robot.Animator.SetLookAtPosition(m_Target);
+            m_Robot.Animator.SetLookAtPosition(m_Target.transform.position);
 
             //Rotate the chest
             if (m_ChestRotationSpeed > 0)
@@ -283,7 +283,7 @@ public class RobotFireState : IAbstractTargetState
 
         if (m_IsSwitchingOut == false)
         {
-            Vector3 direction = (m_Target - m_Robot.Animator.GetBoneTransform(boneType).position).normalized;
+            Vector3 direction = (m_Target.transform.position - m_Robot.Animator.GetBoneTransform(boneType).position).normalized;
             desiredRotation = Quaternion.LookRotation(direction);
             Vector3 euler = desiredRotation.eulerAngles;
 
@@ -302,7 +302,7 @@ public class RobotFireState : IAbstractTargetState
         return desiredRotation;
     }
 
-    public override void SetTarget(Vector3 target)
+    public override void SetTarget(GameObject target)
     {
         m_Target = target;
     }

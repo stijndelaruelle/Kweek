@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyBehaviour))]
-public class BasicSearchChaseState : IAbstractState
+public class BasicSearchChaseState : IAbstractTargetState
 {
     private EnemyBehaviour m_Soldier;
 
@@ -109,15 +109,15 @@ public class BasicSearchChaseState : IAbstractState
                 {
                     //Change to the firing state
                     m_Soldier.SwitchState(m_FireState);
-                    m_FireState.SetTarget(other.bounds.center);
+                    m_FireState.SetTarget(other.gameObject);
                 }
             }
         }
     }
 
-    public void SetTarget(Vector3 targetPosition)
+    public override void SetTarget(GameObject target)
     {
-        m_TargetPosition = targetPosition;
+        m_TargetPosition = target.transform.position;
         m_Soldier.NavMeshAgent.destination = m_TargetPosition;
     }
 

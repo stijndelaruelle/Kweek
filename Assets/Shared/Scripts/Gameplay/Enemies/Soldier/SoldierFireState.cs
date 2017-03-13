@@ -55,7 +55,7 @@ public class SoldierFireState : IAbstractTargetState
     private bool m_IsInFireStance = false;
     private bool m_IsSwitchingOut = false;
 
-    private Vector3 m_Target;
+    private GameObject m_Target;
     private Coroutine m_FireRoutine;
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
     private Quaternion m_LastRightArmLocalRotation;
@@ -78,7 +78,7 @@ public class SoldierFireState : IAbstractTargetState
         //Stop the character from moving, both gamewise as visually
         m_Soldier.NavMeshAgent.Stop();
 
-        m_Target = Vector3.zero;
+        m_Target = null;
         m_FireDelayTimer = m_FireDelay;
         m_IsInFireStance = false;
         m_IsSwitchingOut = false;
@@ -114,7 +114,7 @@ public class SoldierFireState : IAbstractTargetState
             return;
 
         //Check the distance between us and the target
-        Vector3 diff = m_Target - m_FirePosition.position;
+        Vector3 diff = m_Target.transform.position - m_FirePosition.position;
         float distance = diff.magnitude;
 
         //If we are too far away, chase to the position!
@@ -210,7 +210,7 @@ public class SoldierFireState : IAbstractTargetState
     private void OnStateTriggerStay(Collider other)
     {
         //Check if it's the player
-        if (other.bounds.center == m_Target)
+        if (other.gameObject == m_Target)
         {
             //If so check if he's within the specified angle
             Vector3 diffPos = other.transform.position - m_Soldier.transform.position;
@@ -249,7 +249,7 @@ public class SoldierFireState : IAbstractTargetState
 
     public void OnStateTriggerExit(Collider other)
     {
-        if (other.bounds.center == m_Target)
+        if (other.gameObject == m_Target)
         {
             //Change to the chasing state
             SwitchOut();
@@ -263,7 +263,7 @@ public class SoldierFireState : IAbstractTargetState
             //Rotate the head
             float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
             m_Soldier.Animator.SetLookAtWeight(normTimer);
-            m_Soldier.Animator.SetLookAtPosition(m_Target);
+            m_Soldier.Animator.SetLookAtPosition(m_Target.transform.position);
 
             //Rotate the chest
             if (m_ChestRotationSpeed > 0)
@@ -294,7 +294,7 @@ public class SoldierFireState : IAbstractTargetState
 
         if (m_IsSwitchingOut == false)
         {
-            Vector3 direction = (m_Target - m_Soldier.Animator.GetBoneTransform(boneType).position).normalized;
+            Vector3 direction = (m_Target.transform.position - m_Soldier.Animator.GetBoneTransform(boneType).position).normalized;
             desiredRotation = Quaternion.LookRotation(direction);
             Vector3 euler = desiredRotation.eulerAngles;
 
@@ -313,7 +313,7 @@ public class SoldierFireState : IAbstractTargetState
         return desiredRotation;
     }
 
-    public override void SetTarget(Vector3 target)
+    public override void SetTarget(GameObject target)
     {
         m_Target = target;
     }

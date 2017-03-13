@@ -20,5 +20,5 @@ public abstract class IAbstractState : MonoBehaviour, IState
 
 public abstract class IAbstractTargetState : IAbstractState
 {
-    public abstract void SetTarget(Vector3 position);
+    public abstract void SetTarget(GameObject target);
 }
