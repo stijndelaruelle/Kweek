@@ -54,23 +54,23 @@ public class ChargeableProjectile : MonoBehaviour
 
     [SerializeField]
     private Rigidbody m_Rigidbody;
-    private bool m_IsCharging = false;
-    private float m_ChargeTimer = 0.0f;
-    public float ChargeTime
-    {
-        get { return m_ChargeTimer; }
-    }
+    private float m_ChargeValue = 0.0f;
 
     public event FullyChargeDelegate FullChargedEvent;
 
-    public void StartCharging()
+    public void Charge(float value)
     {
-        //Make bigger
-        float scale = m_Scale.Min;
-        transform.localScale = new Vector3(scale, scale, scale);
+        m_ChargeValue += value;
 
-        m_IsCharging = true;
-        m_ChargeTimer = 0.0f;
+        if (m_ChargeValue >= m_ChargeLimit.Max)
+        {
+            if (FullChargedEvent != null)
+                FullChargedEvent();
+        }
+
+        //Make bigger
+        float scale = m_Scale.GetValue(GetNormalizedChargeTime());
+        transform.localScale = new Vector3(scale, scale, scale);
     }
 
     public bool Fire(Vector3 direction, Vector3 baseVelocity)
@@ -81,35 +81,13 @@ public class ChargeableProjectile : MonoBehaviour
         float speed = m_InitialSpeed.GetValue(1.0f - GetNormalizedChargeTime());
         Vector3 force = (direction * speed) + baseVelocity;
         m_Rigidbody.AddForce(force);
-
-        m_IsCharging = false;
         return true;
     }
 
 
     private void Update()
     {
-        HandleCharging();
         HandleLifeTime();
-    }
-
-    private void HandleCharging()
-    {
-        if (!m_IsCharging)
-            return;
-
-        //Make bigger
-        float scale = m_Scale.GetValue(GetNormalizedChargeTime());
-        transform.localScale = new Vector3(scale, scale, scale);
-        //Use ammo callback?
-
-        m_ChargeTimer += Time.deltaTime;
-        if (m_ChargeTimer >= m_ChargeLimit.Max)
-        {
-            m_IsCharging = false;
-            if (FullChargedEvent != null) //TODO use later.
-                FullChargedEvent();
-        }
     }
 
     private void HandleLifeTime()
@@ -212,12 +190,12 @@ public class ChargeableProjectile : MonoBehaviour
 
     private float GetNormalizedChargeTime()
     {
-        return (m_ChargeTimer / m_ChargeLimit.Max);
+        return (m_ChargeValue / m_ChargeLimit.Max);
     }
 
     public bool CanFire()
     {
-        return (m_ChargeTimer >= m_ChargeLimit.Min);
+        return (m_ChargeValue >= m_ChargeLimit.Min);
     }
 
     private void OnCollisionEnter(Collision collision)

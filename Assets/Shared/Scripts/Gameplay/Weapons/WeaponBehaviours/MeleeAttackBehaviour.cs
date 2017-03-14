@@ -84,7 +84,7 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
     public override bool StopUse(Ray originalRay)
     {
         //This weapon has no need for this, however it's still generic enough to be included in the interface.
-        return true;
+        return false;
     }
 
     public override bool CanUse()

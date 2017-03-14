@@ -125,27 +125,36 @@ public class RobotFireState : IAbstractTargetState
 
     private IEnumerator ChargeRoutine(float chargeTime)
     {
-        StartWeaponCharging();
+        float timer = 0.0f;
+        while (timer < chargeTime)
+        {
+            ChargeWeapon();
+            timer += Time.deltaTime;
 
-        yield return new WaitForSeconds(chargeTime);
+            yield return new WaitForEndOfFrame();
+        }
 
-        StopWeaponCharging();
-
+        //Shouldn't be endless, only reason this would fire more than once is if we try to fire before the minimum chargetime has been reached
+        bool hasFired = false;
+        while (hasFired == false)
+        {
+            hasFired = FireWeapon();
+            yield return new WaitForEndOfFrame();
+        }
+        
         m_ChargeRoutine = null;
     }
 
-    private void StartWeaponCharging()
+    private void ChargeWeapon()
     {
         Ray fireRay = new Ray(m_FirePosition.position, m_FirePosition.forward);
         m_Robot.Weapon.Use(fireRay);
     }
 
-    private void StopWeaponCharging()
+    private bool FireWeapon()
     {
         Ray fireRay = new Ray(m_FirePosition.position, m_FirePosition.forward);
-        bool success = m_Robot.Weapon.StopUse(fireRay);
-
-        //TODO: If this is not a success try stop using it over and over again (?)
+        return m_Robot.Weapon.StopUse(fireRay);
     }
 
     //Switching
@@ -191,7 +200,7 @@ public class RobotFireState : IAbstractTargetState
 
         if (m_ChargeRoutine != null)
         {
-            StopWeaponCharging();
+            FireWeapon();
             StopCoroutine(m_ChargeRoutine);
             m_ChargeRoutine = null;
         }

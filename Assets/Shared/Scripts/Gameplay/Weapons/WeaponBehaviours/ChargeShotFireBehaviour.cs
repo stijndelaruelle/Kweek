@@ -45,10 +45,12 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
         if (m_CurrentProjectile == null)
         {
             m_CurrentProjectile = GameObject.Instantiate<ChargeableProjectile>(m_ProjectilePrefab, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation, m_ProjectileSpawn);
-            m_CurrentProjectile.StartCharging();
         }
 
-        //TODO: Detonate projectile
+        //Charge the projectile
+        m_CurrentProjectile.Charge(Time.deltaTime);
+
+        //TODO: Detonate projectile (if it's already flying)
 
         return true;
     }
@@ -63,7 +65,7 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
 
         //Look at this at a later stage. Controllers have undergone huge changes.
         m_CurrentProjectile.transform.parent = null;
-        bool success = m_CurrentProjectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
+        bool success = m_CurrentProjectile.Fire(originalRay.direction, Vector3.zero);
 
         if (success == false)
             return false;
