@@ -83,4 +83,9 @@ public class LevelManager : Singleton<LevelManager>
     {
         return m_LevelList.GetLevel(levelID);
     }
+
+    public int GetLevelID(LevelDataDefinition level)
+    {
+        return m_LevelList.GetLevelID(level);
+    }
 }

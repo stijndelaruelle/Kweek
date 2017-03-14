@@ -5,40 +5,41 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 //Data container
 public class SaveGame
 {
-    private string m_SaveGameName;
+    private string m_SaveGameName = "";
     public string Name
     {
         get { return m_SaveGameName; }
         set { m_SaveGameName = value; }
     }
 
-    private int m_LevelID;
+    private int m_LevelID = 0;
     public int LevelID
     {
         get { return m_LevelID; }
         set { m_LevelID = value; }
     }
 
-    private DateTime m_SaveTime;
-    public DateTime SaveTime
+    private DateTime m_Timestamp = DateTime.Now;
+    public DateTime TimeStamp
     {
-        get { return m_SaveTime; }
-        set { m_SaveTime = value; }
+        get { return m_Timestamp; }
+        set { m_Timestamp = value; }
     }
 
-    private ulong m_PlayTime;
+    private ulong m_PlayTime = 0;
     public ulong PlayTime
     {
         get { return m_PlayTime; }
         set { m_PlayTime = value; }
     }
 
-    private DirectoryInfo m_DirectoryInfo;
+    private DirectoryInfo m_DirectoryInfo = null;
     public DirectoryInfo DirectoryInfo
     {
         get { return m_DirectoryInfo; }
@@ -46,8 +47,8 @@ public class SaveGame
     }
 
     //Not FileInfo, as this is always relative to the directory info
-    private string m_MetaDataFileName;
-    private string m_SaveGameFileName;
+    private string m_MetaDataFileName = "";
+    private string m_SaveGameFileName = "";
 
     public SaveGame()
     {
@@ -63,9 +64,31 @@ public class SaveGame
         m_SaveGameFileName = saveGameFileName;
     }
 
-    public void SaveMetaDataToDisk()
+    public bool SaveMetaDataToDisk()
     {
+        try
+        {
+            JSONClass rootObject = new JSONClass();
+            Serialize(rootObject);
 
+            //Write the JSON data (.ToString in release as it saves a lot of data compard to ToJSON)
+            string jsonStr = "";
+            #if !UNITY_EDITOR
+                jsonStr = rootObject.ToString();
+            #else
+                jsonStr = rootObject.ToJSON(0);
+            #endif
+
+            File.WriteAllText(m_DirectoryInfo.FullName + "/" + m_MetaDataFileName, jsonStr);
+        }
+        catch (Exception e)
+        {
+            //The file was probably not found!
+            UnityEngine.Debug.LogWarning("Error in SaveMetaDataToDisk: " + e.Message);
+            return false;
+        }
+
+        return true;
     }
 
     public bool LoadMetaDataFromDisk()
@@ -97,23 +120,23 @@ public class SaveGame
         return true;
     }
 
-    private JSONNode Serialize()
+    private void Serialize(JSONClass rootNode)
     {
-        JSONClass data = new JSONClass();
-
-        //Location
+        //Name
         JSONData nameData = new JSONData(m_SaveGameName);
-        data.Add("name", nameData);
+        rootNode.Add("name", nameData);
 
-        //Smilies
+        //Level ID
         JSONData levelIDData = new JSONData(m_LevelID);
-        data.Add("levelid", levelIDData);
+        rootNode.Add("levelid", levelIDData);
 
-        //Last smiley fill
+        //Playtime
         JSONData playTimeData = new JSONData(m_PlayTime);
-        data.Add("playtime", playTimeData);
+        rootNode.Add("playtime", playTimeData);
 
-        return data;
+        //Timestamp
+        JSONNode timeStampNode = new JSONData(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        rootNode.Add("timestamp", timeStampNode);
     }
 
     private void Deserialize(JSONNode jsonNode)
@@ -148,9 +171,9 @@ public class SaveGame
         m_PlayTime = playTime;
         
         //Parse the save time
-        JSONNode saveTimeNode = jsonNode["savetime"];
-        if (saveTimeNode == null) { throw new System.Exception("A save game doesn't contain a \"savetime\" node! Source: " + jsonNode.ToString()); }
-        m_SaveTime = DateTime.ParseExact(saveTimeNode.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        JSONNode timeStampNode = jsonNode["timestamp"];
+        if (timeStampNode == null) { throw new System.Exception("A save game doesn't contain a \"savetime\" node! Source: " + jsonNode.ToString()); }
+        m_Timestamp = DateTime.ParseExact(timeStampNode.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
     }
 
     //For students, use this function to get the filepath you want to parse
@@ -184,6 +207,10 @@ public class SaveGameManager : Singleton<SaveGameManager>
     }
 
     private SaveGame m_ActiveSaveGame;
+    public SaveGame ActiveSaveGame
+    {
+        get { return m_ActiveSaveGame; }
+    }
 
     //Events
     public event SaveGameDelegate SaveGameAddedEvent;
@@ -195,6 +222,11 @@ public class SaveGameManager : Singleton<SaveGameManager>
     {
         base.Awake();
         m_SaveGames = new List<SaveGame>();
+    }
+
+    private void Start()
+    {
+        LoadSaveGamesFromDisk();
     }
 
     public void LoadSaveGamesFromDisk()
@@ -226,9 +258,37 @@ public class SaveGameManager : Singleton<SaveGameManager>
         //Activate to count the playtime? Who is counting this?
     }
 
-    public void CreateSaveGame(string name)
+    public void DeactivateSaveGame()
     {
+        m_ActiveSaveGame = null;
+    }
 
+    public SaveGame CreateSaveGame(string name, int levelID)
+    {
+        //Create a new folder for this save game
+        DirectoryInfo rootDirectory = new DirectoryInfo(m_RootPath);
+
+        string uniqueName = FindUniqueDirectoryName(rootDirectory, m_SaveGameDirectoryPrefix + name);
+        DirectoryInfo directory = FindOrCreateDirectory(rootDirectory, uniqueName);
+
+        SaveGame newSaveGame = new SaveGame(directory, m_MetaDataFileName, m_SaveGameFileName);
+        newSaveGame.Name = name;
+        newSaveGame.LevelID = levelID;
+
+        bool success = newSaveGame.SaveMetaDataToDisk();
+
+        //Only add the save game to the list if it was created correctly
+        if (success)
+        {
+            m_SaveGames.Add(newSaveGame);
+
+            if (SaveGameAddedEvent != null)
+                SaveGameAddedEvent(newSaveGame);
+
+            return newSaveGame;
+        }
+
+        return null;
     }
 
     public void EditSaveGame(SaveGame saveGame, string name, int levelID, int blabla)
@@ -250,6 +310,8 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
             saveGame.DirectoryInfo.MoveTo(deletedDirectory.FullName + "/" + uniqueDirectoryName);
 
+            m_SaveGames.Remove(saveGame);
+
             if (SaveGameDeletedEvent != null)
                 SaveGameDeletedEvent(saveGame);
         }
@@ -262,6 +324,21 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
 
     //Utility
+    public void ActivateMostRecent()
+    {
+        List<SaveGame> sortedSaveGamesData = m_SaveGames.OrderByDescending(o => o.TimeStamp).ToList(); //Last saved game at the top of the list
+
+        if (sortedSaveGamesData.Count > 0)
+        {
+            ActivateSaveGame(sortedSaveGamesData[0]);
+        }
+    }
+
+    public int GetSaveGameCount()
+    {
+        return m_SaveGames.Count;
+    }
+
     private DirectoryInfo FindOrCreateDirectory(DirectoryInfo rootDirectory, string name)
     {
         if (rootDirectory == null)

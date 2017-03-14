@@ -40,10 +40,10 @@ public class SaveGameSelectToggle : MonoBehaviour
         m_SaveGameName.text = m_SaveGame.Name;
 
         //Saved Time
-        m_SaveTime.text = m_SaveGame.SaveTime.ToShortDateString() + " " +
-                          m_SaveGame.SaveTime.Hour.ToString() + ":" +
-                          m_SaveGame.SaveTime.Minute.ToString() + ":" +
-                          m_SaveGame.SaveTime.Second.ToString();
+        m_SaveTime.text = m_SaveGame.TimeStamp.ToShortDateString() + " " +
+                          m_SaveGame.TimeStamp.Hour.ToString() + ":" +
+                          m_SaveGame.TimeStamp.Minute.ToString() + ":" +
+                          m_SaveGame.TimeStamp.Second.ToString();
 
         //Time played
         ulong remainingTimePlayed = m_SaveGame.PlayTime;
@@ -69,6 +69,8 @@ public class SaveGameSelectToggle : MonoBehaviour
         m_Picture.sprite = levelData.Picture;
 
         transform.SetParent(parent);
+        transform.SetSiblingIndex(0); //At the top of the list
+
         transform.localScale = new Vector3(1.0f, 1.0f, 1.0f); //Scale always goes nuts after parenting. Fix that.
 
         m_Toggle.group = toggleGroup;

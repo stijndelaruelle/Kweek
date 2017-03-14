@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuitButton : MonoBehaviour
+public class QuitToDesktopButton : MonoBehaviour
 {
     [SerializeField]
     private PopupPanel m_PopupWindow;

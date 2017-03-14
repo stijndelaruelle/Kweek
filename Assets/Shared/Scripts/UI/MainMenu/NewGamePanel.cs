@@ -13,12 +13,21 @@ public class NewGamePanel : MonoBehaviour
 
     public void StartNewGame()
     {
-        m_ImageFader.FadeIn(OnFadeInComplete);
+        //Difficulty mode
+        int levelID = LevelManager.Instance.GetLevelID(m_LevelToggleGroup.SelectedLevelData);
+
+        SaveGame saveGame = SaveGameManager.Instance.CreateSaveGame("New game - Difficulty mode", levelID);
+
+        if (saveGame != null)
+        {
+            SaveGameManager.Instance.ActivateSaveGame(saveGame);
+            m_ImageFader.FadeIn(OnFadeInComplete);
+        }
     }
 
     private void OnFadeInComplete()
     {
-        LevelManager.Instance.LoadLevel(m_LevelToggleGroup.SelectedLevelData);
+        LevelManager.Instance.LoadLevel(SaveGameManager.Instance.ActiveSaveGame.LevelID);
         m_ImageFader.SetAlphaMin();
     }
 }

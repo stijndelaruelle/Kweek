@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,7 +39,7 @@ public class ManageSaveGamePanel : MonoBehaviour
 
         m_SaveGameSelectToggles = new List<SaveGameSelectToggle>();
 
-        Refresh();
+        OnSaveGamesLoaded();
     }
 
     private void OnDestroy()
@@ -58,12 +59,6 @@ public class ManageSaveGamePanel : MonoBehaviour
         }
     }
 
-    private void Refresh()
-    {
-        if (SaveGameManager.Instance != null)
-            SaveGameManager.Instance.LoadSaveGamesFromDisk();
-    }
-
 
     private void OnSaveGameSelect(SaveGame saveGame)
     {
@@ -72,8 +67,8 @@ public class ManageSaveGamePanel : MonoBehaviour
 
     public void LoadSaveGame()
     {
+        SaveGameManager.Instance.ActivateSaveGame(m_SelectedSaveGame);
         m_ImageFader.FadeIn(OnFadeInComplete);
-
     }
 
     public void DeleteSaveGame()
@@ -97,6 +92,14 @@ public class ManageSaveGamePanel : MonoBehaviour
         return -1;
     }
 
+    private void EnableToggle(SaveGameSelectToggle toggle)
+    {
+        foreach(SaveGameSelectToggle saveGameSelectToggle in m_SaveGameSelectToggles)
+        {
+            saveGameSelectToggle.IsOn((saveGameSelectToggle == toggle));
+        }
+    }
+
     //Popup callback
     private void OnDeleteYesClicked()
     {
@@ -106,7 +109,14 @@ public class ManageSaveGamePanel : MonoBehaviour
     //SaveGameManager callbacks
     private void OnSaveGameAdded(SaveGame saveGame)
     {
+        SaveGameSelectToggle toggle = GameObject.Instantiate<SaveGameSelectToggle>(m_TogglePrefab);
+        toggle.Setup(saveGame, m_ContentRoot, m_ToggleGroup);
+        toggle.SaveGameSelectEvent += OnSaveGameSelect;
 
+        m_SaveGameSelectToggles.Add(toggle);
+
+        //Enable the toggle
+        EnableToggle(toggle);
     }
 
     private void OnSaveGameEdited(SaveGame saveGame)
@@ -163,30 +173,25 @@ public class ManageSaveGamePanel : MonoBehaviour
 
         m_SaveGameSelectToggles.Clear();
 
-
         List<SaveGame> saveGamesData = SaveGameManager.Instance.SaveGames;
+        List<SaveGame> sortedSaveGamesData = saveGamesData.OrderBy(o => o.TimeStamp).ToList(); //Last saved game at the top of the list
 
-        for (int i = 0; i < saveGamesData.Count; ++i)
+        for (int i = 0; i < sortedSaveGamesData.Count; ++i)
         {
             SaveGameSelectToggle toggle = GameObject.Instantiate<SaveGameSelectToggle>(m_TogglePrefab);
-            toggle.Setup(saveGamesData[i], m_ContentRoot, m_ToggleGroup);
+            toggle.Setup(sortedSaveGamesData[i], m_ContentRoot, m_ToggleGroup);
             toggle.SaveGameSelectEvent += OnSaveGameSelect;
-
-            //Enable the first toggle
-            if (i == 0)
-                toggle.IsOn(true);
-            else
-                toggle.IsOn(false);
 
             m_SaveGameSelectToggles.Add(toggle);
         }
+
+        //Enable the first toggle (last in the list here)
+        EnableToggle(m_SaveGameSelectToggles[m_SaveGameSelectToggles.Count - 1]);
     }
 
     //Imagefader callback
     private void OnFadeInComplete()
     {
-        SaveGameManager.Instance.ActivateSaveGame(m_SelectedSaveGame);
-
         //Switch to the correct scene
         LevelManager.Instance.LoadLevel(m_SelectedSaveGame.LevelID);
         m_ImageFader.SetAlphaMin();
