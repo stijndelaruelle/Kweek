@@ -173,6 +173,9 @@ public class PlayerMovementController : MonoBehaviour
 
     private void SuperUpdate()
     {
+        if (Time.timeScale == 0.0f)
+            return;
+
         if (m_CurrentState != null)
             m_CurrentState.StateUpdate();
 
@@ -182,6 +185,9 @@ public class PlayerMovementController : MonoBehaviour
 
     private void UpdateRotation()
     {
+        if (Time.timeScale == 0.0f)
+            return;
+
         //Rotate player towards mouse
         float yRot = Input.GetAxis("Mouse X") * 60 * Time.deltaTime;// *10;
         float xRot = Input.GetAxis("Mouse Y") * 60 * Time.deltaTime;// *10;

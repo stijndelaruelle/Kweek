@@ -73,6 +73,9 @@ public class WeaponArsenal : MonoBehaviour
         if (!m_IsActive)
             return;
 
+        if (Time.timeScale == 0.0f)
+            return;
+
         //Fire weapons
         if (m_Weapons != null && m_Weapons.Count > 0 && m_CurrentWeaponID >= 0 && m_CurrentWeaponID < m_Weapons.Count)
         {
