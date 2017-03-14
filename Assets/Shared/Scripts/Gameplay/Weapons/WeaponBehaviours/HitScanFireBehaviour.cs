@@ -72,6 +72,9 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
 
     private List<Collider> m_IgnoredColliders;
 
+    //Events
+    public override event AmmoUseDelegate AmmoUseEvent;
+
     public override void Setup(List<Collider> ignoredColliders)
     {
         m_IgnoredColliders = ignoredColliders;
@@ -133,6 +136,10 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
         //Recoil
         m_CurrentRecoilBullet += 1;
         m_RecoilCooldownTimer = m_RecoilCooldownRate.Evaluate(m_CurrentRecoilBullet);
+
+        //Use ammo
+        if (AmmoUseEvent != null)
+            AmmoUseEvent(m_AmmoUseage);
 
         return true;
     }
@@ -352,11 +359,6 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
     public override bool CanUse()
     {
         return (m_ShootCooldownTimer == 0.0f);
-    }
-
-    public override int GetAmmoUseage()
-    {
-        return m_AmmoUseage;
     }
 
 

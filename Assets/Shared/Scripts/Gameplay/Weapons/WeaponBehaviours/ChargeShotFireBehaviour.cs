@@ -11,6 +11,7 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
     [Tooltip("How much ammo does chargeing the gun for 1 second take")]
     [SerializeField]
     private int m_AmmoUseage = 1;
+    private float m_AmmoTimer = 0.0f;
 
     [SerializeField]
     private ChargeableProjectile m_ProjectilePrefab;
@@ -28,6 +29,10 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
     private string m_TriggerName = "FireTrigger";
 
     private List<Collider> m_IgnoredColliders;
+    private Ray m_LastUsedRay; //To fire when fully charged
+
+    //Events
+    public override event AmmoUseDelegate AmmoUseEvent;
 
     public override void Setup(List<Collider> ignoredColliders)
     {
@@ -41,16 +46,31 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
 
     public override bool Use(Ray originalRay)
     {
+        m_LastUsedRay = originalRay;
+
         //Create new projectile
         if (m_CurrentProjectile == null)
         {
             m_CurrentProjectile = GameObject.Instantiate<ChargeableProjectile>(m_ProjectilePrefab, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation, m_ProjectileSpawn);
+            m_CurrentProjectile.FullChargedEvent += OnFullyCharged;
         }
 
         //Charge the projectile
         m_CurrentProjectile.Charge(Time.deltaTime);
 
         //TODO: Detonate projectile (if it's already flying)
+
+        //Ammo
+        m_AmmoTimer += Time.deltaTime;
+
+        float ammoUseFreq = (1.0f / m_AmmoUseage);
+        if (m_AmmoTimer >= ammoUseFreq)
+        {
+            m_AmmoTimer -= ammoUseFreq;
+
+            if (AmmoUseEvent != null)
+                AmmoUseEvent(1);
+        }
 
         return true;
     }
@@ -63,7 +83,6 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
         if (m_CurrentProjectile.CanFire() == false)
             return false;
 
-        //Look at this at a later stage. Controllers have undergone huge changes.
         m_CurrentProjectile.transform.parent = null;
         bool success = m_CurrentProjectile.Fire(originalRay.direction, Vector3.zero);
 
@@ -77,6 +96,8 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
         }
         
         m_ShootCooldownTimer = m_ShootCooldown;
+
+        m_CurrentProjectile.FullChargedEvent -= OnFullyCharged;
         m_CurrentProjectile = null;
 
         return true;
@@ -100,8 +121,8 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
         return (m_ShootCooldownTimer == 0.0f);
     }
 
-    public override int GetAmmoUseage()
+    private void OnFullyCharged()
     {
-        return m_AmmoUseage;
+        StopUse(m_LastUsedRay);
     }
 }

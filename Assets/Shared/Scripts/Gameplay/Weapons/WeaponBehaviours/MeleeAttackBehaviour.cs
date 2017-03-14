@@ -36,6 +36,9 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
+    //Events
+    public override event AmmoUseDelegate AmmoUseEvent;
+
     private void Start()
     {
         m_Hitbox.enabled = false;
@@ -90,11 +93,6 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
     public override bool CanUse()
     {
         return (m_UseCooldownTimer == 0.0f);
-    }
-
-    public override int GetAmmoUseage()
-    {
-        return 0;
     }
 
     private void HandleUsingCooldown()

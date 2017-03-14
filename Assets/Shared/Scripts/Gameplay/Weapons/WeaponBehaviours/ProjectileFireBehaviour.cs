@@ -28,6 +28,9 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
 
     private List<Collider> m_IgnoredColliders;
 
+    //Events
+    public override event AmmoUseDelegate AmmoUseEvent;
+
     public override void Setup(List<Collider> ignoredColliders)
     {
         m_IgnoredColliders = ignoredColliders;
@@ -53,6 +56,11 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
             //Animation & Cooldown
             m_Animator.SetTrigger(m_TriggerName);
             m_ShootCooldownTimer = m_ShootCooldown;
+
+            //Use ammo
+            if (AmmoUseEvent != null)
+                AmmoUseEvent(m_AmmoUseage);
+
             return true;
         }
 
@@ -81,10 +89,5 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
     public override bool CanUse()
     {
         return (m_ShootCooldownTimer == 0.0f);
-    }
-
-    public override int GetAmmoUseage()
-    {
-        return m_AmmoUseage;
     }
 }
