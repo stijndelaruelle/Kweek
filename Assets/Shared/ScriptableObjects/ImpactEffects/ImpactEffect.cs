@@ -32,10 +32,10 @@ public class ImpactEffect : PoolableObject
     public override void Activate()
     {
         //Set a random sprite
-        if (m_SpriteRenderer != null && m_Definition.Decals.Count > 0)
+        if (m_SpriteRenderer != null)
         {
             int randomDecalID = 0;
-            if (m_Definition.Decals.Count > 1)
+            if (m_Definition.Decals.Count > 0)
             {
                 randomDecalID = Random.Range(0, m_Definition.Decals.Count);
                 m_SpriteRenderer.sprite = m_Definition.Decals[randomDecalID];
@@ -48,10 +48,10 @@ public class ImpactEffect : PoolableObject
         }
 
         //Play a random hit sound
-        if (m_AudioSource != null && m_Definition.AudioClips.Count > 0)
+        if (m_AudioSource != null)
         {
             int randomClipID = 0;
-            if (m_Definition.AudioClips.Count > 1)
+            if (m_Definition.AudioClips.Count > 0)
             {
                 randomClipID = Random.Range(0, m_Definition.AudioClips.Count);
                 m_AudioSource.clip = m_Definition.AudioClips[randomClipID];
