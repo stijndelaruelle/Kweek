@@ -28,8 +28,10 @@ public class VolumeSlider : MonoBehaviour
 
     private void SetVolume(float value)
     {
-        //Scale to -80 -> 0 //I don't like the idea of going to +20db
-        float volume = (1.0f - (value / m_InputObject.MaxValue)) * -80.0f;
+        float normValue = value / m_InputObject.MaxValue;
+
+        float t = Mathf.Log10(normValue * 20.0f);
+        float volume = Mathf.Lerp(-80f, 0f, normValue); //I don't like the idea of going to +20db
         m_Mixer.SetFloat(m_VariableName, volume);
     }
 
