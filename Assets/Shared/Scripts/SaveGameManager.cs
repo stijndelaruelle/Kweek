@@ -382,7 +382,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
                 string testFilename = originalDirectoryName;
                 if (count > 0) { testFilename += " (" + (count + 1) + ")"; }
 
-                if (directories[i].Name != testFilename)
+                if (directories[i].Name.Contains(testFilename) == false)
                 {
                     uniqueFileName = testFilename;
                     break;

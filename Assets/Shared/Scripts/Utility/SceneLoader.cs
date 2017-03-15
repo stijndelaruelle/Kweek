@@ -9,6 +9,7 @@ public class SceneLoader : MonoBehaviour
 
     private string m_SceneName;
     private LoadSceneMode m_Mode;
+    private bool m_SetAsMainScene = false;
 
     private bool m_IsLoading = false;
     private bool m_IsActivated = false;
@@ -42,7 +43,7 @@ public class SceneLoader : MonoBehaviour
     }
 
 
-    public void LoadScene(string sceneName, LoadSceneMode mode, bool async)
+    public void LoadScene(string sceneName, LoadSceneMode mode, bool async, bool setAsMainScene)
     {
         if (m_IsLoading == true && m_IsActivated == false)
         {
@@ -52,6 +53,7 @@ public class SceneLoader : MonoBehaviour
 
         m_SceneName = sceneName;
         m_Mode = mode;
+        m_SetAsMainScene = setAsMainScene;
 
         if (async)
         {
@@ -102,11 +104,24 @@ public class SceneLoader : MonoBehaviour
             if (m_AsyncProgress == null)
                 OnSceneLoaded();
 
-            if (SceneActivatedEvent != null)
-                SceneActivatedEvent();
-
-            m_IsActivated = true;
-            m_AsyncProgress = null;
+            StartCoroutine(OnSceneActivatedFrameDelayRoutine(scene));
         }
+    }
+
+    private IEnumerator OnSceneActivatedFrameDelayRoutine(Scene scene)
+    {
+        //https://forum.unity3d.com/threads/scenemanager-setactivescene-does-not-work-solved-workarounds.381705/
+        yield return new WaitForEndOfFrame();
+
+        if (m_SetAsMainScene)
+        {
+            SceneManager.SetActiveScene(scene);
+        }
+
+        if (SceneActivatedEvent != null)
+            SceneActivatedEvent();
+
+        m_IsActivated = true;
+        m_AsyncProgress = null;
     }
 }

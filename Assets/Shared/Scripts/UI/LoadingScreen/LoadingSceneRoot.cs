@@ -36,7 +36,7 @@ public class LoadingSceneRoot : MonoBehaviour
         m_SceneLoader.SceneActivatedEvent += OnSceneActivated;
 
         ShowLoadingPanel();
-        m_SceneLoader.LoadScene(m_SceneName, LoadSceneMode.Single, true);
+        m_SceneLoader.LoadScene(m_SceneName, LoadSceneMode.Single, true, true);
 
         m_ImageFader.SetAlphaMax();
         m_ImageFader.FadeOut();

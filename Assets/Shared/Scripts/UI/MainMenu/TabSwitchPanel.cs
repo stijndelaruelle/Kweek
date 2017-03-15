@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TabSwitchPanel : MonoBehaviour
@@ -16,6 +17,8 @@ public class TabSwitchPanel : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+
         for (int i = 0; i < m_Buttons.Count; ++i)
         {
             int nonVariableI = i;
@@ -39,7 +42,7 @@ public class TabSwitchPanel : MonoBehaviour
     public void ShowPanel(int id)
     {
         //if (id < 0 || id >= m_Panels.Count)
-            //return;
+        //return;
 
         //Deactivatve the button
         for (int i = 0; i < m_Buttons.Count; ++i)
@@ -58,5 +61,11 @@ public class TabSwitchPanel : MonoBehaviour
             else
                 m_Panels[i].SetActive(false);
         }
+    }
+
+    private void OnActiveSceneChanged(Scene prevScene, Scene currentScene)
+    {
+        //When changing scenes close everything
+        ShowPanel(-1);
     }
 }

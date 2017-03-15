@@ -11,13 +11,7 @@ public class MainMenuOverlay : MonoBehaviour
 
     private void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         m_LevelManager = LevelManager.Instance;
-    }
-
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Update()
@@ -65,10 +59,4 @@ public class MainMenuOverlay : MonoBehaviour
     {
         return m_Visuals.activeSelf;
     }
-
-    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {
-        Hide();
-    }
-
 }

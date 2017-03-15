@@ -27,7 +27,9 @@ public class LevelManager : Singleton<LevelManager>
 
     public void LoadMainMenu()
     {
-        m_SceneLoader.LoadScene(m_MainMenuSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false);
+        m_PreparedLevelID = -1;
+        m_CurrentLevelID = -1;
+        m_SceneLoader.LoadScene(m_MainMenuSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false, true);
     }
 
     public void LoadLevel(int id)
@@ -41,7 +43,7 @@ public class LevelManager : Singleton<LevelManager>
 
         m_CurrentLevelID = id;
 
-        m_SceneLoader.LoadScene(m_LoadingScreenSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false);
+        m_SceneLoader.LoadScene(m_LoadingScreenSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false, true);
     }
 
     public void LoadLevel(LevelDataDefinition levelData)
@@ -63,6 +65,9 @@ public class LevelManager : Singleton<LevelManager>
 
     public bool IsCurrentLevelLoaded()
     {
+        if (m_CurrentLevelID < 0)
+            return false;
+
         LevelDataDefinition levelData = m_LevelList.GetLevel(m_CurrentLevelID);
         if (levelData == null)
             return false;
