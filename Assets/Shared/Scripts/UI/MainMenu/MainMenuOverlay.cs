@@ -9,8 +9,13 @@ public class MainMenuOverlay : MonoBehaviour
     private GameObject m_Visuals;
     private LevelManager m_LevelManager;
 
+    private string m_OriginalSceneName;
+
     private void Start()
     {
+        m_OriginalSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+
         m_LevelManager = LevelManager.Instance;
     }
 
@@ -36,7 +41,7 @@ public class MainMenuOverlay : MonoBehaviour
         SetVisible(false);
     }
 
-    private void SetVisible(bool state)
+    public void SetVisible(bool state)
     {
         m_Visuals.SetActive(state);
 
@@ -58,5 +63,17 @@ public class MainMenuOverlay : MonoBehaviour
     private bool IsVisible()
     {
         return m_Visuals.activeSelf;
+    }
+
+    private void OnActiveSceneChanged(Scene prevScene, Scene currentScene)
+    {
+        bool activate = false;
+
+        if (currentScene.name == m_OriginalSceneName)
+        {
+            activate = true;
+        }
+
+        SetVisible(activate);
     }
 }

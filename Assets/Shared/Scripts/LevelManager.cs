@@ -24,6 +24,14 @@ public class LevelManager : Singleton<LevelManager>
 
     public event LevelManagerDelegate PreparedLevelLoadEvent;
 
+    private void Update()
+    {
+        //Debug
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            LoadNextLevel();
+        }
+    }
 
     public void LoadMainMenu()
     {
@@ -56,6 +64,11 @@ public class LevelManager : Singleton<LevelManager>
     {
         m_CurrentLevelID += 1;
         LoadLevel(m_CurrentLevelID);
+    }
+
+    public int GetCurrentLevelID()
+    {
+        return m_CurrentLevelID;
     }
 
     public LevelDataDefinition GetCurrentLevelData()

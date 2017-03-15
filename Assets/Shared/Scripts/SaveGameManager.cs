@@ -29,7 +29,6 @@ public class SaveGame
     public DateTime TimeStamp
     {
         get { return m_Timestamp; }
-        set { m_Timestamp = value; }
     }
 
     private ulong m_PlayTime = 0;
@@ -188,8 +187,10 @@ public class SaveGameManager : Singleton<SaveGameManager>
     public delegate void SaveGameDelegate(SaveGame saveGame);
     public delegate void SaveGamesLoadedDelegate();
 
+    [Tooltip("Folder in the \"My Games\" or \"Saved Games\" folder in the persons \"My Documents\"")]
     [SerializeField]
-    private string m_RootPath;
+    private string m_SaveGameFolder;
+    private DirectoryInfo m_RootDirectory;
 
     [SerializeField]
     private string m_SaveGameDirectoryPrefix;
@@ -213,6 +214,8 @@ public class SaveGameManager : Singleton<SaveGameManager>
     }
 
     //Events
+    public event SaveGameDelegate SaveGameActivatedEvent; //Students should subscribe to this event to find out when a user has saved.
+
     public event SaveGameDelegate SaveGameAddedEvent;
     public event SaveGameDelegate SaveGameEditedEvent;
     public event SaveGameDelegate SaveGameDeletedEvent;
@@ -221,6 +224,10 @@ public class SaveGameManager : Singleton<SaveGameManager>
     protected override void Awake()
     {
         base.Awake();
+
+        DirectoryInfo rootRootDirectory = new DirectoryInfo(SaveGameLocation.getSaveGameDirectory());
+        m_RootDirectory = FindOrCreateDirectory(rootRootDirectory, m_SaveGameFolder);
+
         m_SaveGames = new List<SaveGame>();
     }
 
@@ -233,9 +240,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
     {
         m_SaveGames.Clear();
 
-        DirectoryInfo rootDirectory = new DirectoryInfo(m_RootPath);
-
-        foreach (DirectoryInfo directory in rootDirectory.GetDirectories())
+        foreach (DirectoryInfo directory in m_RootDirectory.GetDirectories())
         {
             if (directory.Name.StartsWith(m_SaveGameDirectoryPrefix))
             {
@@ -255,7 +260,10 @@ public class SaveGameManager : Singleton<SaveGameManager>
     public void ActivateSaveGame(SaveGame saveGame)
     {
         m_ActiveSaveGame = saveGame;
-        //Activate to count the playtime? Who is counting this?
+        //Start counting play time?
+
+        if (SaveGameActivatedEvent != null)
+            SaveGameActivatedEvent(saveGame);
     }
 
     public void DeactivateSaveGame()
@@ -263,17 +271,18 @@ public class SaveGameManager : Singleton<SaveGameManager>
         m_ActiveSaveGame = null;
     }
 
-    public SaveGame CreateSaveGame(string name, int levelID)
+    public SaveGame CreateSaveGame(string name, int levelID, ulong playTime)
     {
         //Create a new folder for this save game
-        DirectoryInfo rootDirectory = new DirectoryInfo(m_RootPath);
+        string uniqueID = Guid.NewGuid().ToString("N");
 
-        string uniqueName = FindUniqueDirectoryName(rootDirectory, m_SaveGameDirectoryPrefix + name);
-        DirectoryInfo directory = FindOrCreateDirectory(rootDirectory, uniqueName);
+        string uniqueName = FindUniqueDirectoryName(m_RootDirectory, m_SaveGameDirectoryPrefix + uniqueID);
+        DirectoryInfo directory = FindOrCreateDirectory(m_RootDirectory, uniqueName);
 
         SaveGame newSaveGame = new SaveGame(directory, m_MetaDataFileName, m_SaveGameFileName);
         newSaveGame.Name = name;
         newSaveGame.LevelID = levelID;
+        newSaveGame.PlayTime = playTime;
 
         bool success = newSaveGame.SaveMetaDataToDisk();
 
@@ -291,9 +300,20 @@ public class SaveGameManager : Singleton<SaveGameManager>
         return null;
     }
 
-    public void EditSaveGame(SaveGame saveGame, string name, int levelID, int blabla)
+    public void EditSaveGame(SaveGame saveGame, string name, int levelID, ulong playTime)
     {
-        //TODO
+        saveGame.Name = name;
+        saveGame.LevelID = levelID;
+        saveGame.PlayTime = playTime;
+
+        bool success = saveGame.SaveMetaDataToDisk();
+
+        //Only add the save game to the list if it was created correctly
+        if (success)
+        {
+            if (SaveGameEditedEvent != null)
+                SaveGameEditedEvent(saveGame);
+        }
     }
 
     public void DeleteSaveGame(SaveGame saveGame)
@@ -301,10 +321,12 @@ public class SaveGameManager : Singleton<SaveGameManager>
         //We won't 100% delete the save game until a user manually deletes it, as you can never know if this was an accident.
         //Let's move it to a "Deleted save games" folder instead.
 
+        if (saveGame == null)
+            return;
+
         try
         {
-            DirectoryInfo rootDirectory = new DirectoryInfo(m_RootPath);
-            DirectoryInfo deletedDirectory = FindOrCreateDirectory(rootDirectory, "Deleted save games");
+            DirectoryInfo deletedDirectory = FindOrCreateDirectory(m_RootDirectory, "Deleted save games");
 
             string uniqueDirectoryName = FindUniqueDirectoryName(deletedDirectory, saveGame.DirectoryInfo.Name);
 
@@ -382,7 +404,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
                 string testFilename = originalDirectoryName;
                 if (count > 0) { testFilename += " (" + (count + 1) + ")"; }
 
-                if (directories[i].Name.Contains(testFilename) == false)
+                if (directories[i].Name != testFilename)
                 {
                     uniqueFileName = testFilename;
                     break;

@@ -6,12 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class ActivateWhenAvailableSaveGames : MonoBehaviour
 {
+
     private void Start()
     {
         SaveGameManager saveGameManager = SaveGameManager.Instance;
-
-        saveGameManager.SaveGameAddedEvent += OnSaveGameAdded;
-        saveGameManager.SaveGameDeletedEvent += OnSaveGameDeleted;
         saveGameManager.SaveGamesLoadedEvent += OnSaveGamesLoaded;
     }
 
@@ -20,8 +18,6 @@ public class ActivateWhenAvailableSaveGames : MonoBehaviour
         SaveGameManager saveGameManager = SaveGameManager.Instance;
         if (saveGameManager != null)
         {
-            saveGameManager.SaveGameAddedEvent -= OnSaveGameAdded;
-            saveGameManager.SaveGameDeletedEvent -= OnSaveGameDeleted;
             saveGameManager.SaveGamesLoadedEvent -= OnSaveGamesLoaded;
         }
     }
@@ -42,15 +38,15 @@ public class ActivateWhenAvailableSaveGames : MonoBehaviour
     }
 
     //SaveGameManager callbacks
-    private void OnSaveGameAdded(SaveGame saveGame)
-    {
-        //Refresh();
-    }
+    //private void OnSaveGameAdded(SaveGame saveGame)
+    //{
+    //    //Refresh();
+    //}
 
-    private void OnSaveGameDeleted(SaveGame saveGame)
-    {
-        Refresh();
-    }
+    //private void OnSaveGameDeleted(SaveGame saveGame)
+    //{
+    //    Refresh();
+    //}
 
     private void OnSaveGamesLoaded()
     {

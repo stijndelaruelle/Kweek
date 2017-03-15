@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+//TODO: Should be split into 2 classes: LoadGamePanel & SaveGamePanel.
 public class ManageSaveGamePanel : MonoBehaviour
 {
     [SerializeField]
@@ -53,16 +54,27 @@ public class ManageSaveGamePanel : MonoBehaviour
             saveGameManager.SaveGamesLoadedEvent -= OnSaveGamesLoaded;
         }
 
-        foreach (SaveGameSelectToggle toggle in m_SaveGameSelectToggles)
+        if (m_SaveGameSelectToggles != null)
         {
-            toggle.SaveGameSelectEvent -= OnSaveGameSelect;
+            foreach (SaveGameSelectToggle toggle in m_SaveGameSelectToggles)
+            {
+                toggle.SaveGameSelectEvent -= OnSaveGameSelect;
+            }
         }
     }
 
-
-    private void OnSaveGameSelect(SaveGame saveGame)
+    public void CreateNewSave()
     {
-        m_SelectedSaveGame = saveGame;
+        SaveGame activeSaveGame = SaveGameManager.Instance.CreateSaveGame("Difficulty mode", LevelManager.Instance.GetCurrentLevelID(), SaveGameManager.Instance.ActiveSaveGame.PlayTime);
+        SaveGameManager.Instance.ActivateSaveGame(activeSaveGame);
+    }
+
+    public void SaveGame()
+    {
+        if (m_SelectedSaveGame == null)
+            return;
+
+        m_PopupWindow.SetupYesNo("Save", "Are you sure you want to overwrite your save game: " + m_SelectedSaveGame.Name + "?", OnSaveYesClicked, null);
     }
 
     public void LoadSaveGame()
@@ -101,6 +113,15 @@ public class ManageSaveGamePanel : MonoBehaviour
     }
 
     //Popup callback
+    private void OnSaveYesClicked()
+    {
+        if (m_SelectedSaveGame == null)
+            return;
+
+        SaveGameManager.Instance.EditSaveGame(m_SelectedSaveGame, SaveGameManager.Instance.ActiveSaveGame.Name, LevelManager.Instance.GetCurrentLevelID(), SaveGameManager.Instance.ActiveSaveGame.PlayTime);
+        SaveGameManager.Instance.ActivateSaveGame(m_SelectedSaveGame);
+    }
+
     private void OnDeleteYesClicked()
     {
         SaveGameManager.Instance.DeleteSaveGame(m_SelectedSaveGame);
@@ -121,7 +142,14 @@ public class ManageSaveGamePanel : MonoBehaviour
 
     private void OnSaveGameEdited(SaveGame saveGame)
     {
+        int toggleIndex = FindToggleWithSaveGame(saveGame);
 
+        if (toggleIndex == -1)
+            return;
+
+        SaveGameSelectToggle toggle = m_SaveGameSelectToggles[toggleIndex];
+
+        toggle.Setup(saveGame, m_ContentRoot, m_ToggleGroup);
     }
 
     private void OnSaveGameDeleted(SaveGame saveGame)
@@ -179,6 +207,7 @@ public class ManageSaveGamePanel : MonoBehaviour
         for (int i = 0; i < sortedSaveGamesData.Count; ++i)
         {
             SaveGameSelectToggle toggle = GameObject.Instantiate<SaveGameSelectToggle>(m_TogglePrefab);
+
             toggle.Setup(sortedSaveGamesData[i], m_ContentRoot, m_ToggleGroup);
             toggle.SaveGameSelectEvent += OnSaveGameSelect;
 
@@ -195,5 +224,10 @@ public class ManageSaveGamePanel : MonoBehaviour
         //Switch to the correct scene
         LevelManager.Instance.LoadLevel(m_SelectedSaveGame.LevelID);
         m_ImageFader.SetAlphaMin();
+    }
+
+    private void OnSaveGameSelect(SaveGame saveGame)
+    {
+        m_SelectedSaveGame = saveGame;
     }
 }

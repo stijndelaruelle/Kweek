@@ -16,7 +16,7 @@ public class NewGamePanel : MonoBehaviour
         //Difficulty mode
         int levelID = LevelManager.Instance.GetLevelID(m_LevelToggleGroup.SelectedLevelData);
 
-        SaveGame saveGame = SaveGameManager.Instance.CreateSaveGame("New game - Difficulty mode", levelID);
+        SaveGame saveGame = SaveGameManager.Instance.CreateSaveGame("Difficulty mode", levelID, 0);
 
         if (saveGame != null)
         {

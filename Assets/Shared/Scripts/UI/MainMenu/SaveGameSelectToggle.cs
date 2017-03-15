@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,16 +38,38 @@ public class SaveGameSelectToggle : MonoBehaviour
         m_SaveGame = saveGame;
 
         //Name
-        m_SaveGameName.text = m_SaveGame.Name;
+        if (m_SaveGame == null)
+        {
+            m_SaveGameName.text = "New save";
+        }
+        else
+        {
+            m_SaveGameName.text = m_SaveGame.Name;
+        }
 
-        //Saved Time
-        m_SaveTime.text = m_SaveGame.TimeStamp.ToShortDateString() + " " +
-                          m_SaveGame.TimeStamp.Hour.ToString() + ":" +
-                          m_SaveGame.TimeStamp.Minute.ToString() + ":" +
-                          m_SaveGame.TimeStamp.Second.ToString();
+        //Timestamp
+        DateTime timeStamp = DateTime.Now;
+        if (m_SaveGame != null)
+        {
+            timeStamp = m_SaveGame.TimeStamp;
+        }
+
+        m_SaveTime.text = timeStamp.ToShortDateString() + " " +
+                          timeStamp.Hour.ToString() + ":" +
+                          timeStamp.Minute.ToString() + ":" +
+                          timeStamp.Second.ToString();
 
         //Time played
-        ulong remainingTimePlayed = m_SaveGame.PlayTime;
+        ulong remainingTimePlayed = 0;
+
+        if (m_SaveGame == null)
+        {
+            remainingTimePlayed = SaveGameManager.Instance.ActiveSaveGame.PlayTime;
+        }
+        else
+        {
+            remainingTimePlayed = m_SaveGame.PlayTime;
+        }
 
         ulong hoursPlayed = (remainingTimePlayed / 3600000);
         remainingTimePlayed -= hoursPlayed * 3600000;
@@ -64,9 +87,19 @@ public class SaveGameSelectToggle : MonoBehaviour
         }
 
         //Level name & picture
-        LevelDataDefinition levelData = LevelManager.Instance.GetLevelData(saveGame.LevelID);
+        LevelDataDefinition levelData = null;
+        if (m_SaveGame == null)
+        {
+            levelData = LevelManager.Instance.GetCurrentLevelData();
+        }
+        else
+        {
+            levelData = LevelManager.Instance.GetLevelData(m_SaveGame.LevelID);
+        }
+
         m_LevelName.text = levelData.LevelName;
         m_Picture.sprite = levelData.Picture;
+
 
         transform.SetParent(parent);
         transform.SetSiblingIndex(0); //At the top of the list
