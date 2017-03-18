@@ -15,9 +15,13 @@ public class LoadMainMenu : MonoBehaviour
     private string m_MainMenuBackgroundName;
     private bool m_LoadingBackground = false;
 
+    [SerializeField]
+    private GameObject m_BackScreen;
+
     private void Start()
     {
         //Cool splash fades etc...
+        m_BackScreen.SetActive(true);
 
         m_SceneLoader.SceneActivatedEvent += OnSceneActivated;
 
@@ -42,6 +46,7 @@ public class LoadMainMenu : MonoBehaviour
         if (m_LoadingBackground == false)
         {
             //Everything is loaded, remove blackness
+            m_BackScreen.SetActive(false);
         }
     }
 }
