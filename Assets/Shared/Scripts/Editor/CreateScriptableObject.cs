@@ -17,6 +17,19 @@ public class CreateScriptableObject
     {
         CreateAsset<LevelDataListDefinition>();
     }
+
+    [MenuItem("Assets/Create/Custom/DifficultyMode")]
+    public static void CreateDifficultyMode()
+    {
+        CreateAsset<DifficultyModeDefinition>();
+    }
+
+    [MenuItem("Assets/Create/Custom/DifficultyModeList")]
+    public static void CreateDifficultyModeData()
+    {
+        CreateAsset<DifficultyModeListDefinition>();
+    }
+
     [MenuItem("Assets/Create/Custom/SurfaceType")]
     public static void CreateSurfaceType()
     {

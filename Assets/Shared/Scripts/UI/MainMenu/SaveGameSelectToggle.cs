@@ -9,10 +9,12 @@ public class SaveGameSelectToggle : MonoBehaviour
     public delegate void SaveGameSelectDelegate(SaveGame definition);
 
     [SerializeField]
-    private Text m_SaveGameName;
+    private Text m_LevelName;
 
     [SerializeField]
-    private Text m_LevelName;
+    private Text m_DifficultyMode;
+    [SerializeField]
+    private DifficultyModeListDefinition m_DifficultyModes;
 
     [SerializeField]
     private Text m_SaveTime;
@@ -37,15 +39,22 @@ public class SaveGameSelectToggle : MonoBehaviour
     {
         m_SaveGame = saveGame;
 
-        //Name
+        //Level name & picture
+        LevelDataDefinition levelData = null;
         if (m_SaveGame == null)
         {
-            m_SaveGameName.text = "New save";
+            levelData = LevelManager.Instance.GetCurrentLevelData();
         }
         else
         {
-            m_SaveGameName.text = m_SaveGame.Name;
+            levelData = LevelManager.Instance.GetLevelData(m_SaveGame.LevelID);
         }
+
+        m_LevelName.text = levelData.LevelName;
+        m_Picture.sprite = levelData.Picture;
+
+        //Difficulty
+        m_DifficultyMode.text = m_DifficultyModes.GetDifficultyMode(saveGame.Difficulty).DifficultyName;
 
         //Timestamp
         DateTime timeStamp = DateTime.Now;
@@ -85,21 +94,6 @@ public class SaveGameSelectToggle : MonoBehaviour
             if (minutesPlayed > 1) { m_PlayTime.text = minutesPlayed.ToString() + " minutes played"; }
             else                   { m_PlayTime.text = minutesPlayed.ToString() + " minute played"; }
         }
-
-        //Level name & picture
-        LevelDataDefinition levelData = null;
-        if (m_SaveGame == null)
-        {
-            levelData = LevelManager.Instance.GetCurrentLevelData();
-        }
-        else
-        {
-            levelData = LevelManager.Instance.GetLevelData(m_SaveGame.LevelID);
-        }
-
-        m_LevelName.text = levelData.LevelName;
-        m_Picture.sprite = levelData.Picture;
-
 
         transform.SetParent(parent);
         transform.SetSiblingIndex(0); //At the top of the list

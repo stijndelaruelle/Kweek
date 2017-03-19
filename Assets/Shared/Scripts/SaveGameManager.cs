@@ -11,11 +11,18 @@ using UnityEngine;
 //Data container
 public class SaveGame
 {
-    private string m_SaveGameName = "";
+    private string m_SaveGameName = "";     //TODO: Use this & add editing functionality
     public string Name
     {
         get { return m_SaveGameName; }
         set { m_SaveGameName = value; }
+    }
+
+    private int m_Difficulty = 0;
+    public int Difficulty
+    {
+        get { return m_Difficulty; }
+        set { m_Difficulty = value; }
     }
 
     private int m_LevelID = 0;
@@ -125,6 +132,10 @@ public class SaveGame
         JSONData nameData = new JSONData(m_SaveGameName);
         rootNode.Add("name", nameData);
 
+        //Difficulty Mode
+        JSONData difficultyData = new JSONData(m_Difficulty);
+        rootNode.Add("difficulty", difficultyData);
+
         //Level ID
         JSONData levelIDData = new JSONData(m_LevelID);
         rootNode.Add("levelid", levelIDData);
@@ -147,17 +158,25 @@ public class SaveGame
         if (nameNode == null) { throw new System.Exception("A save game doesn't contain a \"name\" node! Source: " + jsonNode.ToString()); }
         m_SaveGameName = nameNode.Value;
 
+        //Parse the difficulty
+        JSONNode difficultyNode = jsonNode["difficulty"];
+        if (difficultyNode == null) { throw new System.Exception("A save game doesn't contain a \"difficulty\" node! Source: " + jsonNode.ToString()); }
+
+        int difficulty;
+        bool success = int.TryParse(difficultyNode.Value, out difficulty);
+        if (success == false) { throw new System.Exception("A save game has an invalid \"difficulty\" node! Expected an integer. Source: " + jsonNode.ToString()); }
+
+        m_Difficulty = difficulty;
 
         //Parse the level ID
         JSONNode levelIDNode = jsonNode["levelid"];
         if (levelIDNode == null) { throw new System.Exception("A save game doesn't contain a \"levelid\" node! Source: " + jsonNode.ToString()); }
 
         int levelID;
-        bool success = int.TryParse(levelIDNode.Value, out levelID);
+        success = int.TryParse(levelIDNode.Value, out levelID);
         if (success == false) { throw new System.Exception("A save game has an invalid \"levelid\" node! Expected an integer. Source: " + jsonNode.ToString()); }
 
         m_LevelID = levelID;
-
 
         //Parse the play time
         JSONNode playTimeNode = jsonNode["playtime"];
@@ -276,7 +295,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
         m_ActiveSaveGame = null;
     }
 
-    public SaveGame CreateSaveGame(string name, int levelID, ulong playTime)
+    public SaveGame CreateSaveGame(string name, int difficulty, int levelID, ulong playTime)
     {
         //Create a new folder for this save game
         string uniqueID = Guid.NewGuid().ToString("N");
@@ -286,6 +305,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
         SaveGame newSaveGame = new SaveGame(directory, m_MetaDataFileName, m_SaveGameFileName);
         newSaveGame.Name = name;
+        newSaveGame.Difficulty = difficulty;
         newSaveGame.LevelID = levelID;
         newSaveGame.PlayTime = playTime;
 
@@ -305,9 +325,10 @@ public class SaveGameManager : Singleton<SaveGameManager>
         return null;
     }
 
-    public void EditSaveGame(SaveGame saveGame, string name, int levelID, ulong playTime)
+    public void EditSaveGame(SaveGame saveGame, string name, int difficulty, int levelID, ulong playTime)
     {
         saveGame.Name = name;
+        saveGame.Difficulty = difficulty;
         saveGame.LevelID = levelID;
         saveGame.PlayTime = playTime;
 
