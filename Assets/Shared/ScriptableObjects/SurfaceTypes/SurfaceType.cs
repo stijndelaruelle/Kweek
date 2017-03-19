@@ -43,9 +43,9 @@ public class SurfaceType : MonoBehaviour
         return SpawnImpactEffect(m_SurfaceType.MeleeImpactEffectDefinition, position, normal);
     }
 
-    public GameObject SpawnCharacterImpactEffect(Vector3 position)
+    public GameObject SpawnCharacterImpactEffect(Vector3 position, Vector3 normal)
     {
-        return SpawnImpactEffect(m_SurfaceType.CharacterImpactEffectDefinition, position, Vector3.zero);
+        return SpawnImpactEffect(m_SurfaceType.CharacterImpactEffectDefinition, position, normal);
     }
 
     private GameObject SpawnImpactEffect(ImpactEffectDefinition impactDefinition, Vector3 position, Vector3 normal)

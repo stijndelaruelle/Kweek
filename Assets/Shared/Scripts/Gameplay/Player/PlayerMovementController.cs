@@ -91,16 +91,17 @@ public class PlayerMovementController : MonoBehaviour
     {
         get { return m_MaxNumberOfJumps; }
     }
+    private bool m_WasGrounded = false;
 
     [Space(10)]
-    [Header ("Required references")]
+    [Header("Required references")]
     [Space(5)]
     [SerializeField]
     private Transform m_Camera;
 
     [SerializeField]
-    private SuperCharacterController m_CharacterController;
-    public SuperCharacterController CharacterController
+    private CharacterController m_CharacterController;
+    public CharacterController CharacterController
     {
         get { return m_CharacterController; }
     }
@@ -139,6 +140,8 @@ public class PlayerMovementController : MonoBehaviour
 
     private void Awake()
     {
+        m_CharacterController.detectCollisions = false;
+
         //Cache the states, otherwise I kept creating new ones for no reason.
         m_States = new List<IState>();
         m_States.Add(new RunState(this));
@@ -171,7 +174,7 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    private void SuperUpdate()
+    private void Update()
     {
         if (Time.timeScale == 0.0f)
             return;
@@ -179,8 +182,10 @@ public class PlayerMovementController : MonoBehaviour
         if (m_CurrentState != null)
             m_CurrentState.StateUpdate();
 
+        UpdateGroundedState();
+
         //Move the player by our velocity every frame
-        transform.position += m_Velocity * Time.deltaTime; //m_CharacterController.deltaTime;
+        m_CharacterController.Move(m_Velocity * Time.deltaTime);
     }
 
     private void UpdateRotation()
@@ -226,6 +231,8 @@ public class PlayerMovementController : MonoBehaviour
 
             m_CurrentState = m_States[stateID];
             m_CurrentState.Enter();
+
+            //Debug.Log(newState.ToString() + " STATE!");
         }
         else
         {
@@ -245,21 +252,39 @@ public class PlayerMovementController : MonoBehaviour
         SwitchState(PlayerState.Running);
     }
 
-    //Character controller
+    //Ground collision
     private bool AcquiringGround()
     {
-        return m_CharacterController.currentGround.IsGrounded(false, 0.01f);
+        return (m_WasGrounded == false && IsGrounded() == true);
     }
 
     private bool MaintainingGround()
     {
-        return m_CharacterController.currentGround.IsGrounded(true, 0.5f);
+        return IsGrounded();
     }
 
     public bool IsGrounded()
     {
-        return MaintainingGround();
+        RaycastHit hitInfo;
+        bool success = Physics.Raycast(new Ray(transform.position, -transform.up), out hitInfo, 0.2f);
+
+        return success;
     }
+
+    private void UpdateGroundedState()
+    {
+        m_WasGrounded = IsGrounded();
+    }
+
+    //Head collision
+    public bool HasHeadCollision()
+    {
+        RaycastHit hitInfo;
+        bool success = Physics.Raycast(new Ray(transform.position + (transform.up * m_CharacterController.height), transform.up), out hitInfo, 0.2f);
+
+        return success;
+    }
+
 
     //---------------------
     // STATES
@@ -275,8 +300,8 @@ public class PlayerMovementController : MonoBehaviour
             m_Player = player;
         }
 
-        public void Enter() {}
-        public void Exit() {}
+        public void Enter() { }
+        public void Exit() { }
 
         public void StateUpdate()
         {
@@ -293,9 +318,12 @@ public class PlayerMovementController : MonoBehaviour
             if (isJumping)
             {
                 //On the edge of being dirty(?)
-                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
-                state.Jump();
-                return;
+                if (m_Player.HasHeadCollision() == false)
+                {
+                    AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
+                    state.Jump();
+                    return;
+                }
             }
 
             //Falling
@@ -358,8 +386,8 @@ public class PlayerMovementController : MonoBehaviour
             m_Player = player;
         }
 
-        public void Enter() {}
-        public void Exit() {}
+        public void Enter() { }
+        public void Exit() { }
 
         public void StateUpdate()
         {
@@ -376,9 +404,12 @@ public class PlayerMovementController : MonoBehaviour
             if (isJumping)
             {
                 //On the edge of being dirty(?)
-                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
-                state.Jump();
-                return;
+                if (m_Player.HasHeadCollision() == false)
+                {
+                    AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
+                    state.Jump();
+                    return;
+                }
             }
 
             //Falling
@@ -435,6 +466,7 @@ public class PlayerMovementController : MonoBehaviour
     public class DuckState : IState
     {
         private PlayerMovementController m_Player;
+        private float m_PrevHeight;
 
         public DuckState(PlayerMovementController player)
         {
@@ -446,9 +478,10 @@ public class PlayerMovementController : MonoBehaviour
             if (m_Player.DuckEvent != null)
                 m_Player.DuckEvent(true);
 
-            m_Player.CharacterController.heightScale = 0.5f;
-            m_Player.OwnCollider.height = m_Player.OwnCollider.height * 0.5f;
-            m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 0.5f, m_Player.OwnCollider.center.z);
+            m_PrevHeight = m_Player.CharacterController.height;
+            m_Player.CharacterController.height = m_Player.CharacterController.height * 0.5f;
+            m_Player.OwnCollider.height = m_Player.CharacterController.height + 0.1f;
+            //m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 0.5f, m_Player.OwnCollider.center.z);
         }
 
         public void Exit()
@@ -456,9 +489,9 @@ public class PlayerMovementController : MonoBehaviour
             if (m_Player.DuckEvent != null)
                 m_Player.DuckEvent(false);
 
-            m_Player.CharacterController.heightScale = 1.0f;
-            m_Player.OwnCollider.height = m_Player.OwnCollider.height * 2.0f;
-            m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 2.0f, m_Player.OwnCollider.center.z);
+            m_Player.CharacterController.height = m_Player.CharacterController.height * 2.0f;
+            m_Player.OwnCollider.height = m_Player.CharacterController.height + 0.1f;
+            //m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 2.0f, m_Player.OwnCollider.center.z);
         }
 
         public void StateUpdate()
@@ -476,9 +509,12 @@ public class PlayerMovementController : MonoBehaviour
             if (isJumping)
             {
                 //On the edge of being dirty(?)
-                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
-                state.Jump();
-                return;
+                if (CanStopDucking())
+                {
+                    AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
+                    state.Jump();
+                    return;
+                }
             }
 
             //Falling
@@ -493,9 +529,7 @@ public class PlayerMovementController : MonoBehaviour
             if (isDucking == false)
             {
                 //Check if we are even allowed to leave the ducking state
-                bool headCollision = m_Player.CharacterController.CheckHeadCollision(1.0f);
-
-                if (headCollision == false)
+                if (CanStopDucking())
                 {
                     m_Player.SwitchState(PlayerState.Walking);
                     return;
@@ -524,6 +558,14 @@ public class PlayerMovementController : MonoBehaviour
                                                     m_Player.Acceleration * Time.deltaTime); //controller.deltaTime
         }
 
+        private bool CanStopDucking()
+        {
+            RaycastHit hitInfo;
+            bool success = Physics.Raycast(new Ray(m_Player.transform.position + (m_Player.transform.up * m_PrevHeight), m_Player.transform.up), out hitInfo, 0.2f);
+
+            return (!success);
+        }
+
         public override string ToString()
         {
             return "Ducking";
@@ -543,16 +585,11 @@ public class PlayerMovementController : MonoBehaviour
 
         public void Enter()
         {
-            m_Player.CharacterController.DisableClamping();
-            m_Player.CharacterController.DisableSlopeLimit();
-
             m_NumberOfJumps = m_Player.MaxNumberOfJumps;
         }
 
         public void Exit()
         {
-            m_Player.CharacterController.EnableClamping();
-            m_Player.CharacterController.EnableSlopeLimit();
         }
 
         public void StateUpdate()
@@ -565,14 +602,15 @@ public class PlayerMovementController : MonoBehaviour
 
             if (isJumping && m_NumberOfJumps > 0)
             {
-                Jump();
+                if (m_Player.HasHeadCollision() == false)
+                {
+                    Jump();
+                }
             }
 
-            Vector3 planarMoveDirection = Math3d.ProjectVectorOnPlane(m_Player.CharacterController.up, m_Player.Velocity);
+            Vector3 planarMoveDirection = new Vector3(m_Player.Velocity.x, 0.0f, m_Player.Velocity.z); // Math3d.ProjectVectorOnPlane(Vector3.up, m_Player.Velocity);
             Vector3 verticalMoveDirection = m_Player.Velocity - planarMoveDirection;
 
-            //if (Vector3.Angle(verticalMoveDirection, m_Player.CharacterController.up) > 90 && m_Player.AcquiringGround())
-            //{
             if (m_Player.AcquiringGround())
             {
                 m_Player.Velocity = planarMoveDirection;
@@ -591,7 +629,7 @@ public class PlayerMovementController : MonoBehaviour
 
 
             planarMoveDirection = Vector3.MoveTowards(planarMoveDirection, accelerationDir * m_Player.MaxAirialSpeed, m_Player.AirAcceleration * Time.deltaTime);//controller.deltaTime);
-            verticalMoveDirection -= m_Player.CharacterController.up * m_Player.Gravity * Time.deltaTime; //controller.deltaTime;
+            verticalMoveDirection -= Vector3.up * m_Player.Gravity * Time.deltaTime;
 
             m_Player.Velocity = planarMoveDirection + verticalMoveDirection;
         }

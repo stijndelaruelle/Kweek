@@ -52,7 +52,7 @@ public class RagdollPart : MonoBehaviour
         SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
         if (surfaceType != null)
         {
-            surfaceType.SpawnCharacterImpactEffect(collision.contacts[0].point);
+            surfaceType.SpawnCharacterImpactEffect(collision.contacts[0].point, collision.contacts[0].normal);
         }
     }
 }
