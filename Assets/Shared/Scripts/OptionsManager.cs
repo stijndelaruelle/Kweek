@@ -32,14 +32,6 @@ public class OptionsManager : Singleton<OptionsManager>
         LoadOptionsFromDisk();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            SaveOptionsToDisk();
-        }
-    }
-
     //Mutators
     public void SetOption(string key, int value)
     {

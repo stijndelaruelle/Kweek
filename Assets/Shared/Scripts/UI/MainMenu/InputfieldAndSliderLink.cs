@@ -20,6 +20,12 @@ public class InputfieldAndSliderLink : MonoBehaviour
         get { return m_MaxValue; }
     }
 
+    [SerializeField]
+    private int m_MaxDecimalNumbers;
+
+    [SerializeField]
+    private string m_OptionVariable;
+
     public event Action<float> ValueChangedEvent;
 
     private void Start()
@@ -28,9 +34,14 @@ public class InputfieldAndSliderLink : MonoBehaviour
         m_InputField.onEndEdit.AddListener(delegate { OnInputFieldChanged(); });
 
         //Set the slider max value
-        m_InputField.characterLimit = (int)Math.Floor(Math.Log10(m_MaxValue) + 1);
+        m_Slider.maxValue = m_MaxValue;
+        m_Slider.wholeNumbers = (m_MaxDecimalNumbers == 0);
 
-        //SetValue(m_MaxValue);
+        int characterLimit = (int)Math.Floor(Math.Log10(m_MaxValue) + 1);
+        if (m_MaxDecimalNumbers > 0)
+            characterLimit += m_MaxDecimalNumbers + 1; //1 = the decimal .
+
+        m_InputField.characterLimit = characterLimit;
     }
 
     private void OnDestroy()
@@ -39,32 +50,55 @@ public class InputfieldAndSliderLink : MonoBehaviour
         m_InputField.onValueChanged.RemoveListener(delegate { OnInputFieldChanged(); });
     }
 
-    public void SetValue(float value)
+    private void OnEnable()
+    {
+        if (OptionsManager.Instance != null && m_OptionVariable != "")
+        {
+            float value = OptionsManager.Instance.GetOptionAsFloat(m_OptionVariable);
+            SetValue(value);
+        }
+    }
+
+    private void SetValue(float value)
     {
         value = Mathf.Clamp(value, 0.0f, m_MaxValue);
 
+        if (m_Slider.value == value && m_InputField.text == value.ToString())
+            return;
+
         m_Slider.value = value;
-        m_InputField.text = value.ToString();
+
+        string format = "0";
+        if (m_MaxDecimalNumbers > 0) { format += "."; }
+        for (int i = 0; i < m_MaxDecimalNumbers; ++i) { format += "0"; }
+
+        m_InputField.text = value.ToString(format);
 
         if (ValueChangedEvent != null)
             ValueChangedEvent(value);
     }
 
+    private void SaveOption(float value)
+    {
+        OptionsManager.Instance.SetOption(m_OptionVariable, value);
+    }
+
     //Events
     private void OnSliderChanged()
     {
-        //Visually we count till 100
         SetValue(m_Slider.value);
+        SaveOption(m_Slider.value);
     }
 
     private void OnInputFieldChanged()
     {
-        float value = 0;
+        float value = 0.0f;
         bool success = float.TryParse(m_InputField.text, out value);
 
         if (success)
         {
             SetValue(value);
+            SaveOption(value);
         }
     }
 }

@@ -194,14 +194,13 @@ public class PlayerMovementController : MonoBehaviour
             return;
 
         //Rotate player towards mouse
-        float yRot = Input.GetAxis("Mouse X") * 60 * Time.deltaTime;// *10;
-        float xRot = Input.GetAxis("Mouse Y") * 60 * Time.deltaTime;// *10;
+        float mouseSensitivity = 1.0f;
 
-        //if (m_LockVerticalRotation)
-        //    xRot = 0.0f;
+        if (OptionsManager.Instance != null)
+            mouseSensitivity = OptionsManager.Instance.GetOptionAsFloat("MouseSensitivity");
 
-        //if (m_LockHorizontalRotation)
-        //    yRot = 0.0f;
+        float yRot = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float xRot = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
         transform.localRotation = m_CharacterTargetRot;

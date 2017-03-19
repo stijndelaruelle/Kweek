@@ -26,17 +26,7 @@ public class VolumeSlider : MonoBehaviour
             m_InputObject.ValueChangedEvent -= OnValueChanged;
     }
 
-    private void OnEnable()
-    {
-        if (OptionsManager.Instance != null)
-        {
-            float value = OptionsManager.Instance.GetOptionAsFloat(m_VariableName);
-
-            m_InputObject.SetValue(value);
-            SetVolume(value);
-        }
-    }
-
+   
     private void SetVolume(float value)
     {
         float normValue = value / m_InputObject.MaxValue;
@@ -46,15 +36,9 @@ public class VolumeSlider : MonoBehaviour
         m_Mixer.SetFloat(m_VariableName, volume);
     }
 
-    private void SaveOption(float value)
-    {
-        OptionsManager.Instance.SetOption(m_VariableName, value);
-    }
-
     //Events
     private void OnValueChanged(float value)
     {
         SetVolume(value);
-        SaveOption(value);
     }
 }

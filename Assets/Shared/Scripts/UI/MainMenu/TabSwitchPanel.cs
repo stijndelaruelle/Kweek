@@ -25,10 +25,21 @@ public class TabSwitchPanel : MonoBehaviour
             m_Buttons[i].onClick.AddListener(() => ShowPanel(nonVariableI));
         }
 
+        int panelID = -1; //Activate all buttons & show no panels
         if (m_AutoSelectFirstPanel)
-            ShowPanel(0);
-        else
-            ShowPanel(-1); //Activate all buttons & show no panels
+        {
+            //Determine the first panel
+            for (int i = 0; i < m_Buttons.Count; ++i)
+            {
+                if (m_Buttons[i].IsActive())
+                {
+                    panelID = i;
+                    break;
+                }
+            }
+        }
+
+        ShowPanel(panelID); 
     }
 
     private void OnDestroy()
