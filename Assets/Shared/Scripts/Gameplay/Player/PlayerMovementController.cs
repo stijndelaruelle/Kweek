@@ -93,6 +93,10 @@ public class PlayerMovementController : MonoBehaviour
     }
     private bool m_WasGrounded = false;
 
+    [Header("Control Options")]
+    [SerializeField]
+    private float m_DefaultMouseSensitivity = 60.0f;
+
     [Space(10)]
     [Header("Required references")]
     [Space(5)]
@@ -193,12 +197,16 @@ public class PlayerMovementController : MonoBehaviour
         if (Time.timeScale == 0.0f)
             return;
 
-        //Rotate player towards mouse
-        float mouseSensitivity = 1.0f;
-
+        //Mouse sensitivity
+        float mouseSensitivity = m_DefaultMouseSensitivity;
         if (OptionsManager.Instance != null)
-            mouseSensitivity = OptionsManager.Instance.GetOptionAsFloat("MouseSensitivity");
+        {
+            bool success = OptionsManager.Instance.GetOptionAsFloat("MouseSensitivity", out mouseSensitivity);
+            if (!success)
+                mouseSensitivity = m_DefaultMouseSensitivity;
+        }
 
+        //Rotate player towards mouse
         float yRot = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float xRot = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -283,7 +291,6 @@ public class PlayerMovementController : MonoBehaviour
 
         return success;
     }
-
 
     //---------------------
     // STATES

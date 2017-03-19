@@ -14,6 +14,9 @@ public class InputfieldAndSliderLink : MonoBehaviour
     private InputField m_InputField;
 
     [SerializeField]
+    private float m_DefaultValue;
+
+    [SerializeField]
     private float m_MaxValue;
     public float MaxValue
     {
@@ -54,8 +57,13 @@ public class InputfieldAndSliderLink : MonoBehaviour
     {
         if (OptionsManager.Instance != null && m_OptionVariable != "")
         {
-            float value = OptionsManager.Instance.GetOptionAsFloat(m_OptionVariable);
-            SetValue(value);
+            float value = m_DefaultValue;
+            bool success = OptionsManager.Instance.GetOptionAsFloat(m_OptionVariable, out value);
+
+            if (success)
+                SetValue(value);
+            else
+                SetValue(m_DefaultValue);
         }
     }
 

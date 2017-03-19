@@ -74,6 +74,18 @@ public class OptionsManager : Singleton<OptionsManager>
         return 0;
     }
 
+    public bool GetOptionAsInt(string key, out int result)
+    {
+        result = 0;
+
+        if (m_Options.ContainsKey(key))
+        {
+            return int.TryParse(m_Options[key], out result);
+        }
+
+        return false;
+    }
+
     public float GetOptionAsFloat(string key)
     {
         if (m_Options.ContainsKey(key))
@@ -88,6 +100,18 @@ public class OptionsManager : Singleton<OptionsManager>
         return 0.0f;
     }
 
+    public bool GetOptionAsFloat(string key, out float result)
+    {
+        result = 0;
+
+        if (m_Options.ContainsKey(key))
+        {
+            return float.TryParse(m_Options[key], out result);
+        }
+
+        return false;
+    }
+
     public string GetOptionAsString(string key)
     {
         if (m_Options.ContainsKey(key))
@@ -98,6 +122,18 @@ public class OptionsManager : Singleton<OptionsManager>
         return "";
     }
 
+    public bool GetOptionAsString(string key, out string result)
+    {
+        result = "";
+
+        if (m_Options.ContainsKey(key))
+        {
+            result = m_Options[key];
+            return true;
+        }
+
+        return false;
+    }
 
     //Serialization
     public void SaveOptionsToDisk()
