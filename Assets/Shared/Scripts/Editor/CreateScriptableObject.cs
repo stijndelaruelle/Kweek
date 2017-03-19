@@ -5,6 +5,7 @@ using System.IO;
 
 public class CreateScriptableObject
 {
+    //TODO: Find a better place to put these
     [MenuItem("Assets/Create/Custom/LevelData")]
     public static void CreateLevelData()
     {
@@ -16,8 +17,6 @@ public class CreateScriptableObject
     {
         CreateAsset<LevelDataListDefinition>();
     }
-
-
     [MenuItem("Assets/Create/Custom/SurfaceType")]
     public static void CreateSurfaceType()
     {
@@ -40,6 +39,12 @@ public class CreateScriptableObject
     public static void CreateBulletShell()
     {
         CreateAsset<BulletShellDefinition>();
+    }
+
+    [MenuItem("Assets/Create/Custom/Faction Type")]
+    public static void CreateFactionType()
+    {
+        CreateAsset<FactionTypeDefinition>();
     }
 
     public static void CreateAsset<T>() where T : ScriptableObject

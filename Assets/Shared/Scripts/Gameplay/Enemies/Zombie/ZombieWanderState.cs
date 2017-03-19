@@ -47,7 +47,7 @@ public class ZombieWanderState : IAbstractState
 
     public override void Enter()
     {
-        Debug.Log("Entered wandering state!");
+        //Debug.Log("Entered wandering state!");
 
         m_Zombie.TriggerStayEvent += OnStateTriggerStay;
 
@@ -106,9 +106,22 @@ public class ZombieWanderState : IAbstractState
 
     private void OnStateTriggerStay(Collider other)
     {
-        //Check if it's the player
-        if (other.tag == "Player")
+        //Check if it's an enemy
+        FactionType factionType = other.GetComponent<FactionType>();
+        if (factionType == null)
+            return;
+
+        if (m_Zombie.FactionType.IsEnemy(factionType.Faction))
         {
+            IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
+            if (damageableObject == null)
+                return;
+
+            damageableObject = damageableObject.GetMainDamageableObject();
+
+            if (damageableObject.IsDead())
+                return;
+
             //If so check if he's within the specified angle
             Vector3 diffPos = other.transform.position - m_Zombie.transform.position;
             float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
@@ -127,7 +140,7 @@ public class ZombieWanderState : IAbstractState
                 if (success && hitInfo.collider == other)
                 {
                     //Change to the firing state
-                    m_ChaseState.SetTarget(other.transform);
+                    m_ChaseState.SetTarget(damageableObject);
                     m_Zombie.SwitchState(m_ChaseState);
                 }
             }

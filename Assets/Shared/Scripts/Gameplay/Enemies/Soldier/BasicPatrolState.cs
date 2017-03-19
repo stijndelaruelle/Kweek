@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(EnemyBehaviour))]
 public class BasicPatrolState : IAbstractState
 {
-    private EnemyBehaviour m_Soldier;
+    private EnemyBehaviour m_Behaviour;
 
     [Header("Movement")]
     [Space(5)]
@@ -34,7 +34,7 @@ public class BasicPatrolState : IAbstractState
     {
         //Assigning this manually clutters the inspector a LOT!
         //If we, at some point, want to detach state objects from their behaviour, revert this.
-        m_Soldier = GetComponent<EnemyWeaponPickupBehaviour>();
+        m_Behaviour = GetComponent<EnemyWeaponPickupBehaviour>();
 
         m_StartPosition = transform.position;
 
@@ -44,32 +44,32 @@ public class BasicPatrolState : IAbstractState
 
     public override void Enter()
     {
-        Debug.Log("Entered patrolling state!");
+        //Debug.Log("Entered patrolling state!");
 
-        m_Soldier.TriggerStayEvent += OnStateTriggerStay;
+        m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
 
         if (m_TargetTransform != null)
         {
-            m_Soldier.NavMeshAgent.destination = m_TargetPosition;
-            m_Soldier.NavMeshAgent.speed = m_MovementSpeed;
+            m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
+            m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
 
-            m_Soldier.NavMeshAgent.Resume();
+            m_Behaviour.NavMeshAgent.Resume();
         }
         else
         {
-            m_Soldier.NavMeshAgent.Stop();
+            m_Behaviour.NavMeshAgent.Stop();
         }
 
-        m_Soldier.Animator.enabled = true;
-        m_Soldier.Animator.SetTrigger("MovementTrigger");
+        m_Behaviour.Animator.enabled = true;
+        m_Behaviour.Animator.SetTrigger("MovementTrigger");
     }
 
     public override void Exit()
     {
-        if (m_Soldier == null)
+        if (m_Behaviour == null)
             return;
 
-        m_Soldier.TriggerStayEvent -= OnStateTriggerStay;
+        m_Behaviour.TriggerStayEvent -= OnStateTriggerStay;
     }
 
     public override void StateUpdate()
@@ -82,7 +82,7 @@ public class BasicPatrolState : IAbstractState
         if (m_StartPosition == m_TargetPosition)
             return;
 
-        NavMeshAgent agent = m_Soldier.NavMeshAgent;
+        NavMeshAgent agent = m_Behaviour.NavMeshAgent;
 
         if (agent == null)
             return;
@@ -100,12 +100,25 @@ public class BasicPatrolState : IAbstractState
 
     private void OnStateTriggerStay(Collider other)
     {
-        //Check if it's the player
-        if (other.tag == "Player")
+        //Check if it's an enemy
+        FactionType factionType = other.GetComponent<FactionType>();
+        if (factionType == null)
+            return;
+
+        if (m_Behaviour.FactionType.IsEnemy(factionType.Faction))
         {
+            IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
+            if (damageableObject == null)
+                return;
+
+            damageableObject = damageableObject.GetMainDamageableObject();
+
+            if (damageableObject.IsDead())
+                return;
+
             //If so check if he's within the specified angle
-            Vector3 diffPos = other.transform.position - m_Soldier.transform.position;
-            float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
+            Vector3 diffPos = other.transform.position - m_Behaviour.transform.position;
+            float dot = Vector3.Dot(m_Behaviour.transform.forward, diffPos.normalized);
             float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
 
             if (degAngle <= m_ViewAngle)
@@ -121,8 +134,8 @@ public class BasicPatrolState : IAbstractState
                 if (success && hitInfo.collider == other)
                 {
                     //Change to the firing state
-                    m_Soldier.SwitchState(m_FireState);
-                    m_FireState.SetTarget(other.gameObject);
+                    m_Behaviour.SwitchState(m_FireState);
+                    m_FireState.SetTarget(damageableObject);
                 }
             }
         }

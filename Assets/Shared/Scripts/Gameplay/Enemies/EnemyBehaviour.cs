@@ -26,6 +26,16 @@ public class EnemyBehaviour : IAIBehaviour
     }
 
     [SerializeField]
+    private Collider m_TriggerCollider;
+
+    [SerializeField]
+    private FactionTypeDefinition m_FactionTypeDefinition;
+    public FactionTypeDefinition FactionType
+    {
+        get { return m_FactionTypeDefinition; }
+    }
+
+    [SerializeField]
     protected UnityMethodsForwarder m_Forwarder;
 
     protected IState m_CurrentState;
@@ -52,7 +62,10 @@ public class EnemyBehaviour : IAIBehaviour
     //IAIBehaviour
     public override void Setup(List<Collider> ownerColliders)
     {
-
+        foreach(Collider collider in ownerColliders)
+        {
+            Physics.IgnoreCollision(m_TriggerCollider, collider);
+        }
     }
 
     public override void OnDeath()

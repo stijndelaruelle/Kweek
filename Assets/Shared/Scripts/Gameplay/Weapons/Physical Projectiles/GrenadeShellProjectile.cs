@@ -18,9 +18,6 @@ public class GrenadeShellProjectile : PhysicalProjectile
             Explode(damageableObject);
         }
 
-        if (root.tag != "Player")
-        {
-            m_HasBounced = true;
-        }
+        m_HasBounced = true;
     }
 }

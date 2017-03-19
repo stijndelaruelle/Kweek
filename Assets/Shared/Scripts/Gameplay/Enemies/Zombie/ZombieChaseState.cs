@@ -12,7 +12,13 @@ public class ZombieChaseState : IAbstractState
     [Space(5)]
     [SerializeField]
     private float m_MovementSpeed;
-    private Transform m_Target;
+    private IDamageableObject m_Target;
+
+    [SerializeField]
+    private float m_DistanceMargin;
+
+    [SerializeField]
+    private ZombieWanderState m_WanderState;
 
     [SerializeField]
     private ZombieAttackState m_AttackState;
@@ -26,7 +32,7 @@ public class ZombieChaseState : IAbstractState
 
     public override void Enter()
     {
-        Debug.Log("Entered chasing state!");
+        //Debug.Log("Entered chasing state!");
 
         m_Zombie.NavMeshAgent.destination = transform.position;
         m_Zombie.NavMeshAgent.speed = m_MovementSpeed;
@@ -55,25 +61,26 @@ public class ZombieChaseState : IAbstractState
 
         //Check if we reached our destination
         //Find a spot a little in front of our target
-        Vector3 targetPos = m_Target.position + (m_Target.forward * 1.0f);
+        Transform targetTransform = m_Target.transform;
+
+        Vector3 targetPos = targetTransform.position + (targetTransform.forward * m_DistanceMargin);
         m_Zombie.NavMeshAgent.destination = targetPos;
 
-        float distance = (transform.position - m_Target.position).magnitude;
+        float distance = (transform.position - targetTransform.position).magnitude;
         if (distance < m_AttackState.AttackDistance)
         {
             m_AttackState.SetTarget(m_Target);
             m_Zombie.SwitchState(m_AttackState);
         }
 
-        //m_Zombie.NavMeshAgent.destination = targetPos;
-        //if (agent.remainingDistance <= 1.1f)
-        //{
-        //    m_AttackState.SetTarget(m_Target);
-        //    m_Zombie.SwitchState(m_AttackState);
-        //}
+        //Target is dead
+        if (m_Target.IsDead())
+        {
+            m_Zombie.SwitchState(m_WanderState);
+        }
     }
 
-    public void SetTarget(Transform target)
+    public void SetTarget(IDamageableObject target)
     {
         m_Target = target;
     }

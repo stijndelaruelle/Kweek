@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
     {
         if (m_DamageableObject.Health > 0)
         {
-            Debug.Log("THE enemy has " + m_DamageableObject.Health + " left");
+            //Debug.Log("THE enemy has " + m_DamageableObject.Health + " left");
             //m_Animator.SetTrigger("WoundTrigger");
             //m_AIBehaviour.Pause();
         }
@@ -61,7 +61,7 @@ public class Enemy : MonoBehaviour
 
     private void OnDeath()
     {
-        Debug.Log("THE enemy DIED!");
+        //Debug.Log("THE enemy DIED!");
 
         if (m_Ragdoll != null)
         {

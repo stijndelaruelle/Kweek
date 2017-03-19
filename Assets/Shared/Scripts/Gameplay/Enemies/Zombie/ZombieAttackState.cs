@@ -21,8 +21,11 @@ public class ZombieAttackState : IAbstractState
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
 
     [SerializeField]
+    private ZombieWanderState m_WanderState;
+
+    [SerializeField]
     private ZombieChaseState m_ChaseState;
-    private Transform m_Target;
+    private IDamageableObject m_Target;
 
     private void Awake()
     {
@@ -33,7 +36,7 @@ public class ZombieAttackState : IAbstractState
 
     public override void Enter()
     {
-        Debug.Log("Entered attacking state!");
+        //Debug.Log("Entered attacking state!");
 
         m_Zombie.NavMeshAgent.Stop();
 
@@ -60,12 +63,19 @@ public class ZombieAttackState : IAbstractState
 
     private void HandleStateSwitching()
     {
-        float distance = (transform.position - m_Target.position).magnitude;
+        //Target too far away
+        float distance = (transform.position - m_Target.transform.position).magnitude;
 
         if (distance > m_AttackDistance + 0.2f) //A little offset to avoid jittering
         {
             m_ChaseState.SetTarget(m_Target);
             m_Zombie.SwitchState(m_ChaseState);
+        }
+
+        //Target is dead
+        if (m_Target.IsDead())
+        {
+            m_Zombie.SwitchState(m_WanderState);
         }
     }
 
@@ -76,7 +86,7 @@ public class ZombieAttackState : IAbstractState
             //Rotate the head
             //float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
             m_Zombie.Animator.SetLookAtWeight(1.0f);
-            m_Zombie.Animator.SetLookAtPosition(m_Target.position);
+            m_Zombie.Animator.SetLookAtPosition(m_Target.transform.position);
 
             //Rotate the chest
             if (m_ChestRotationSpeed > 0)
@@ -105,7 +115,7 @@ public class ZombieAttackState : IAbstractState
     {
         Quaternion desiredRotation;
 
-        Vector3 direction = (m_Target.position - m_Zombie.Animator.GetBoneTransform(boneType).position).normalized;
+        Vector3 direction = (m_Target.transform.position - m_Zombie.Animator.GetBoneTransform(boneType).position).normalized;
         desiredRotation = Quaternion.LookRotation(direction);
         Vector3 euler = desiredRotation.eulerAngles;
 
@@ -117,7 +127,7 @@ public class ZombieAttackState : IAbstractState
         return Quaternion.Euler(euler);
     }
 
-    public void SetTarget(Transform target)
+    public void SetTarget(IDamageableObject target)
     {
         m_Target = target;
     }
