@@ -74,11 +74,13 @@ namespace SimpleJSON
 		
 		public virtual JSONNode this [string aKey]  { get { return null; } set { } }
 		
-		public virtual string Value                { get { return ""; } set { } }
+		public virtual string Value                 { get { return ""; } set { } }
 		
-		public virtual int Count                   { get { return 0; } }
-		
-		public virtual void Add (JSONNode aItem)
+		public virtual int Count                    { get { return 0; } }
+
+        public virtual List<string> Keys            { get{ return null; } }
+
+        public virtual void Add (JSONNode aItem)
 		{
 			Add ("", aItem);
 		}
@@ -315,8 +317,8 @@ namespace SimpleJSON
 				
 			}
 		}
-		
-		public static JSONNode Parse (string aJSON)
+
+        public static JSONNode Parse (string aJSON)
 		{
 			Stack<JSONNode> stack = new Stack<JSONNode> ();
 			JSONNode ctx = null;
@@ -719,8 +721,8 @@ namespace SimpleJSON
 		{
 			get { return m_List.Count; }
 		}
-		
-		public override void Add (string aKey, JSONNode aItem)
+
+        public override void Add (string aKey, JSONNode aItem)
 		{
 			m_List.Add (aItem);
 		}
@@ -844,9 +846,22 @@ namespace SimpleJSON
 		{
 			get { return m_Dict.Count; }
 		}
-		
-		
-		public override void Add (string aKey, JSONNode aItem)
+
+        public override List<string> Keys
+        {
+            get
+            {
+                List<string> arrayOfStrings = new List<string>();
+                foreach (KeyValuePair<string, JSONNode> N in m_Dict)
+                {
+                    arrayOfStrings.Add(N.Key);
+                }
+
+                return arrayOfStrings;
+            }
+        }
+
+        public override void Add (string aKey, JSONNode aItem)
 		{
 			if (!string.IsNullOrEmpty (aKey)) {
 				if (m_Dict.ContainsKey (aKey))

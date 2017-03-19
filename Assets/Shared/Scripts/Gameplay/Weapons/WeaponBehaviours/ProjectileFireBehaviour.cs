@@ -26,14 +26,11 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
-    private List<Collider> m_IgnoredColliders;
-
     //Events
     public override event AmmoUseDelegate AmmoUseEvent;
 
     public override void Setup(List<Collider> ignoredColliders)
     {
-        m_IgnoredColliders = ignoredColliders;
     }
 
     private void Update()

@@ -28,7 +28,6 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
     [SerializeField]
     private string m_TriggerName = "FireTrigger";
 
-    private List<Collider> m_IgnoredColliders;
     private Ray m_LastUsedRay; //To fire when fully charged
 
     //Events
@@ -36,7 +35,6 @@ public class ChargeShotFireBehaviour : IWeaponUseBehaviour
 
     public override void Setup(List<Collider> ignoredColliders)
     {
-        m_IgnoredColliders = ignoredColliders;
     }
 
     private void Update()

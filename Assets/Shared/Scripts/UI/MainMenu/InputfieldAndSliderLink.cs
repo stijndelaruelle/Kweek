@@ -28,10 +28,9 @@ public class InputfieldAndSliderLink : MonoBehaviour
         m_InputField.onEndEdit.AddListener(delegate { OnInputFieldChanged(); });
 
         //Set the slider max value
-        m_Slider.maxValue = m_MaxValue;
         m_InputField.characterLimit = (int)Math.Floor(Math.Log10(m_MaxValue) + 1);
 
-        SetValue(m_MaxValue);
+        //SetValue(m_MaxValue);
     }
 
     private void OnDestroy()
@@ -40,7 +39,7 @@ public class InputfieldAndSliderLink : MonoBehaviour
         m_InputField.onValueChanged.RemoveListener(delegate { OnInputFieldChanged(); });
     }
 
-    private void SetValue(float value)
+    public void SetValue(float value)
     {
         value = Mathf.Clamp(value, 0.0f, m_MaxValue);
 

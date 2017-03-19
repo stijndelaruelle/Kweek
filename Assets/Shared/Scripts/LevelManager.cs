@@ -19,10 +19,10 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private string m_MainMenuSceneName;
 
-    private int m_PreparedLevelID = -1;
+    //private int m_PreparedLevelID = -1;
     private int m_CurrentLevelID = -1;
 
-    public event LevelManagerDelegate PreparedLevelLoadEvent;
+    //public event LevelManagerDelegate PreparedLevelLoadEvent;
 
     private void Update()
     {
@@ -35,7 +35,7 @@ public class LevelManager : Singleton<LevelManager>
 
     public void LoadMainMenu()
     {
-        m_PreparedLevelID = -1;
+        //m_PreparedLevelID = -1;
         m_CurrentLevelID = -1;
         m_SceneLoader.LoadScene(m_MainMenuSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false, true);
     }

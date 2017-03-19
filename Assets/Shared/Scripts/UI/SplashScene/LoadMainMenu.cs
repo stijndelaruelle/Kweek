@@ -33,8 +33,6 @@ public class LoadMainMenu : MonoBehaviour
 
     private void OnSceneActivated()
     {
-        Scene activeScene = SceneManager.GetActiveScene();
-
         if (m_LoadingBackground == true)
         {
             m_SceneLoader.LoadScene(m_MainMenuName, UnityEngine.SceneManagement.LoadSceneMode.Additive, true, false);

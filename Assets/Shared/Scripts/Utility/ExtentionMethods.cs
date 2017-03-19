@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.IO;
 
 public static class ExtentionMethods
 {
@@ -40,5 +41,64 @@ public static class ExtentionMethods
     public static Toggle GetActive(this ToggleGroup toggleGroup)
     {
         return toggleGroup.ActiveToggles().FirstOrDefault();
+    }
+
+
+    public static DirectoryInfo FindOrCreateDirectory(DirectoryInfo rootDirectory, string name)
+    {
+        if (rootDirectory == null)
+            return null;
+
+        //Check if that folder already exists
+        DirectoryInfo[] subDirectories = rootDirectory.GetDirectories();
+        DirectoryInfo ourDirectory = null;
+
+        foreach (DirectoryInfo directory in subDirectories)
+        {
+            if (directory.Name == name)
+            {
+                ourDirectory = directory;
+                break;
+            }
+        }
+
+        //If not, create it.
+        if (ourDirectory == null)
+        {
+            ourDirectory = rootDirectory.CreateSubdirectory(name);
+        }
+
+        return ourDirectory;
+    }
+
+    public static string FindUniqueDirectoryName(DirectoryInfo rootDirectory, string originalDirectoryName)
+    {
+        if (rootDirectory == null)
+            return "";
+
+        string uniqueFileName = originalDirectoryName;
+
+        int count = 0;
+        DirectoryInfo[] directories = rootDirectory.GetDirectories();
+        for (int i = 0; i < directories.Length; ++i)
+        {
+            if (directories[i].Name.StartsWith(originalDirectoryName))
+            {
+                string testFilename = originalDirectoryName;
+                if (count > 0) { testFilename += " (" + (count + 1) + ")"; }
+
+                if (directories[i].Name != testFilename)
+                {
+                    uniqueFileName = testFilename;
+                    break;
+                }
+
+                ++count;
+
+                uniqueFileName = originalDirectoryName + " (" + (count + 1) + ")";
+            }
+        }
+
+        return uniqueFileName;
     }
 }

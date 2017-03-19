@@ -190,6 +190,11 @@ public class SaveGameManager : Singleton<SaveGameManager>
     [Tooltip("Folder in the \"My Games\" or \"Saved Games\" folder in the persons \"My Documents\"")]
     [SerializeField]
     private string m_SaveGameFolder;
+    public string SaveGameFolder
+    {
+        get { return m_SaveGameFolder; }
+    }
+
     private DirectoryInfo m_RootDirectory;
 
     [SerializeField]
@@ -226,7 +231,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
         base.Awake();
 
         DirectoryInfo rootRootDirectory = new DirectoryInfo(SaveGameLocation.getSaveGameDirectory());
-        m_RootDirectory = FindOrCreateDirectory(rootRootDirectory, m_SaveGameFolder);
+        m_RootDirectory = ExtentionMethods.FindOrCreateDirectory(rootRootDirectory, m_SaveGameFolder);
 
         m_SaveGames = new List<SaveGame>();
     }
@@ -276,8 +281,8 @@ public class SaveGameManager : Singleton<SaveGameManager>
         //Create a new folder for this save game
         string uniqueID = Guid.NewGuid().ToString("N");
 
-        string uniqueName = FindUniqueDirectoryName(m_RootDirectory, m_SaveGameDirectoryPrefix + uniqueID);
-        DirectoryInfo directory = FindOrCreateDirectory(m_RootDirectory, uniqueName);
+        string uniqueName = ExtentionMethods.FindUniqueDirectoryName(m_RootDirectory, m_SaveGameDirectoryPrefix + uniqueID);
+        DirectoryInfo directory = ExtentionMethods.FindOrCreateDirectory(m_RootDirectory, uniqueName);
 
         SaveGame newSaveGame = new SaveGame(directory, m_MetaDataFileName, m_SaveGameFileName);
         newSaveGame.Name = name;
@@ -326,9 +331,9 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
         try
         {
-            DirectoryInfo deletedDirectory = FindOrCreateDirectory(m_RootDirectory, "Deleted save games");
+            DirectoryInfo deletedDirectory = ExtentionMethods.FindOrCreateDirectory(m_RootDirectory, "Deleted save games");
 
-            string uniqueDirectoryName = FindUniqueDirectoryName(deletedDirectory, saveGame.DirectoryInfo.Name);
+            string uniqueDirectoryName = ExtentionMethods.FindUniqueDirectoryName(deletedDirectory, saveGame.DirectoryInfo.Name);
 
             saveGame.DirectoryInfo.MoveTo(deletedDirectory.FullName + "/" + uniqueDirectoryName);
 
@@ -359,63 +364,5 @@ public class SaveGameManager : Singleton<SaveGameManager>
     public int GetSaveGameCount()
     {
         return m_SaveGames.Count;
-    }
-
-    private DirectoryInfo FindOrCreateDirectory(DirectoryInfo rootDirectory, string name)
-    {
-        if (rootDirectory == null)
-            return null;
-
-        //Check if that folder already exists
-        DirectoryInfo[] subDirectories = rootDirectory.GetDirectories();
-        DirectoryInfo ourDirectory = null;
-
-        foreach (DirectoryInfo directory in subDirectories)
-        {
-            if (directory.Name == name)
-            {
-                ourDirectory = directory;
-                break;
-            }
-        }
-
-        //If not, create it.
-        if (ourDirectory == null)
-        {
-            ourDirectory = rootDirectory.CreateSubdirectory(name);
-        }
-
-        return ourDirectory;
-    }
-
-    private string FindUniqueDirectoryName(DirectoryInfo rootDirectory, string originalDirectoryName)
-    {
-        if (rootDirectory == null)
-            return "";
-
-        string uniqueFileName = originalDirectoryName;
-
-        int count = 0;
-        DirectoryInfo[] directories = rootDirectory.GetDirectories();
-        for (int i = 0; i < directories.Length; ++i)
-        {
-            if (directories[i].Name.StartsWith(originalDirectoryName))
-            {
-                string testFilename = originalDirectoryName;
-                if (count > 0) { testFilename += " (" + (count + 1) + ")"; }
-
-                if (directories[i].Name != testFilename)
-                {
-                    uniqueFileName = testFilename;
-                    break;
-                }
-
-                ++count;
-
-                uniqueFileName = originalDirectoryName + " (" + (count + 1) + ")";
-            }
-        }
-
-        return uniqueFileName;
     }
 }
