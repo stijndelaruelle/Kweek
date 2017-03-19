@@ -108,7 +108,7 @@ public class OptionsManager : Singleton<OptionsManager>
 
 
     //Serialization
-    public bool SaveOptionsToDisk()
+    public void SaveOptionsToDisk()
     {
         try
         {
@@ -129,10 +129,7 @@ public class OptionsManager : Singleton<OptionsManager>
         {
             //The file was probably not found!
             UnityEngine.Debug.LogWarning("Error in SaveOptionsToDisk: " + e.Message);
-            return false;
         }
-
-        return true;
     }
 
     public bool LoadOptionsFromDisk()
