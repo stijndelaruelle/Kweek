@@ -32,11 +32,13 @@ public class SaveGame
         set { m_LevelID = value; }
     }
 
-    private DateTime m_Timestamp = DateTime.Now;
-    public DateTime TimeStamp
+    private DateTime m_SaveTimestamp = DateTime.Now;
+    public DateTime SaveTimeStamp
     {
-        get { return m_Timestamp; }
+        get { return m_SaveTimestamp; }
     }
+
+    private DateTime m_ActivateTimestamp;
 
     private ulong m_PlayTime = 0;
     public ulong PlayTime
@@ -68,6 +70,22 @@ public class SaveGame
         m_DirectoryInfo = directoryInfo;
         m_MetaDataFileName = metaDataFileName;
         m_SaveGameFileName = saveGameFileName;
+    }
+
+    public void Activate()
+    {
+        m_ActivateTimestamp = DateTime.Now;
+    }
+
+    public void Deactivate()
+    {
+        UpdatePlayTime();
+    }
+
+    public void UpdatePlayTime()
+    {
+        m_PlayTime += (ulong)(DateTime.Now - m_ActivateTimestamp).Seconds;
+        m_ActivateTimestamp = DateTime.Now;
     }
 
     public bool SaveMetaDataToDisk()
@@ -145,7 +163,8 @@ public class SaveGame
         rootNode.Add("playtime", playTimeData);
 
         //Timestamp
-        JSONNode timeStampNode = new JSONData(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        m_SaveTimestamp = DateTime.Now;
+        JSONNode timeStampNode = new JSONData(m_SaveTimestamp.ToString("yyyy-MM-dd HH:mm:ss"));
         rootNode.Add("timestamp", timeStampNode);
     }
 
@@ -191,7 +210,7 @@ public class SaveGame
         //Parse the save time
         JSONNode timeStampNode = jsonNode["timestamp"];
         if (timeStampNode == null) { throw new System.Exception("A save game doesn't contain a \"savetime\" node! Source: " + jsonNode.ToString()); }
-        m_Timestamp = DateTime.ParseExact(timeStampNode.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        m_SaveTimestamp = DateTime.ParseExact(timeStampNode.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
     }
 
     //For students, use this function to get the filepath you want to parse
@@ -283,8 +302,12 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
     public void ActivateSaveGame(SaveGame saveGame)
     {
+        DeactivateSaveGame();
+
         m_ActiveSaveGame = saveGame;
-        //Start counting play time?
+
+        if (m_ActiveSaveGame != null)
+            m_ActiveSaveGame.Activate();
 
         if (SaveGameActivatedEvent != null)
             SaveGameActivatedEvent(saveGame);
@@ -292,6 +315,9 @@ public class SaveGameManager : Singleton<SaveGameManager>
 
     public void DeactivateSaveGame()
     {
+        if (m_ActiveSaveGame != null)
+            m_ActiveSaveGame.Deactivate();
+
         m_ActiveSaveGame = null;
     }
 
@@ -325,12 +351,12 @@ public class SaveGameManager : Singleton<SaveGameManager>
         return null;
     }
 
-    public void EditSaveGame(SaveGame saveGame, string name, int difficulty, int levelID, ulong playTime)
+    public void EditSaveGame(SaveGame saveGame, string name, int difficulty, int levelID)
     {
         saveGame.Name = name;
         saveGame.Difficulty = difficulty;
         saveGame.LevelID = levelID;
-        saveGame.PlayTime = playTime;
+        saveGame.UpdatePlayTime();
 
         bool success = saveGame.SaveMetaDataToDisk();
 
@@ -374,7 +400,7 @@ public class SaveGameManager : Singleton<SaveGameManager>
     //Utility
     public void ActivateMostRecent()
     {
-        List<SaveGame> sortedSaveGamesData = m_SaveGames.OrderByDescending(o => o.TimeStamp).ToList(); //Last saved game at the top of the list
+        List<SaveGame> sortedSaveGamesData = m_SaveGames.OrderByDescending(o => o.SaveTimeStamp).ToList(); //Last saved game at the top of the list
 
         if (sortedSaveGamesData.Count > 0)
         {

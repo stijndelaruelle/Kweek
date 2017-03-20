@@ -16,7 +16,10 @@ public class ContinueButton : MonoBehaviour
 
     private void OnFadeInComplete()
     {
-        LevelManager.Instance.LoadLevel(SaveGameManager.Instance.ActiveSaveGame.LevelID);
-        m_ImageFader.SetAlphaMin();
+        if (SaveGameManager.Instance.ActiveSaveGame != null)
+        {
+            LevelManager.Instance.LoadLevel(SaveGameManager.Instance.ActiveSaveGame.LevelID);
+            m_ImageFader.SetAlphaMin();
+        }
     }
 }

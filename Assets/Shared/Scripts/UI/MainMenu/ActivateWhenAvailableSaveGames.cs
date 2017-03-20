@@ -11,6 +11,7 @@ public class ActivateWhenAvailableSaveGames : MonoBehaviour
     {
         SaveGameManager saveGameManager = SaveGameManager.Instance;
         saveGameManager.SaveGamesLoadedEvent += OnSaveGamesLoaded;
+        saveGameManager.SaveGameDeletedEvent += OnSaveGameDeleted;
     }
 
     private void OnDestroy()
@@ -19,6 +20,7 @@ public class ActivateWhenAvailableSaveGames : MonoBehaviour
         if (saveGameManager != null)
         {
             saveGameManager.SaveGamesLoadedEvent -= OnSaveGamesLoaded;
+            saveGameManager.SaveGameDeletedEvent -= OnSaveGameDeleted;
         }
     }
 
@@ -43,10 +45,10 @@ public class ActivateWhenAvailableSaveGames : MonoBehaviour
     //    //Refresh();
     //}
 
-    //private void OnSaveGameDeleted(SaveGame saveGame)
-    //{
-    //    Refresh();
-    //}
+    private void OnSaveGameDeleted(SaveGame saveGame)
+    {
+        Refresh();
+    }
 
     private void OnSaveGamesLoaded()
     {

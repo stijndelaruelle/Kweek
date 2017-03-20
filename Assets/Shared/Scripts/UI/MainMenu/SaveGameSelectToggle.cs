@@ -60,7 +60,7 @@ public class SaveGameSelectToggle : MonoBehaviour
         DateTime timeStamp = DateTime.Now;
         if (m_SaveGame != null)
         {
-            timeStamp = m_SaveGame.TimeStamp;
+            timeStamp = m_SaveGame.SaveTimeStamp;
         }
 
         m_SaveTime.text = timeStamp.ToShortDateString() + " " +
@@ -80,19 +80,27 @@ public class SaveGameSelectToggle : MonoBehaviour
             remainingTimePlayed = m_SaveGame.PlayTime;
         }
 
-        ulong hoursPlayed = (remainingTimePlayed / 3600000);
-        remainingTimePlayed -= hoursPlayed * 3600000;
+        ulong hoursPlayed = (remainingTimePlayed / 3600);
+        remainingTimePlayed -= hoursPlayed * 3600;
 
-        ulong minutesPlayed = (remainingTimePlayed / 60000); //Doesn't really need to be an ulong, but otherwise we have to cast around a lot
-        remainingTimePlayed -= (minutesPlayed * 60000);
+        ulong minutesPlayed = (remainingTimePlayed / 60); //Doesn't really need to be an ulong, but otherwise we have to cast around a lot
+        remainingTimePlayed -= (minutesPlayed * 60);
+
+        ulong secondsPlayed = remainingTimePlayed;
 
         if (hoursPlayed > 1) { m_PlayTime.text = hoursPlayed.ToString() + " hours played"; }
         if (hoursPlayed == 1) { m_PlayTime.text = hoursPlayed.ToString() + " hour played"; }
 
         if (hoursPlayed == 0)
         {
-            if (minutesPlayed > 1) { m_PlayTime.text = minutesPlayed.ToString() + " minutes played"; }
-            else                   { m_PlayTime.text = minutesPlayed.ToString() + " minute played"; }
+            if (minutesPlayed > 1)  { m_PlayTime.text = minutesPlayed.ToString() + " minutes played"; }
+            if (minutesPlayed == 1) { m_PlayTime.text = minutesPlayed.ToString() + " minute played"; }
+        }
+
+        if (minutesPlayed == 0)
+        {
+            if (secondsPlayed > 1) { m_PlayTime.text = secondsPlayed.ToString() + " seconds played"; }
+            else                   { m_PlayTime.text = "Not played"; }
         }
 
         transform.SetParent(parent);

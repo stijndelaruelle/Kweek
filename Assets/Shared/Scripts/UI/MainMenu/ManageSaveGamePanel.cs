@@ -65,7 +65,10 @@ public class ManageSaveGamePanel : MonoBehaviour
 
     public void CreateNewSave()
     {
-        SaveGame activeSaveGame = SaveGameManager.Instance.CreateSaveGame("My Save Game", SaveGameManager.Instance.ActiveSaveGame.Difficulty, LevelManager.Instance.GetCurrentLevelID(), SaveGameManager.Instance.ActiveSaveGame.PlayTime);
+        SaveGame activeSaveGame = SaveGameManager.Instance.ActiveSaveGame;
+        SaveGameManager.Instance.DeactivateSaveGame();
+
+        activeSaveGame = SaveGameManager.Instance.CreateSaveGame(activeSaveGame.Name, activeSaveGame.Difficulty, LevelManager.Instance.GetCurrentLevelID(), activeSaveGame.PlayTime);
         SaveGameManager.Instance.ActivateSaveGame(activeSaveGame);
     }
 
@@ -118,7 +121,7 @@ public class ManageSaveGamePanel : MonoBehaviour
         if (m_SelectedSaveGame == null)
             return;
 
-        SaveGameManager.Instance.EditSaveGame(m_SelectedSaveGame, SaveGameManager.Instance.ActiveSaveGame.Name, SaveGameManager.Instance.ActiveSaveGame.Difficulty, LevelManager.Instance.GetCurrentLevelID(), SaveGameManager.Instance.ActiveSaveGame.PlayTime);
+        SaveGameManager.Instance.EditSaveGame(m_SelectedSaveGame, SaveGameManager.Instance.ActiveSaveGame.Name, SaveGameManager.Instance.ActiveSaveGame.Difficulty, LevelManager.Instance.GetCurrentLevelID());
         SaveGameManager.Instance.ActivateSaveGame(m_SelectedSaveGame);
     }
 
@@ -202,7 +205,7 @@ public class ManageSaveGamePanel : MonoBehaviour
         m_SaveGameSelectToggles.Clear();
 
         List<SaveGame> saveGamesData = SaveGameManager.Instance.SaveGames;
-        List<SaveGame> sortedSaveGamesData = saveGamesData.OrderBy(o => o.TimeStamp).ToList(); //Last saved game at the top of the list
+        List<SaveGame> sortedSaveGamesData = saveGamesData.OrderBy(o => o.SaveTimeStamp).ToList(); //Last saved game at the top of the list
 
         for (int i = 0; i < sortedSaveGamesData.Count; ++i)
         {

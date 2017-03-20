@@ -47,6 +47,9 @@ public class DifficultySelectPanel : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (m_DifficultySelectToggles == null)
+            return;
+
         foreach (DifficultySelectToggle toggle in m_DifficultySelectToggles)
         {
             toggle.DifficultySelectEvent -= OnDifficultySelect;
