@@ -14,8 +14,14 @@ public class ZombieChaseState : IAbstractState
     private float m_MovementSpeed;
     private IDamageableObject m_Target;
 
+    [Space(10)]
+    [Header("Scanning")]
+    [Space(5)]
     [SerializeField]
     private float m_DistanceMargin;
+
+    [SerializeField]
+    private float m_ViewAngle;
 
     [SerializeField]
     private ZombieWanderState m_WanderState;
@@ -69,8 +75,18 @@ public class ZombieChaseState : IAbstractState
         float distance = (transform.position - targetTransform.position).magnitude;
         if (distance < m_AttackState.AttackDistance)
         {
-            m_AttackState.SetTarget(m_Target);
-            m_Zombie.SwitchState(m_AttackState);
+            //Check if we are looking towards the target
+            Vector3 diffPos = m_Target.transform.position - m_Zombie.transform.position;
+            float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
+            float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+            if (degAngle <= m_ViewAngle)
+            {
+                m_AttackState.SetTarget(m_Target);
+                m_Zombie.SwitchState(m_AttackState);
+            }
+
+
         }
 
         //Target is dead

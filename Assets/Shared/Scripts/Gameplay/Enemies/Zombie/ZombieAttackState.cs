@@ -21,6 +21,9 @@ public class ZombieAttackState : IAbstractState
     private Quaternion m_LastChestLocalRotation; //Chest bone rotation constatntly resets, cache it here.
 
     [SerializeField]
+    private float m_ViewAngle;
+
+    [SerializeField]
     private ZombieWanderState m_WanderState;
 
     [SerializeField]
@@ -67,6 +70,17 @@ public class ZombieAttackState : IAbstractState
         float distance = (transform.position - m_Target.transform.position).magnitude;
 
         if (distance > m_AttackDistance + 0.2f) //A little offset to avoid jittering
+        {
+            m_ChaseState.SetTarget(m_Target);
+            m_Zombie.SwitchState(m_ChaseState);
+        }
+
+        //Target is behind us
+        Vector3 diffPos = m_Target.transform.position - m_Zombie.transform.position;
+        float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
+        float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+        if (degAngle > m_ViewAngle)
         {
             m_ChaseState.SetTarget(m_Target);
             m_Zombie.SwitchState(m_ChaseState);

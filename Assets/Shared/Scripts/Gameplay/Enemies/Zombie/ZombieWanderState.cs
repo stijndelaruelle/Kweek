@@ -37,6 +37,7 @@ public class ZombieWanderState : IAbstractState
 
     [SerializeField]
     private ZombieChaseState m_ChaseState;
+    private List<IDamageableObject> m_CheckedThisFrame;
 
     private void Awake()
     {
@@ -129,6 +130,7 @@ public class ZombieWanderState : IAbstractState
 
             if (degAngle <= m_ViewAngle)
             {
+                //Check if there is line of sight
                 Vector3 middleTop = other.bounds.center;
                 middleTop.y += other.bounds.extents.y * 0.5f;
 
