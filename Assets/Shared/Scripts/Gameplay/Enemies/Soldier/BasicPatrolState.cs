@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,9 +15,16 @@ public class BasicPatrolState : IAbstractState
     private float m_MovementSpeed;
 
     [SerializeField]
-    private Transform m_TargetTransform;
-    private Vector3 m_TargetPosition;
-    private Vector3 m_StartPosition;
+    private List<Transform> m_Path;
+    private int m_CurrentIndex = 0;
+    private bool m_IsStopped = false;
+
+    [SerializeField]
+    private bool m_LoopPath;
+
+    [SerializeField]
+    private bool m_BackAndForthPath;
+    private int m_TraverseDirection = 1;
 
     [Space(10)]
     [Header("Scanning")]
@@ -35,11 +43,6 @@ public class BasicPatrolState : IAbstractState
         //Assigning this manually clutters the inspector a LOT!
         //If we, at some point, want to detach state objects from their behaviour, revert this.
         m_Behaviour = GetComponent<EnemyWeaponPickupBehaviour>();
-
-        m_StartPosition = transform.position;
-
-        if (m_TargetTransform != null)
-            m_TargetPosition = m_TargetTransform.position;
     }
 
     public override void Enter()
@@ -48,16 +51,18 @@ public class BasicPatrolState : IAbstractState
 
         m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
 
-        if (m_TargetTransform != null)
+        if (m_Path != null && m_Path.Count > 0)
         {
-            m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
+            m_Behaviour.NavMeshAgent.destination = m_Path[m_CurrentIndex].transform.position;
             m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
 
             m_Behaviour.NavMeshAgent.Resume();
+            m_IsStopped = false;
         }
         else
         {
             m_Behaviour.NavMeshAgent.Stop();
+            m_IsStopped = true;
         }
 
         m_Behaviour.Animator.enabled = true;
@@ -79,22 +84,35 @@ public class BasicPatrolState : IAbstractState
 
     private void HandleMovement()
     {
-        if (m_StartPosition == m_TargetPosition)
+        if (m_IsStopped)
             return;
 
         NavMeshAgent agent = m_Behaviour.NavMeshAgent;
 
-        if (agent == null)
+        if (agent == null )
             return;
 
         //Check if we reached our destination
         if (agent.remainingDistance <= 0.5f)
         {
-            Vector3 temp = m_TargetPosition.Copy();
-            m_TargetPosition = m_StartPosition;
-            m_StartPosition = temp;
+            m_CurrentIndex += m_TraverseDirection;
 
-            agent.destination = m_TargetPosition;
+            //Reached the end of our path
+            if (m_CurrentIndex < 0 || m_CurrentIndex >= m_Path.Count)
+            {
+                if (m_LoopPath)              { m_CurrentIndex = Math.Abs(m_CurrentIndex - m_Path.Count); }
+                else if (m_BackAndForthPath) { m_TraverseDirection = m_TraverseDirection * -1; m_CurrentIndex += m_TraverseDirection * 2; }
+                else
+                {
+                    m_CurrentIndex -= m_TraverseDirection;
+                    agent.velocity = new Vector3(0.0f, 0.0f, 0.0f);
+                    agent.Stop();
+                    m_IsStopped = true;
+                    return;
+                }
+            }
+
+            agent.destination = m_Path[m_CurrentIndex].transform.position;
         }
     }
 
