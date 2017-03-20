@@ -45,16 +45,7 @@ public class InputfieldAndSliderLink : MonoBehaviour
             characterLimit += m_MaxDecimalNumbers + 1; //1 = the decimal .
 
         m_InputField.characterLimit = characterLimit;
-    }
 
-    private void OnDestroy()
-    {
-        m_Slider.onValueChanged.RemoveListener(delegate { OnSliderChanged(); });
-        m_InputField.onValueChanged.RemoveListener(delegate { OnInputFieldChanged(); });
-    }
-
-    private void OnEnable()
-    {
         if (OptionsManager.Instance != null && m_OptionVariable != "")
         {
             float value = m_DefaultValue;
@@ -65,6 +56,12 @@ public class InputfieldAndSliderLink : MonoBehaviour
             else
                 SetValue(m_DefaultValue);
         }
+    }
+
+    private void OnDestroy()
+    {
+        m_Slider.onValueChanged.RemoveListener(delegate { OnSliderChanged(); });
+        m_InputField.onValueChanged.RemoveListener(delegate { OnInputFieldChanged(); });
     }
 
     private void SetValue(float value)

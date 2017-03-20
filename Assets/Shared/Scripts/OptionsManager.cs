@@ -32,6 +32,7 @@ public class OptionsManager : Singleton<OptionsManager>
         LoadOptionsFromDisk();
     }
 
+
     //Mutators
     public void SetOption(string key, int value)
     {
@@ -134,6 +135,7 @@ public class OptionsManager : Singleton<OptionsManager>
 
         return false;
     }
+
 
     //Serialization
     public void SaveOptionsToDisk()
