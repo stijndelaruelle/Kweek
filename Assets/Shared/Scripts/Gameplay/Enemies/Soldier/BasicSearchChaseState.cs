@@ -43,7 +43,7 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     public override void Enter()
     {
-        Debug.Log("Entered Chase state!");
+        //Debug.Log("Entered Chase state!");
         
         m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
 

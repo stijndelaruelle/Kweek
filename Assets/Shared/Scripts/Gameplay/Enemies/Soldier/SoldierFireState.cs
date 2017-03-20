@@ -246,33 +246,38 @@ public class SoldierFireState : IAbstractTargetState
 
             if (degAngle <= m_ViewAngle)
             {
-                //Doesn't work when there's multiple colliders per character. Fix this
+                //If so, check line of sight
+                Vector3 middleTop = other.bounds.center;
+                middleTop.y += other.bounds.extents.y * 0.5f;
 
-                ////If so, check line of sight
-                //Vector3 middleTop = other.bounds.center;
-                //middleTop.y += other.bounds.extents.y * 0.5f;
+                Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
 
-                //Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+                RaycastHit hitInfo;
+                bool success = Physics.Raycast(ray, out hitInfo);
 
-                //RaycastHit hitInfo;
-                //bool success = Physics.Raycast(ray, out hitInfo);
+                if (success)
+                {
+                    IDamageableObject foundDamageableObject = hitInfo.collider.GetComponent<IDamageableObject>();
+                    if (foundDamageableObject != null)
+                    {
+                        foundDamageableObject = foundDamageableObject.GetMainDamageableObject();
 
-                //if (!(success && hitInfo.collider == other))
-                //{
-                //    //Stop firing
-                //    SwitchOut();
-                //}
-                //else
-                //{
-                //    //Stop switching out!
-                //    m_IsSwitchingOut = false;
-                //}
+                        if (damageableObject != foundDamageableObject)
+                        {
+                            SwitchOut();
+                            return;
+                        }
+                        else
+                        {
+                            m_IsSwitchingOut = false;
+                            return;
+                        }
+                    }
+                }
             }
-            else
-            {
-                //If not, stop firing
-                SwitchOut();
-            }
+
+            //If not, stop firing
+            SwitchOut();
         }
     }
 
