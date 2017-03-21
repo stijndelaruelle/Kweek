@@ -23,7 +23,7 @@ public class RegularDamageBehaviour : IDamageableObject
         ChangeHealth(m_MaxHealth);
     }
 
-    protected virtual int ChangeHealth(int health)
+    public override int ChangeHealth(int health)
     {
         int prevHealth = m_Health;
         m_Health += health;
@@ -56,7 +56,7 @@ public class RegularDamageBehaviour : IDamageableObject
         if (IsDead())
             return health;
 
-        int reserveHealth =  ChangeHealth(-health);
+        int reserveHealth = ChangeHealth(-health);
 
         //Fire damage event
         CallDamageEvent(health);
@@ -64,15 +64,17 @@ public class RegularDamageBehaviour : IDamageableObject
         return reserveHealth;
     }
 
-    public override void Heal(int health)
+    public override int Heal(int health)
     {
         if (IsDead())
-            return;
+            return health;
 
-        ChangeHealth(health);
+        int reserveHealth = ChangeHealth(health);
 
         //Fire heal event
         CallHealEvent(health);
+
+        return reserveHealth;
     }
 
     public override bool IsDead()

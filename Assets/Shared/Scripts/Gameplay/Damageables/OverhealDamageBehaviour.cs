@@ -34,7 +34,7 @@ public class OverhealDamageBehaviour : RegularDamageBehaviour
         }
     }
 
-    protected override int ChangeHealth(int health)
+    public override int ChangeHealth(int health)
     {
         int prevHealth = m_Health;
         m_Health += health;

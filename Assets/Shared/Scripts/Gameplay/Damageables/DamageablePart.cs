@@ -27,6 +27,14 @@ public class DamageablePart : IDamageableObject
     [SerializeField]
     private float m_DamageMultiplier = 1.0f;
 
+    public override int ChangeHealth(int health)
+    {
+        int reserveHealth = m_MainObject.ChangeHealth(health);
+        CallChangeHealthEvent(health);
+
+        return reserveHealth;
+    }
+
     public override int Damage(int health)
     {
         int actualDamage = Mathf.CeilToInt(health * m_DamageMultiplier);
@@ -37,12 +45,14 @@ public class DamageablePart : IDamageableObject
         return reserveDamage;
     }
 
-    public override void Heal(int health)
+    public override int Heal(int health)
     {
         int actualHealing = Mathf.CeilToInt(health * m_DamageMultiplier);
 
-        m_MainObject.Heal(actualHealing);
+        int reserveHealth = m_MainObject.Heal(actualHealing);
         CallHealEvent(actualHealing);
+
+        return reserveHealth;
     }
 
     public override bool IsDead()
