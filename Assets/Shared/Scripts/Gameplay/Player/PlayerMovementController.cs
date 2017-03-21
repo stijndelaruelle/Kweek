@@ -213,16 +213,22 @@ public class PlayerMovementController : MonoBehaviour
         m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
         transform.localRotation = m_CharacterTargetRot;
 
+        Quaternion prevCameraRot = m_CameraTargetRot;
         m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
+
+        //Lock Y axis (TODO: do this in a nicer way)
+        if (m_CameraTargetRot.eulerAngles.z >= 90.0f)
+            m_CameraTargetRot = prevCameraRot;
+
         m_Camera.localRotation = m_CameraTargetRot;
 
         //Lock vertical camera rotation
-        float dot = Vector3.Dot(transform.forward, m_Camera.transform.forward);
-        if (dot < 0.0f)
-        {
-            m_CameraTargetRot = Quaternion.Euler(90.0f * Mathf.Sign(m_CameraTargetRot.x), 0f, 0f);
-            m_Camera.localRotation = m_CameraTargetRot;
-        }
+        //float dot = Vector3.Dot(transform.forward, m_Camera.transform.forward);
+        //if (dot < 0.0f)
+        //{
+        //    m_CameraTargetRot = Quaternion.Euler(90.0f * Mathf.Sign(m_CameraTargetRot.x), 0f, 0f);
+        //    m_Camera.localRotation = m_CameraTargetRot;
+        //}
 
         if (UpdateCameraEvent != null)
             UpdateCameraEvent();
