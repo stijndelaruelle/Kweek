@@ -250,7 +250,7 @@ public class Weapon : MonoBehaviour
     }
 
     //Dropping
-    public void Drop(Vector3 position, Collider throwerCollider)
+    public void Drop(Vector3 position, List<Collider> throwerColliders)
     {
         Ray centerRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         Vector3 velocity = centerRay.direction * m_ThrowSpeed;
@@ -263,7 +263,7 @@ public class Weapon : MonoBehaviour
             m_AmmoUseBehaviour.SetPickupAmmo(pickup);
         }
 
-        pickup.Drop(velocity, throwerCollider);
+        pickup.Drop(velocity, throwerColliders);
     }
 
     //Event

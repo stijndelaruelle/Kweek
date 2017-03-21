@@ -12,5 +12,5 @@ public abstract class IPickup : MonoBehaviour
     }
 
     public abstract void Pickup(Player player);
-    public abstract void Drop(Vector3 force, Collider throwerCollider);
+    public abstract void Drop(Vector3 force, List<Collider> throwerColliders);
 }

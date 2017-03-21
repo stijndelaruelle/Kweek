@@ -31,7 +31,7 @@ public class WeaponArsenal : MonoBehaviour
     private Transform m_ThrowPosition;
 
     [SerializeField]
-    private Collider m_OwnerCollider;
+    private List<Collider> m_OwnerColliders;
 
     public event UpdateAmmoDelegate UpdateAmmoEvent;
 
@@ -47,9 +47,7 @@ public class WeaponArsenal : MonoBehaviour
         foreach (Weapon weapon in m_Weapons)
         {
             weapon.gameObject.SetActive(false);
-
-            List<Collider> colliders = new List<Collider>() { m_OwnerCollider };
-            weapon.Setup(colliders, m_AmmoArsenal);
+            weapon.Setup(m_OwnerColliders, m_AmmoArsenal);
         }
 
         //Only enable our current weapon
@@ -220,8 +218,7 @@ public class WeaponArsenal : MonoBehaviour
     {
         Weapon instancedWeapon = GameObject.Instantiate(weaponPrefab, transform);
 
-        List<Collider> colliders = new List<Collider>() { m_OwnerCollider };
-        instancedWeapon.Setup(colliders, m_AmmoArsenal);
+        instancedWeapon.Setup(m_OwnerColliders, m_AmmoArsenal);
 
         //Even tough the prefabs are at 0, this is still required to actually make it so
         instancedWeapon.transform.localPosition = Vector3.zero;
@@ -265,7 +262,7 @@ public class WeaponArsenal : MonoBehaviour
         if (m_CurrentWeaponID == -1 || m_Weapons.Count <= 0)
             return;
 
-        m_Weapons[m_CurrentWeaponID].Drop(m_ThrowPosition.position, m_OwnerCollider);
+        m_Weapons[m_CurrentWeaponID].Drop(m_ThrowPosition.position, m_OwnerColliders);
         RemoveWeapon(m_Weapons[m_CurrentWeaponID]);
     }
 

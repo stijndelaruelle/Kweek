@@ -90,13 +90,13 @@ public class BasicPickup : IPickup
         Destroy(this.gameObject);
     }
 
-    public override void Drop(Vector3 force, Collider throwerCollider)
+    public override void Drop(Vector3 force, List<Collider> throwerColliders)
     {
         //Ignore all collision for a while with the one who dropped us
-        if (throwerCollider != null)
+        if (throwerColliders != null)
         {
             StopAllCoroutines();
-            StartCoroutine(IgnoreCollisionRoutine(throwerCollider));
+            StartCoroutine(IgnoreCollisionRoutine(throwerColliders));
         }
 
         float randomAngle = UnityEngine.Random.Range(-90.0f, 90.0f);
@@ -106,12 +106,15 @@ public class BasicPickup : IPickup
             m_Rigidbody.AddForce(force);
     }
 
-    private IEnumerator IgnoreCollisionRoutine(Collider throwerCollider)
+    private IEnumerator IgnoreCollisionRoutine(List<Collider> throwerColliders)
     {
         //Start ignoring
         foreach (Collider collider in m_Colliders)
         {
-            Physics.IgnoreCollision(collider, throwerCollider, true);
+            foreach (Collider otherCollider in throwerColliders)
+            {
+                Physics.IgnoreCollision(collider, otherCollider, true);
+            }
         }
 
         yield return new WaitForSeconds(1.0f);
@@ -119,7 +122,10 @@ public class BasicPickup : IPickup
         //Stop ignoring
         foreach (Collider collider in m_Colliders)
         {
-            Physics.IgnoreCollision(collider, throwerCollider, false);
+            foreach (Collider otherCollider in throwerColliders)
+            {
+                Physics.IgnoreCollision(collider, otherCollider, false);
+            }
         }
     }
 
