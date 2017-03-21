@@ -222,14 +222,6 @@ public class PlayerMovementController : MonoBehaviour
 
         m_Camera.localRotation = m_CameraTargetRot;
 
-        //Lock vertical camera rotation
-        //float dot = Vector3.Dot(transform.forward, m_Camera.transform.forward);
-        //if (dot < 0.0f)
-        //{
-        //    m_CameraTargetRot = Quaternion.Euler(90.0f * Mathf.Sign(m_CameraTargetRot.x), 0f, 0f);
-        //    m_Camera.localRotation = m_CameraTargetRot;
-        //}
-
         if (UpdateCameraEvent != null)
             UpdateCameraEvent();
     }
@@ -341,7 +333,8 @@ public class PlayerMovementController : MonoBehaviour
             //Falling
             if (!m_Player.MaintainingGround())
             {
-                m_Player.SwitchState(PlayerState.Airbourne);
+                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
+                state.RemoveJump();
                 return;
             }
 
@@ -427,7 +420,8 @@ public class PlayerMovementController : MonoBehaviour
             //Falling
             if (!m_Player.MaintainingGround())
             {
-                m_Player.SwitchState(PlayerState.Airbourne);
+                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
+                state.RemoveJump();
                 return;
             }
 
@@ -532,7 +526,8 @@ public class PlayerMovementController : MonoBehaviour
             //Falling
             if (!m_Player.MaintainingGround())
             {
-                m_Player.SwitchState(PlayerState.Airbourne);
+                AirborneState state = (AirborneState)m_Player.SwitchState(PlayerState.Airbourne);
+                state.RemoveJump();
                 return;
             }
 
@@ -644,6 +639,11 @@ public class PlayerMovementController : MonoBehaviour
             verticalMoveDirection -= Vector3.up * m_Player.Gravity * Time.deltaTime;
 
             m_Player.Velocity = planarMoveDirection + verticalMoveDirection;
+        }
+
+        public void RemoveJump()
+        {
+            m_NumberOfJumps -= 1;
         }
 
         public void Jump()
