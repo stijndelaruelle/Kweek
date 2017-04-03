@@ -10,6 +10,10 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
     private float m_UseCooldown = 0.0f;
     private float m_UseCooldownTimer;
 
+    [Tooltip("How much ammo does using the weapon 1 time take.")]
+    [SerializeField]
+    private int m_AmmoUseage = 0;
+
     [Header("HitBox")]
     [Space(5)]
     [SerializeField]
@@ -80,6 +84,10 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
         //Animation & Cooldown
         m_Animator.SetTrigger(m_TriggerName);
         m_UseCooldownTimer = m_UseCooldown;
+
+        //Use ammo (avoids warning)
+        if (AmmoUseEvent != null)
+            AmmoUseEvent(m_AmmoUseage);
 
         return true;
     }

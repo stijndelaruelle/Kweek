@@ -76,7 +76,7 @@ public class RobotFireState : IAbstractTargetState
         m_Behaviour.AnimatorIKEvent += OnStateAnimatorIK;
 
         //Stop the character from moving, both gamewise as visually
-        m_Behaviour.NavMeshAgent.Stop();
+        m_Behaviour.NavMeshAgent.isStopped = true;
 
         m_Target = null;
         m_FireDelayTimer = m_FireDelay;

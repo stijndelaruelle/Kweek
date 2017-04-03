@@ -45,7 +45,7 @@ public class SmokeTrail : MonoBehaviour
         m_Positions = new Vector3[m_NumberOfPoints];
         m_Directions = new Vector3[m_NumberOfPoints];
 
-        m_LineRenderer.numPositions = 0;
+        m_LineRenderer.positionCount = 0;
         m_UpdateTimer = m_UpdateSpeed;
     }
 
@@ -62,7 +62,7 @@ public class SmokeTrail : MonoBehaviour
             if (m_CurrentNumberOfPoints < m_NumberOfPoints)
             {
                 m_CurrentNumberOfPoints++;
-                m_LineRenderer.numPositions = m_CurrentNumberOfPoints;
+                m_LineRenderer.positionCount = m_CurrentNumberOfPoints;
             }
 
             //Move all the points up in the chain

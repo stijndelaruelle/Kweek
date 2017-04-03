@@ -55,7 +55,7 @@ public class ZombieWanderState : IAbstractState
         m_Zombie.NavMeshAgent.destination = transform.position;
         m_Zombie.NavMeshAgent.speed = m_MovementSpeed;
 
-        m_Zombie.NavMeshAgent.Stop();
+        m_Zombie.NavMeshAgent.isStopped = true;
 
         m_Zombie.Animator.enabled = true;
         m_Zombie.Animator.SetTrigger("MovementTrigger");
@@ -94,13 +94,13 @@ public class ZombieWanderState : IAbstractState
 
     private IEnumerator WanderInterbellumRoutine()
     {
-        m_Zombie.NavMeshAgent.Stop();
+        m_Zombie.NavMeshAgent.isStopped = true;
 
         float waitTime = Random.Range(m_MinWaitTime, m_MaxWaitTime);
         yield return new WaitForSeconds(waitTime);
 
         m_Zombie.NavMeshAgent.destination = CalculateTargetPosition();
-        m_Zombie.NavMeshAgent.Resume();
+        m_Zombie.NavMeshAgent.isStopped = false;
 
         m_WanderInterbellumRoutine = null;
     }

@@ -56,12 +56,12 @@ public class BasicPatrolState : IAbstractState
             m_Behaviour.NavMeshAgent.destination = m_Path[m_CurrentIndex].transform.position;
             m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
 
-            m_Behaviour.NavMeshAgent.Resume();
+            m_Behaviour.NavMeshAgent.isStopped = false;
             m_IsStopped = false;
         }
         else
         {
-            m_Behaviour.NavMeshAgent.Stop();
+            m_Behaviour.NavMeshAgent.isStopped = true;
             m_IsStopped = true;
         }
 
@@ -106,7 +106,7 @@ public class BasicPatrolState : IAbstractState
                 {
                     m_CurrentIndex -= m_TraverseDirection;
                     agent.velocity = new Vector3(0.0f, 0.0f, 0.0f);
-                    agent.Stop();
+                    agent.isStopped = true;
                     m_IsStopped = true;
                     return;
                 }

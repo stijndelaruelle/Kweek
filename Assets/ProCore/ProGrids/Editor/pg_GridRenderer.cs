@@ -20,14 +20,19 @@ namespace ProGrids
 		static Mesh gridMesh;
 		static Material gridMaterial;
 
+		public static int majorLineIncrement = 10;
+
 		/**
 		 * Destroy any existing render objects, then initialize new ones.
 		 */
 		public static void Init()
 		{
 			Destroy();
- 
+
 			gridObject = EditorUtility.CreateGameObjectWithHideFlags(PREVIEW_OBJECT_NAME, PG_HIDE_FLAGS, new System.Type[2]{typeof(MeshFilter), typeof(MeshRenderer)});
+			majorLineIncrement = EditorPrefs.GetInt(pg_Constant.MajorLineIncrement, 10);
+			if(majorLineIncrement < 2)
+				majorLineIncrement = 2;
 
 			// Force the mesh to only render in SceneView
 			pg_SceneMeshRender renderer = gridObject.AddComponent<pg_SceneMeshRender>();
@@ -54,7 +59,7 @@ namespace ProGrids
 		static void DestoryObjectsWithName(string Name, System.Type type)
 		{
 			IEnumerable go = Resources.FindObjectsOfTypeAll(type).Where(x => x.name.Contains(Name));
-			
+
 			foreach(Object t in go)
 			{
 				GameObject.DestroyImmediate(t);
@@ -62,13 +67,13 @@ namespace ProGrids
 		}
 
 		private static int tan_iter, bit_iter, max = MAX_LINES, div = 1;
-		
+
 		/**
 		 * Returns the distance this grid is drawing
 		 */
 		public static float DrawPlane(Camera cam, Vector3 pivot, Vector3 tangent, Vector3 bitangent, float snapValue, Color color, float alphaBump)
 		{
-			if(!gridMesh || !gridMaterial || !gridObject)	
+			if(!gridMesh || !gridMaterial || !gridObject)
 				Init();
 
 			gridMaterial.SetFloat("_AlphaCutoff", .1f);
@@ -121,15 +126,15 @@ namespace ProGrids
 
 		public static void DrawGridPerspective(Camera cam, Vector3 pivot, float snapValue, Color[] colors, float alphaBump)
 		{
-			if(!gridMesh || !gridMaterial || !gridObject)	
+			if(!gridMesh || !gridMaterial || !gridObject)
 				Init();
 
 			gridMaterial.SetFloat("_AlphaCutoff", 0f);
 			gridMaterial.SetFloat("_AlphaFade", 0f);
-				
+
 			Vector3 camDir = (pivot - cam.transform.position).normalized;
 			pivot = pg_Util.SnapValue(pivot, snapValue);
-			
+
 			// Used to flip the grid to match whatever direction the cam is currently
 			// coming at the pivot from
 			Vector3 right = camDir.x < 0f ? Vector3.right : Vector3.right * -1f;
@@ -184,7 +189,7 @@ namespace ProGrids
 			int x_iter = (int)(Mathf.Ceil(Mathf.Max(x_dist, y_dist))/snapValue);
 			int y_iter = (int)(Mathf.Ceil(Mathf.Max(x_dist, z_dist))/snapValue);
 			int z_iter = (int)(Mathf.Ceil(Mathf.Max(z_dist, y_dist))/snapValue);
-			
+
 			int max = Mathf.Max( Mathf.Max(x_iter, y_iter), z_iter );
 			int div = 1;
 			while(max/div> MAX_LINES)
@@ -244,8 +249,8 @@ namespace ProGrids
 
 			float len = increment * iterations;
 
-			int highlightOffsetTan 		= (int)((pg_Util.ValueFromMask(pivot, tan) % (increment*10f)) / increment);
-			int highlightOffsetBitan	= (int)((pg_Util.ValueFromMask(pivot, bitan) % (increment*10f)) / increment);
+			int highlightOffsetTan 		= (int)((pg_Util.ValueFromMask(pivot, tan) % (increment * majorLineIncrement)) / increment);
+			int highlightOffsetBitan	= (int)((pg_Util.ValueFromMask(pivot, bitan) % (increment * majorLineIncrement)) / increment);
 
 			iterations++;
 
@@ -271,7 +276,7 @@ namespace ProGrids
 			indices[1] = 1 + offset;
 			indices[2] = 1 + offset;
 			indices[3] = 2 + offset;
-			
+
 			colors[0] = primary;
 			colors[1] = primary;
 			colors[2] = primary;
@@ -310,8 +315,8 @@ namespace ProGrids
 
 				float alpha = (i/(float)iterations);
 				alpha = alpha < fade ? 1f : 1f - ( (alpha-fade)/(1-fade) );
-				
-				Color col = (i+highlightOffsetTan) % 10 == 0 ? primary : secondary;
+
+				Color col = (i+highlightOffsetTan) % majorLineIncrement == 0 ? primary : secondary;
 				col.a *= alpha;
 
 				colors[v+0] = col;
@@ -319,7 +324,7 @@ namespace ProGrids
 				colors[v+2] = col;
 				colors[v+2].a = 0f;
 
-				col = (i+highlightOffsetBitan) % 10 == 0 ? primary : secondary;
+				col = (i+highlightOffsetBitan) % majorLineIncrement == 0 ? primary : secondary;
 				col.a *= alpha;
 
 				colors[v+3] = col;
@@ -348,8 +353,8 @@ namespace ProGrids
 			start = pg_Util.SnapValue(start, bitan+tan, increment);
 
 			float inc = increment;
-			int highlightOffsetTan = (int)((pg_Util.ValueFromMask(start, tan) % (inc*10f)) / inc);
-			int highlightOffsetBitan = (int)((pg_Util.ValueFromMask(start, bitan) % (inc*10f)) / inc);
+			int highlightOffsetTan = (int)((pg_Util.ValueFromMask(start, tan) % (inc*majorLineIncrement)) / inc);
+			int highlightOffsetBitan = (int)((pg_Util.ValueFromMask(start, bitan) % (inc*majorLineIncrement)) / inc);
 
 			Vector3[] lines = new Vector3[iterations * 4];
 			int[] indices = new int[iterations * 4];
@@ -361,25 +366,25 @@ namespace ProGrids
 			{
 				Vector3 a = start + tan * i * increment;
 				Vector3 b = start + bitan * i * increment;
-				
+
 				lines[v+0] = a;
 				lines[v+1] = a + bitan * len;
-				
+
 				lines[v+2] = b;
 				lines[v+3] = b + tan * len;
-				
+
 				indices[t++] = v;
 				indices[t++] = v+1;
 				indices[t++] = v+2;
 				indices[t++] = v+3;
-		
-				Color col = (i+highlightOffsetTan) % 10 == 0 ? primary : secondary;
-				
+
+				Color col = (i + highlightOffsetTan) % majorLineIncrement == 0 ? primary : secondary;
+
 				// tan
 				colors[v+0] = col;
 				colors[v+1] = col;
 
-				col = (i+highlightOffsetBitan) % 10 == 0 ? primary : secondary;
+				col = (i + highlightOffsetBitan) % majorLineIncrement == 0 ? primary : secondary;
 
 				// bitan
 				colors[v+2] = col;
@@ -401,19 +406,6 @@ namespace ProGrids
 			gridMesh.uv = new Vector2[lines.Length];
 			gridMesh.colors = colors;
 			gridMesh.SetIndices(indices, MeshTopology.Lines, 0);
-			// else
-			// {
-			// 	for(int i = 0; i < iterations; i++)
-			// 	{
-			// 		Vector3 a = start + tan*i*increment;
-			// 		Vector3 b = start + bitan*i*increment;
-
-			// 		Handles.color = (i+highlightOffsetTan) % 10 == 0 ? primary : secondary;
-			// 		Handles.DrawLine(a, a + bitan * len );
-			// 		Handles.color = (i+highlightOffsetBitan) % 10 == 0 ? primary : secondary;
-			// 		Handles.DrawLine(b, b + tan * len );
-			// 	}			
-			// }
 		}
 
 		/**
@@ -429,7 +421,7 @@ namespace ProGrids
 				new Ray(pivot, -tan),
 				new Ray(pivot, -bitan)
 			 };
-			
+
 			float[] intersects = new float[4] { minDist, minDist, minDist, minDist };
 			bool[] intersection_found = new bool[4] { false, false, false, false };
 
@@ -438,7 +430,7 @@ namespace ProGrids
 			{
 				float dist;
 				float t = 0;
-				
+
 				for(int i = 0; i < 4; i++)
 				{
 					if(p.Raycast(rays[i], out dist))

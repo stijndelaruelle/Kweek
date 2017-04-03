@@ -50,6 +50,12 @@ public class SaveGameSelectToggle : MonoBehaviour
             levelData = LevelManager.Instance.GetLevelData(m_SaveGame.LevelID);
         }
 
+        if (levelData == null)
+        {
+            Debug.LogError("Trying to load level with invalid level ID");
+            return;
+        }
+
         m_LevelName.text = levelData.LevelName;
         m_Picture.sprite = levelData.Picture;
 

@@ -22,12 +22,12 @@ public class qd_Database : ScriptableObject
 	// For serialization purposes, save decalGroups as string[]
 	[HideInInspector] [SerializeField] private string[] 	s_decals;
 
-	[HideInInspector] [SerializeField] private string[]		names = new string[0];
-	[HideInInspector] [SerializeField] private bool[]		isPacked = new bool[0];
-	[HideInInspector] [SerializeField] private string[]		materials = new string[0];
-	[HideInInspector] [SerializeField] private string[]		shaders = new string[0];
-	[HideInInspector] [SerializeField] private int[]		atlasSize = new int[0];
-	[HideInInspector] [SerializeField] private int[]		padding = new int[0];
+	[HideInInspector] [SerializeField] private string[]		names 		= new string[0];
+	[HideInInspector] [SerializeField] private bool[]		isPacked 	= new bool[0];
+	[HideInInspector] [SerializeField] private string[]		materials 	= new string[0];
+	[HideInInspector] [SerializeField] private string[]		shaders 	= new string[0];
+	[HideInInspector] [SerializeField] private int[]		atlasSize 	= new int[0];
+	[HideInInspector] [SerializeField] private int[]		padding 	= new int[0];
 
 #endregion
 
@@ -37,7 +37,7 @@ public class qd_Database : ScriptableObject
 	{
 		decalGroups.Clear();
 
-		if(s_decals == null) 
+		if(s_decals == null)
 			return false;
 
 		Dictionary<int, List<QD.Decal>> dict = new Dictionary<int, List<QD.Decal>>();
@@ -89,10 +89,11 @@ public class qd_Database : ScriptableObject
 	 */
 	public bool MaterialWithDecal(QD.Decal decal, out Material mat)
 	{
-		if(decal.isPacked && materials != null && decal.atlasIndex < materials.Length)
-			mat = (Material)AssetDatabase.LoadAssetAtPath( AssetDatabase.GUIDToAssetPath(materials[decal.atlasIndex]), typeof(Material) );
-		else 
+		if(decal.isPacked && materials != null && decal.atlasGroup < materials.Length)
+			mat = (Material)AssetDatabase.LoadAssetAtPath( AssetDatabase.GUIDToAssetPath(materials[decal.atlasGroup]), typeof(Material) );
+		else
 			mat = null;
+
 		return mat != null;
 	}
 
@@ -101,9 +102,9 @@ public class qd_Database : ScriptableObject
 	 */
 	public Shader ShaderWithDecal(QD.Decal decal)
 	{
-		if(shaders != null && decal.atlasIndex < shaders.Length)
-			return Shader.Find(shaders[decal.atlasIndex]);
-		else 
+		if(shaders != null && decal.atlasGroup < shaders.Length)
+			return Shader.Find(shaders[decal.atlasGroup]);
+		else
 			return DefaultShader;
 	}
 #endregion
@@ -112,7 +113,7 @@ public class qd_Database : ScriptableObject
 
 	public void AddDecals(List<QD.Decal> dec, DecalView decalView)
 	{
-		decalGroups.Add( new DecalGroup( 
+		decalGroups.Add( new DecalGroup(
 			(dec.Count > 0 ? dec[0].texture.name : "New Decal Group"),
 			dec,
 			false,
@@ -130,7 +131,7 @@ public class qd_Database : ScriptableObject
 		{
 			if(index > -1)
 				decalGroups[grp].decals.InsertRange(index, dec);
-			else		
+			else
 				decalGroups[grp].decals.AddRange(dec);
 
 			decalGroups[grp].isPacked = false;
@@ -153,15 +154,15 @@ public class qd_Database : ScriptableObject
 	public void DeleteDecals(Dictionary<int, List<int>> del, DecalView decalView)
 	{
 		foreach(KeyValuePair<int, List<int>> kvp in del)
-		{	
-			// there's probably some linq magic that does this in a cleaner manner, but i don't 
+		{
+			// there's probably some linq magic that does this in a cleaner manner, but i don't
 			// know what it is
 			List<QD.Decal> survivors = new List<QD.Decal>();
 
 			for(int i = 0; i < decalGroups[kvp.Key].decals.Count; i++)
-				if( !kvp.Value.Contains(i) )	
+				if( !kvp.Value.Contains(i) )
 					survivors.Add( decalGroups[kvp.Key].decals[i] );
-			
+
 			decalGroups[kvp.Key].decals = survivors;
 			decalGroups[kvp.Key].isPacked = false;
 		}
@@ -195,23 +196,26 @@ public class qd_Database : ScriptableObject
 			{
 				if(view == DecalView.Organizational)
 				{
-					decalGroups[i].decals[n].orgGroup = i;	
-					decalGroups[i].decals[n].orgIndex = n;	
+					decalGroups[i].decals[n].orgGroup = i;
+					decalGroups[i].decals[n].orgIndex = n;
 				}
 				else
 				{
 					decalGroups[i].decals[n].atlasGroup = i;
 					decalGroups[i].decals[n].atlasIndex = n;
-				
-					mat.Add(decalGroups[i].material != null ? AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(decalGroups[i].material)) : "");
-					sha.Add(decalGroups[i].shader.name);
-					pack.Add(decalGroups[i].isPacked);
-					nam.Add(decalGroups[i].name);
-					atlas.Add(decalGroups[i].maxAtlasSize);
-					pad.Add(decalGroups[i].padding);
 				}
-			
+
 				ser.Add( decalGroups[i].decals[n].Serialize() );
+			}
+
+			if(view == DecalView.Atlas)
+			{
+				sha.Add(decalGroups[i].shader != null ? decalGroups[i].shader.name : "");
+				pack.Add(decalGroups[i].isPacked);
+				nam.Add(decalGroups[i].name);
+				atlas.Add(decalGroups[i].maxAtlasSize);
+				pad.Add(decalGroups[i].padding);
+				mat.Add(decalGroups[i].material != null ? AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(decalGroups[i].material)) : "");
 			}
 		}
 
@@ -219,12 +223,12 @@ public class qd_Database : ScriptableObject
 
 		if(view == DecalView.Atlas)
 		{
-			materials = mat.ToArray();
-			shaders = sha.ToArray();
-			isPacked = pack.ToArray();
-			names = nam.ToArray();
-			padding = pad.ToArray();
-			atlasSize = atlas.ToArray();
+			materials 	= mat.ToArray();
+			shaders 	= sha.ToArray();
+			isPacked 	= pack.ToArray();
+			names 		= nam.ToArray();
+			padding 	= pad.ToArray();
+			atlasSize 	= atlas.ToArray();
 		}
 
 		EditorUtility.SetDirty(this);
@@ -236,19 +240,25 @@ public class qd_Database : ScriptableObject
 	public bool PackTextures(int index)
 	{
 #if !UNITY_WEBPLAYER
-
 		int decalCount = decalGroups[index].decals.Count;
 		Texture2D[] imgs = new Texture2D[decalCount];
 
 		for(int i = 0; i < decalCount; i++)
 		{
 			imgs[i] = decalGroups[index].decals[i].texture;
-
 			string path = AssetDatabase.GetAssetPath(imgs[i]);
 			TextureImporter textureImporter = (TextureImporter)TextureImporter.GetAtPath( path );
-			textureImporter.isReadable = true;
-			textureImporter.textureFormat = TextureImporterFormat.ARGB32;
-			AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+
+			if(!textureImporter.isReadable)
+			{
+				textureImporter.isReadable = true;
+#if UNITY_4 || UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2 || UNITY_5_3 || UNITY_5_4
+				textureImporter.textureFormat = TextureImporterFormat.ARGB32;
+#else
+				textureImporter.textureCompression = TextureImporterCompression.CompressedHQ;
+#endif
+				AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+			}
 		}
 
 		int maxAtlasSize = 8192;
@@ -268,17 +278,17 @@ public class qd_Database : ScriptableObject
 		decalGroups[index].isPacked = true;
 
 		byte[] png = packedTexture.EncodeToPNG();
-		
+
 		if(!Directory.Exists(DECALSHEETS_PATH))
 			Directory.CreateDirectory(DECALSHEETS_PATH);
 
 		if(decalGroups[index].material == null)
 		{
 		 	string matPath = AssetDatabase.GenerateUniqueAssetPath(DECALSHEETS_PATH + decalGroups[index].name + ".mat");
-			
+
 			Material mat = new Material( decalGroups[index].shader );
 			AssetDatabase.CreateAsset(mat, matPath);
-		 	
+
 			decalGroups[index].material = mat;
 		}
 		else
@@ -289,14 +299,14 @@ public class qd_Database : ScriptableObject
 				AssetDatabase.RenameAsset(matPath, decalGroups[index].name);
 			}
 		}
-		
+
 		string pngPath;
 
-		if(decalGroups[index].material != null && decalGroups[index].material.mainTexture != null)			
+		if(decalGroups[index].material != null && decalGroups[index].material.mainTexture != null)
 			pngPath = AssetDatabase.GetAssetPath(decalGroups[index].material.mainTexture);
 		else
 			pngPath = AssetDatabase.GenerateUniqueAssetPath(DECALSHEETS_PATH + decalGroups[index].name + ".png");
-		
+
 		// http://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
 		File.WriteAllBytes(pngPath, png);
 
@@ -314,10 +324,6 @@ public class qd_Database : ScriptableObject
 		return false;
 #endif
 	}
-#endregion
-
-#region Utils
-
 #endregion
 }
 #endif

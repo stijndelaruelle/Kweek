@@ -8,6 +8,7 @@ namespace ProGrids
 	public static class pg_Constant
 	{
 		public const string ProGridsIsEnabled = "pgProGridsIsEnabled";
+		public const string ProGridsIsExtended = "pgProGridsIsExtended";
 		public const string ProGridsUpgradeURL = "http://u3d.as/content/six-by-seven-studio/pro-grids/3ov";
 		public const string SnapValue = "pgSnapValue";
 		public const string SnapMultiplier = "pgSnapMultiplier";
@@ -24,6 +25,7 @@ namespace ProGrids
 		public const string SnapScale = "pg_SnapOnScale";
 		public const string PredictiveGrid = "pg_PredictiveGrid";
 		public const string SnapAsGroup = "pg_SnapAsGroup";
+		public const string MajorLineIncrement = "pg_MajorLineIncrement";
 
 		public const float METER = 1f;
 		#if PRO

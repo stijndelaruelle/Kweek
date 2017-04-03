@@ -16,10 +16,10 @@ namespace ProGrids
 		static SnapUnit _GridUnits;
 
 		/** Defaults **/
-		public static Color GRID_COLOR_X = new Color(.9f, .46f, .46f, .08f);
-		public static Color GRID_COLOR_Y = new Color(.46f, .9f, .46f, .08f);
-		public static Color GRID_COLOR_Z = new Color(.46f, .46f, .9f, .08f);
-		public static float ALPHA_BUMP = .1f;
+		public static Color GRID_COLOR_X = new Color(.9f, .46f, .46f, .15f);
+		public static Color GRID_COLOR_Y = new Color(.46f, .9f, .46f, .15f);
+		public static Color GRID_COLOR_Z = new Color(.46f, .46f, .9f, .15f);
+		public static float ALPHA_BUMP = .25f;
 		public static bool USE_AXIS_CONSTRAINTS = false;
 		public static bool SHOW_GRID = true;
 
@@ -67,7 +67,7 @@ namespace ProGrids
 			_snapMethod = EditorGUILayout.IntPopup("Snap Method", _snapMethod, SnapMethod, SnapVals);
 
 			// GUILayout.EndHorizontal();
-			
+
 			if(GUI.Button(resetRect, "Reset"))
 			{
 				if(EditorUtility.DisplayDialog("Delete ProGrids editor preferences?", "Are you sure you want to delete these?, this action cannot be undone.", "Yes", "No"))
@@ -85,7 +85,7 @@ namespace ProGrids
 			_gridColorY = (EditorPrefs.HasKey("gridColorY")) ? pg_Util.ColorWithString(EditorPrefs.GetString("gridColorY")) : GRID_COLOR_Y;
 			_gridColorZ = (EditorPrefs.HasKey("gridColorZ")) ? pg_Util.ColorWithString(EditorPrefs.GetString("gridColorZ")) : GRID_COLOR_Z;
 			_alphaBump = (EditorPrefs.HasKey("pg_alphaBump")) ? EditorPrefs.GetFloat("pg_alphaBump") : ALPHA_BUMP;
-			_snapMethod = System.Convert.ToInt32( 
+			_snapMethod = System.Convert.ToInt32(
 				(EditorPrefs.HasKey(pg_Constant.UseAxisConstraints)) ? EditorPrefs.GetBool(pg_Constant.UseAxisConstraints) : USE_AXIS_CONSTRAINTS
 				);
 			_BracketIncreaseValue = EditorPrefs.HasKey(pg_Constant.BracketIncreaseValue) ? EditorPrefs.GetFloat(pg_Constant.BracketIncreaseValue) : .25f;

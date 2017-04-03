@@ -43,7 +43,7 @@ public class ZombieChaseState : IAbstractState
         m_Zombie.NavMeshAgent.destination = transform.position;
         m_Zombie.NavMeshAgent.speed = m_MovementSpeed;
 
-        m_Zombie.NavMeshAgent.Resume();
+        m_Zombie.NavMeshAgent.isStopped = false;
 
         m_Zombie.Animator.enabled = true;
         m_Zombie.Animator.SetTrigger("MovementTrigger");

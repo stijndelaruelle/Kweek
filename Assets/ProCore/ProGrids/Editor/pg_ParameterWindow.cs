@@ -19,11 +19,22 @@ namespace ProGrids
 			float snap = editor.GetSnapIncrement();
 
 			EditorGUI.BeginChangeCheck();
-			
+
 			snap = EditorGUILayout.FloatField("Snap Value", snap);
 
 			if(EditorGUI.EndChangeCheck())
 				editor.SetSnapIncrement(snap);
+
+			EditorGUI.BeginChangeCheck();
+			int majorLineIncrement = EditorPrefs.GetInt(pg_Constant.MajorLineIncrement, 10);
+			majorLineIncrement = EditorGUILayout.IntField("Major Line Increment", majorLineIncrement);
+			majorLineIncrement = majorLineIncrement < 2 ? 2 : majorLineIncrement > 128 ? 128 : majorLineIncrement;
+			if(EditorGUI.EndChangeCheck())
+			{
+				EditorPrefs.SetInt(pg_Constant.MajorLineIncrement, majorLineIncrement);
+				pg_GridRenderer.majorLineIncrement = majorLineIncrement;
+				pg_Editor.ForceRepaint();
+			}
 
 			editor.ScaleSnapEnabled = EditorGUILayout.Toggle("Snap On Scale", editor.ScaleSnapEnabled);
 
@@ -40,7 +51,7 @@ namespace ProGrids
 
 			EditorGUI.BeginChangeCheck();
 			editor.angleValue = EditorGUILayout.Slider("Angle", editor.angleValue, 0f, 180f);
-			if(EditorGUI.EndChangeCheck())	
+			if(EditorGUI.EndChangeCheck())
 				SceneView.RepaintAll();
 
 			if( EditorGUI.EndChangeCheck() )

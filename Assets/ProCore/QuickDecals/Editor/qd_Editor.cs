@@ -75,7 +75,11 @@ public class qd_Editor : EditorWindow
 	GUIStyle colorTextStyle, colorTextStyleBold;
 	Color SelectedItemColor = new Color(0f, .8f, 1f, 1f);
 	Color DragTargetColor = new Color(0f, .8f, 1f, .3f);
-	Color SettingsBackgroundColor = EditorGUIUtility.isProSkin ? new Color(0f, 0f, 0f, .4f) : new Color(.7f, .7f, .7f, 1f);
+	Color SettingsBackgroundColor {
+ 		get {
+ 			return EditorGUIUtility.isProSkin ? new Color(0f, 0f, 0f, .4f) : new Color(.7f, .7f, .7f, 1f);
+ 		}
+	}
 
 	// Decal Placement
 	MethodInfo IntersectRayMesh = typeof(HandleUtility).GetMethod("IntersectRayMesh", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -138,9 +142,9 @@ public class qd_Editor : EditorWindow
 
 		if( database.LoadDecalGroups(decalView) )
 			decalGroups = database.decalGroups;
-		
+
 		InitGUI();
- 
+
 		#if UNITY_4_3
 			Undo.undoRedoPerformed += this.UndoRedoPerformed;
 		#endif
@@ -155,12 +159,12 @@ public class qd_Editor : EditorWindow
 		#if UNITY_4_3
 			Undo.undoRedoPerformed -= this.UndoRedoPerformed;
 		#endif
-		
+
 		SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
-		
+
 		if(transparentImage != null)
 			DestroyImmediate(transparentImage);
-		
+
 		database.Save(decalView);
 	}
 
@@ -178,10 +182,10 @@ public class qd_Editor : EditorWindow
 
 		backgroundColorStyle = new GUIStyle();
 		backgroundColorStyle.normal.background = EditorGUIUtility.whiteTexture;
-		
+
 		RowColorOdd = EditorGUIUtility.isProSkin ? new Color(.83f, .83f, .83f, .06f) : new Color(.83f, .83f, .83f, 1f);
 	 	RowColorEven = EditorGUIUtility.isProSkin ? new Color(.8f, .8f, .8f, .02f) : new Color(.8f, .8f, .8f, 1f);
-	
+
 		DragDecalsImage = (Texture2D)Resources.Load("DragDecalsImage", typeof(Texture2D));
 		DropZoneImage = (Texture2D)Resources.Load("DropZoneImage", typeof(Texture2D));
 	}
@@ -205,9 +209,12 @@ public class qd_Editor : EditorWindow
 	Rect toolbarRect = new Rect();
 	Rect textureDisplayRect = new Rect();
 	Rect settingsDisplayRect = new Rect();
-	
+
 	void OnGUI()
 	{
+		float screenWidth = this.position.width;
+		float screenHeight = this.position.height;
+
 		e = Event.current;
 
 		// Listener methods will return true if it's necessary to repaint
@@ -215,12 +222,12 @@ public class qd_Editor : EditorWindow
 			Repaint();
 
 		// Figure out layout stuff
-		toolbarRect = new Rect(0, 0, Screen.width, 28);
+		toolbarRect = new Rect(0, 0, screenWidth, 28);
 		int trayHeight = (decalView == DecalView.Organizational ? SETTINGS_HEIGHT : SETTINGS_HEIGHT + 12);
 		settingsTrayHeight = trayHeight - (isFloating ? (int)toolbarRect.height : (int)(toolbarRect.height+toolbarRect.y - 8));
-		textureDisplayRect = new Rect(pad, toolbarRect.y+ (isFloating ? toolbarRect.height+pad : toolbarRect.height-12), Screen.width-4, Screen.height-settingsTrayHeight - toolbarRect.height+pad);
-		
-		settingsDisplayRect = new Rect(2, textureDisplayRect.y+textureDisplayRect.height+pad, Screen.width-4, settingsTrayHeight);
+		textureDisplayRect = new Rect(pad, toolbarRect.y+ (isFloating ? toolbarRect.height+pad : toolbarRect.height-12), screenWidth-4, screenHeight-settingsTrayHeight - toolbarRect.height+pad);
+
+		settingsDisplayRect = new Rect(2, textureDisplayRect.y+textureDisplayRect.height+pad, screenWidth-4, settingsTrayHeight);
 
 		mousePositionInGroupRect = e.mousePosition + scroll;
 		mousePositionInGroupRect.y -= textureDisplayRect.y;
@@ -244,7 +251,7 @@ public class qd_Editor : EditorWindow
 		{
 			OnValidateCommand(Event.current.commandName);
 		}
-		
+
 		Repaint();
 	}
 
@@ -259,17 +266,17 @@ public class qd_Editor : EditorWindow
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar);
 				Color col = GUI.backgroundColor;
-				GUI.backgroundColor = decalView == DecalView.Organizational ? ToolbarOnColor : col; 
+				GUI.backgroundColor = decalView == DecalView.Organizational ? ToolbarOnColor : col;
 				if(GUILayout.Button("Decals", EditorStyles.toolbarButton))
 				{
 					database.Save(decalView);
-					decalView = DecalView.Organizational;	
+					decalView = DecalView.Organizational;
 					selected.Clear();
 					database.LoadDecalGroups(decalView);
 					decalGroups = database.decalGroups;
 					needsRepaint = true;
 				}
-				GUI.backgroundColor = decalView == DecalView.Atlas ? ToolbarOnColor : col; 
+				GUI.backgroundColor = decalView == DecalView.Atlas ? ToolbarOnColor : col;
 				if( GUILayout.Button("Atlas", EditorStyles.toolbarButton) )
 				{
 					database.Save(decalView);
@@ -281,11 +288,11 @@ public class qd_Editor : EditorWindow
 				}
 				GUI.backgroundColor = col;
 				GUILayout.FlexibleSpace();
-				
+
 				if(decalView != DecalView.Atlas)
 				{
 					GUI.SetNextControlName("DecalSearch");
-					searchString = GUILayout.TextField(searchString, GUI.skin.FindStyle("ToolbarSeachTextField"), GUILayout.MinWidth(Mathf.Min(160, Screen.width/2)));
+					searchString = GUILayout.TextField(searchString, GUI.skin.FindStyle("ToolbarSeachTextField"), GUILayout.MinWidth(Mathf.Min(160, this.position.width/2f)));
 					if (GUILayout.Button("", GUI.skin.FindStyle("ToolbarSeachCancelButton")))
 					{
 					    // Remove focus if cleared
@@ -332,7 +339,7 @@ public class qd_Editor : EditorWindow
 			{
 				GUI.Label(new Rect(r.width/2-sz/2, (r.height/2-sz/2)+toolbarRect.height/2f, sz, sz), DragDecalsImage);
 			}
-#else			
+#else
 			GUI.Label(new Rect(r.width/2-sz/2, (r.height/2-sz/2)+toolbarRect.height/2f, sz, sz), DragDecalsImage);
 #endif
 			return;
@@ -368,7 +375,7 @@ public class qd_Editor : EditorWindow
 
 				Texture2D img = decalGroups[i].decals[j].texture;
 				int w = (int)((img.width/(float)img.height) * maxImageHeight);
-				
+
 				// when dragging, scooch decals to make a space for where the dragreferences
 				// will be dropped
 				if(dragging && mouseOver_groupIndex == i && mouseOver_textureIndex == j)
@@ -385,14 +392,14 @@ public class qd_Editor : EditorWindow
 					ypos += maxImageHeight + pad;
 					groupRects[i].height += maxImageHeight+pad;
 				}
-				
+
 				decalRects[i][j] = new Rect(xpos, ypos, w, maxImageHeight);
 
 				xpos += w + pad;
 			}
 
 			xpos = pad;
-			
+
 			if(decalView == DecalView.Organizational && skipped == decalGroups[i].decals.Count)
 				groupRects[i].height = 0;
 			else
@@ -418,7 +425,7 @@ public class qd_Editor : EditorWindow
 			for(int j = 0; j < decalRects[i].Length; j++)
 			{
 				Texture2D img = decalGroups[i].decals[j].texture;
-				
+
 				if(selected.Contains(i, j))
 				{
 					if(dragging)
@@ -430,13 +437,13 @@ public class qd_Editor : EditorWindow
 				if(decalView != DecalView.Atlas)
 					GUI.Box(decalRects[i][j], "", backgroundColorStyle);
 				GUI.backgroundColor = Color.clear;
-	
+
 				GUI.Label(decalRects[i][j], new GUIContent(img, img.name));
 			}
 		}
 
 		int dropZoneWidth = (int)Mathf.Min(128, maxImageHeight);
-		Rect dropZone = new Rect( 
+		Rect dropZone = new Rect(
 			r.x+(r.width/2f - dropZoneWidth/2f),
 			groupRects[groupRects.Length-1].y+groupRects[groupRects.Length-1].height,//+dropZoneWidth/2f,
 			dropZoneWidth,
@@ -445,7 +452,7 @@ public class qd_Editor : EditorWindow
 		GUI.Label(dropZone, DropZoneImage);
 
 		GUI.EndScrollView();
-	
+
 		// Draw dragging texture last so it's always on top
 		if(dragging && dragTextures != null)
 		{
@@ -453,8 +460,8 @@ public class qd_Editor : EditorWindow
 			{
 				GUI.Label( new Rect(
 					e.mousePosition.x + dragMouseOffset[i].x,
-					e.mousePosition.y + dragMouseOffset[i].y, 
-					(int)((dragTextures[i].width/(float)dragTextures[i].height) * maxImageHeight), maxImageHeight), 
+					e.mousePosition.y + dragMouseOffset[i].y,
+					(int)((dragTextures[i].width/(float)dragTextures[i].height) * maxImageHeight), maxImageHeight),
 					dragTextures[i]);
 			}
 		}
@@ -487,16 +494,16 @@ public class qd_Editor : EditorWindow
 		GUI.BeginGroup(r);
 
 			GUI.enabled = selected.Count > 0;
-			
+
 			if(decalView == DecalView.Organizational)
 			{
 				Placement rotate_placement = Placement.Fixed;
 				Placement scale_placement = Placement.Fixed;
 				Vector3 rotation = Vector3.zero;
 				Vector3 scale = Vector3.zero;
-				
+
 				int t = 0;
-				
+
 				bool[] mixedValue_rotation = new bool[] {false, false, false}, mixedValue_scale = new bool[] {false, false, false};
 				bool mixedValue_placement_rotation = false;
 				bool mixedValue_placement_scale = false;
@@ -520,7 +527,7 @@ public class qd_Editor : EditorWindow
 						{
 							if(rotate_placement != oldRotationPlacement)
 								mixedValue_placement_rotation = true;
-							
+
 							if(scale_placement != oldScalePlacement)
 								mixedValue_placement_scale = true;
 
@@ -528,10 +535,10 @@ public class qd_Editor : EditorWindow
 								mixedValue_rotation[0] = true;
 							if(oldRotation.y != rotation.y)
 								mixedValue_rotation[1] = true;
-							
+
 							if(oldRotation.z != rotation.z)
 								mixedValue_rotation[2] = true;
-							
+
 							if(oldScale.x != scale.x)
 								mixedValue_scale[0] = true;
 							if(oldScale.y != scale.y)
@@ -552,9 +559,9 @@ public class qd_Editor : EditorWindow
 					defaultVal = rotation.z;
 					// GUILayout.Label("Rotation: " + minVal.ToString("F2") + " to " + maxVal.ToString("F2"));
 					// GUI.enabled = prev;
-					
+
 					GUILayout.BeginHorizontal();
-						
+
 						GUILayout.Label("Rotation", GUILayout.MaxWidth(60));
 						EditorGUI.showMixedValue = mixedValue_placement_rotation;
 						EditorGUI.BeginChangeCheck();
@@ -563,16 +570,16 @@ public class qd_Editor : EditorWindow
 						{
 							foreach(KeyValuePair<int, List<int>> kvp in selected)
 								foreach(int i in kvp.Value)
-									decalGroups[kvp.Key].decals[i].rotationPlacement = rotate_placement;							
+									decalGroups[kvp.Key].decals[i].rotationPlacement = rotate_placement;
 						}
-						
+
 						{
 							GUI.enabled = rotate_placement == Placement.Fixed;
 							GUILayout.Label("Default", GUILayout.MaxWidth(46));
-							
+
 							EditorGUI.showMixedValue = mixedValue_rotation[2];
 							EditorGUI.BeginChangeCheck();
-							
+
 							GUI.SetNextControlName("RotationDefaultValue");
 							defaultVal = EditorGUILayout.FloatField(defaultVal, GUILayout.MaxWidth(44));
 							if(EditorGUI.EndChangeCheck())
@@ -625,9 +632,9 @@ public class qd_Editor : EditorWindow
 					minVal = scale.x;
 					maxVal = scale.y;
 					defaultVal = scale.z;
-					
+
 					GUILayout.BeginHorizontal();
-						
+
 						GUILayout.Label("Scale", GUILayout.MaxWidth(60));
 						EditorGUI.showMixedValue = mixedValue_placement_scale;
 						EditorGUI.BeginChangeCheck();
@@ -636,13 +643,13 @@ public class qd_Editor : EditorWindow
 						{
 							foreach(KeyValuePair<int, List<int>> kvp in selected)
 								foreach(int i in kvp.Value)
-									decalGroups[kvp.Key].decals[i].scalePlacement = scale_placement;							
+									decalGroups[kvp.Key].decals[i].scalePlacement = scale_placement;
 						}
-						
+
 						{
 							GUI.enabled = scale_placement == Placement.Fixed;
 							GUILayout.Label("Default", GUILayout.MaxWidth(46));
-							
+
 							EditorGUI.showMixedValue = mixedValue_scale[2];
 							EditorGUI.BeginChangeCheck();
 							GUI.SetNextControlName("ScaleDefaultValue");
@@ -755,7 +762,7 @@ public class qd_Editor : EditorWindow
 					}
 				}
 			}
-		
+
 			EditorGUI.showMixedValue = false;
 
 			GUI.enabled = true;
@@ -793,7 +800,7 @@ public class qd_Editor : EditorWindow
 							database.PackTextures(kvp.Key);
 							qdUtil.RefreshSceneDecals(decalGroups[kvp.Key]);
 						}
-					}	
+					}
 				}
 				else
 				{
@@ -813,7 +820,7 @@ public class qd_Editor : EditorWindow
 #endregion
 
 #region GUI Helpers
-	
+
 	private bool KeyListener()
 	{
 		// Listen for key shortcuts (delete, some other shortcut, etc)
@@ -826,7 +833,7 @@ public class qd_Editor : EditorWindow
 				return true;
 			}
 
-			if(e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter)	
+			if(e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter)
 			{
 				GUIUtility.keyboardControl = 0;
 			}
@@ -860,13 +867,13 @@ public class qd_Editor : EditorWindow
 			Repaint();
 
 			DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-			
+
 			if(Event.current.type == EventType.DragPerform)
-			{                                      
+			{
 				DragAndDrop.AcceptDrag();
 
 				List<QD.Decal> imgs = new List<QD.Decal>();
-				
+
 				foreach(Object img in DragAndDrop.objectReferences)
 				{
 					if(img is Texture2D)
@@ -897,7 +904,7 @@ public class qd_Editor : EditorWindow
 	}
 	Hover hovering = new Hover();
 	bool validDrag = false;
-	
+
 	void MouseListener()
 	{
 		// Figure out where the mouse is relative to the DecalGroup layout
@@ -908,9 +915,9 @@ public class qd_Editor : EditorWindow
 			return;
 
 		// first check hovering rect.  use this hovering struct because otherwise the gui
-		// runs on/off when checking hover status (if it's over, move it, but then it's moved so 
+		// runs on/off when checking hover status (if it's over, move it, but then it's moved so
 		// it's not over, and move back... cyclical logic ftw)
-		if(dragging && hovering.bounds.Contains(mousePositionInGroupRect))	
+		if(dragging && hovering.bounds.Contains(mousePositionInGroupRect))
 		{
 			mouseOver_groupIndex = hovering.groupIndex;
 			mouseOver_textureIndex = hovering.textureIndex;
@@ -945,7 +952,7 @@ public class qd_Editor : EditorWindow
 				break;
 
 			case EventType.MouseDrag:
-				
+
 				if(!validDrag) return;
 
 				if(Vector2.Distance(mouseOrigin, e.mousePosition) > 7f && !dragging && mouseOver_groupIndex > -1 && mouseOver_textureIndex > -1)
@@ -953,13 +960,13 @@ public class qd_Editor : EditorWindow
 					dragging = true;
 
 					dragOriginIndex = mouseOver_groupIndex;
-					
+
 					if(!selected.Contains(mouseOver_groupIndex, mouseOver_textureIndex))
 					{
 						selected.Clear();
 						selected.Add(mouseOver_groupIndex, mouseOver_textureIndex);
 					}
-					
+
 					dragTextures = new List<Texture2D>();
 					dragMouseOffset = new List<Vector2>();
 
@@ -976,10 +983,10 @@ public class qd_Editor : EditorWindow
 					}
 
 				}
-			
+
 				if(dragging)
 					Repaint();
-				
+
 				break;
 
 			case EventType.Ignore:
@@ -997,7 +1004,7 @@ public class qd_Editor : EditorWindow
 					foreach(KeyValuePair<int, List<int>> kvp in selected)
 						foreach(int n in kvp.Value)
 							imgs.Add( decalGroups[kvp.Key].decals[n] );
-			
+
 					// since we might remove some decals that are before the insert point,
 					// this offset accounts for it and puts the new images in the right place even afeter
 					// deletion
@@ -1016,7 +1023,7 @@ public class qd_Editor : EditorWindow
 
 				if(!e.shift)
 					selected.Clear();
-				
+
 				if(mouseOver_groupIndex > -1)
 				{
 					if(selected.ContainsKey(mouseOver_groupIndex))
@@ -1054,14 +1061,14 @@ public class qd_Editor : EditorWindow
 	}
 
 	// DEBUG
-	// void ContextDump()
-	// {
-	// 	foreach(KeyValuePair<int, List<int>> kvp in selected)
-	// 	{
-	// 		foreach(int i in kvp.Value)
-	// 			Debug.Log(decalGroups[kvp.Key].decals[i].ToString());
-	// 	}
-	// }
+	void PrintSelectedDecals()
+	{
+		foreach(KeyValuePair<int, List<int>> kvp in selected)
+		{
+			foreach(int i in kvp.Value)
+				Debug.Log(decalGroups[kvp.Key].decals[i].ToString());
+		}
+	}
 
 	void PerformDragDrop(List<QD.Decal> dec, int group, int index)
 	{
@@ -1075,41 +1082,6 @@ public class qd_Editor : EditorWindow
 		dragging = false;
 	}
 
-	/**
-	 * thanks to Acegikmo for this snippet
-	 * http://answers.unity3d.com/questions/307421/select-shader-in-custom-editor-gui.html
-	 */
-
-	 // TODO
-	// MenuCommand mc;
-	// private void DisplayShaderContext(Rect r)
-	// {
-	// 	if( mc == null )
-	// 		mc = new MenuCommand( this, 0 );
-
-	// 	// Create dummy material to make it not highlight any shaders inside:
-	// 	string tmpStr = "Shader \"Hidden/tmp_shdr\"{SubShader{Pass{}}}";
-	// 	Material temp = new Material( tmpStr ); 
-
-	// 	// Rebuild shader menu:
-	// 	UnityEditorInternal.InternalEditorUtility.SetupShaderMenu( temp );
-
-	// 	// Destroy temporary shader and material:
-	// 	DestroyImmediate( temp.shader, true );
-	// 	DestroyImmediate( temp, true ); 
-
-	// 	// Display shader popup:
-	// 	EditorUtility.DisplayPopupMenu( r, "CONTEXT/ShaderPopup", mc ); 
-	// }
-
-	// private void OnSelectedShaderPopup(string command, Shader shader)
-	// {
-	// 	if(shader != null && shaderIndex > -1) {
-	// 		database.SetShader(shaderIndex, shader);
-	// 		shaderIndex = -1;
-	// 	}
-	// }
-
 	private void OnValidateCommand(string command)
 	{
 		switch(command)
@@ -1120,12 +1092,12 @@ public class qd_Editor : EditorWindow
 				break;
 		}
 	}
-	
+
 	private void UndoRedoPerformed()
 	{
 		decalGroups = database.decalGroups;
 		Repaint();
-	}	
+	}
 #endregion
 
 #region SceneGUI
@@ -1135,7 +1107,7 @@ public class qd_Editor : EditorWindow
 		Event e = Event.current;
 
 		#if UNITY_STANDALONE_OSX
-		EventModifiers em = e.modifiers;	// Took me longer than I care to admit to figure out that the `&=` was eating the event.
+		EventModifiers em = e.modifiers;	// `&=` consumes the event.
 		if( (em &= EventModifiers.Shift) != EventModifiers.Shift )
 			return;
 
@@ -1152,12 +1124,11 @@ public class qd_Editor : EditorWindow
 			if(selected.Count < 1 || decalView == DecalView.Atlas) return;
 
 			int key = selected.Keys.ToList()[(int)Random.Range(0, selected.Count)];
-			if(selected[key].Count < 1) return;		
+			if(selected[key].Count < 1) return;
 			int val = (int)Random.Range(0, selected[key].Count);
 
 			int grpIndex = key;
 			int texIndex = selected[key][val];
-
 
 			QD.Decal decal = decalGroups[grpIndex].decals[texIndex];
 
@@ -1175,16 +1146,16 @@ public class qd_Editor : EditorWindow
 				decal.atlasRect = new Rect(0, 0, 1, 1);
 
 				GameObject[] existingDecals = qdUtil.FindDecalsWithTexture(tex);
-				
+
 				if(existingDecals == null || existingDecals.Length < 1)
 				{
 					mat = new Material( database.ShaderWithDecal(decal) );
-					mat.mainTexture = tex;	
+					mat.mainTexture = tex;
 				}
 				else
 				{
 					mat = existingDecals[0].GetComponent<MeshRenderer>().sharedMaterial;
-				}		
+				}
 			}
 
 			Rect r = decal.isPacked ? decal.atlasRect : new Rect(0f, 0f, 1f, 1f);
@@ -1192,7 +1163,7 @@ public class qd_Editor : EditorWindow
 			GameObject decalGo;
 			Transform hit;
 
-			if(PlaceDecal(e.mousePosition, mat, r, 
+			if(PlaceDecal(e.mousePosition, mat, r,
 				decal.rotationPlacement == Placement.Random ? Random.Range(decal.rotation.x, decal.rotation.y) : decal.rotation.z,
 				decal.scalePlacement == Placement.Random ? Random.Range(decal.scale.x, decal.scale.y) : decal.scale.z,
 				out decalGo,
@@ -1202,7 +1173,7 @@ public class qd_Editor : EditorWindow
 				{
 					decalGo.transform.parent = hit;
 
-					if(decalGo.transform.localScale != Vector3.one)	
+					if(decalGo.transform.localScale != Vector3.one)
 						decalGo.GetComponent<qd_Decal>().FreezeTransform();
 				}
 				else
@@ -1246,7 +1217,7 @@ public class qd_Editor : EditorWindow
 			// Use IntersectRayMesh because no other raycast is capable of intersecting non-collider objects.
 			object[] parameters = new object[] { ray, msh, nearest.transform.localToWorldMatrix, null };
 			if(IntersectRayMesh == null) IntersectRayMesh = typeof(HandleUtility).GetMethod("IntersectRayMesh", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance);
-			object result = IntersectRayMesh.Invoke(this, parameters);	
+			object result = IntersectRayMesh.Invoke(this, parameters);
 
 			if ( (bool)result )
 				hit = (RaycastHit)parameters[3];
@@ -1277,7 +1248,7 @@ public class qd_Editor : EditorWindow
 		Vector3 rot = decal.transform.eulerAngles;
 		rot.z += rotation;
 		decal.transform.localRotation = Quaternion.Euler(rot);
-		
+
 		return true;
 	}
 #endregion
@@ -1288,7 +1259,7 @@ public class qd_Editor : EditorWindow
 	{
 		database.DeleteDecals(selected, decalView);
 		decalGroups = database.decalGroups;
-		
+
 		selected.Clear();
 		Event.current.Use();
 	}

@@ -1,3 +1,31 @@
+-- ProGrids 2.3.0f0 -
+
+# Features
+	- Add option to set major line increment.
+	- Automatically hide and show the Unity grid when opening / closing ProGrids.
+
+# Bug Fixes
+	- Fix bug where ProGrids could fail to find icons when root folder is moved.
+	- Fix bug where ProGrids would not remember it's state between Unity sessions.
+
+# Changes
+	- Slightly increase opacity of default grid colors.
+
+-- ProGrids 2.2.7f0 -
+
+# Bug Fixes
+	- Fix cases where `Snap on Selected Axes` would sometimes be unset.
+
+-- ProGrids 2.2.6f0 -
+
+# Bug Fixes
+	- Fix warnings in Unity 5.4 regarding API use during serialization.
+
+-- ProGrids 2.2.5f0 -
+
+# Bug Fixes
+	- Fix an issue where ProGrids would not stay open across Unity restarts.
+
 -- ProGrids 2.2.4f0 -
 
 # Bug Fixes

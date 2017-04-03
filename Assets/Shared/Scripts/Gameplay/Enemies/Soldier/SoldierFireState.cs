@@ -79,7 +79,7 @@ public class SoldierFireState : IAbstractTargetState
         m_Soldier.AnimatorIKEvent += OnStateAnimatorIK;
 
         //Stop the character from moving, both gamewise as visually
-        m_Soldier.NavMeshAgent.Stop();
+        m_Soldier.NavMeshAgent.isStopped = true;
 
         m_Target = null;
         m_FireDelayTimer = m_FireDelay;

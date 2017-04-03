@@ -1,3 +1,20 @@
+-- QuickDecals 2.1.0 -
+
+# Features
+
+	- Add some example decals.
+
+# Bug Fixes
+
+	- Fix bug where using multiple texture atlases could cause QuickDecals to place incorrect decals.
+
+-- QuickDecals 2.0.12 -
+
+# Bug Fixes
+
+	- Fix GUI rendering on macOS Retina display.
+
+
 -- QuickDecals 2.0.11 -
 
 # Bug Fixes
@@ -51,7 +68,7 @@
 
 -- QuicKDecals 2.0.3 -
 
-# Bug Fixes	
+# Bug Fixes
 	- Fix compile errors when building project.
 
 -- QuicKDecals 2.0.0 -

@@ -41,7 +41,7 @@ public class ZombieAttackState : IAbstractState
     {
         //Debug.Log("Entered attacking state!");
 
-        m_Zombie.NavMeshAgent.Stop();
+        m_Zombie.NavMeshAgent.isStopped = true;
 
         m_Zombie.Animator.enabled = true;
         m_Zombie.AnimatorIKEvent += OnStateAnimatorIK;

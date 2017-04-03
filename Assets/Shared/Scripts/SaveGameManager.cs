@@ -84,7 +84,7 @@ public class SaveGame
 
     public void UpdatePlayTime()
     {
-        m_PlayTime += (ulong)(DateTime.Now - m_ActivateTimestamp).Seconds;
+        m_PlayTime += (ulong)(DateTime.Now - m_ActivateTimestamp).TotalSeconds;
         m_ActivateTimestamp = DateTime.Now;
     }
 
@@ -234,6 +234,10 @@ public class SaveGameManager : Singleton<SaveGameManager>
     }
 
     private DirectoryInfo m_RootDirectory;
+    public DirectoryInfo RootDirectory
+    {
+        get { return m_RootDirectory; }
+    }
 
     [SerializeField]
     private string m_SaveGameDirectoryPrefix;

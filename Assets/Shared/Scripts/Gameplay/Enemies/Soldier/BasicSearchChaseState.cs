@@ -47,7 +47,7 @@ public class BasicSearchChaseState : IAbstractTargetState
         
         m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
 
-        m_Behaviour.NavMeshAgent.Resume();
+        m_Behaviour.NavMeshAgent.isStopped = false;
         m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
         m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
 
