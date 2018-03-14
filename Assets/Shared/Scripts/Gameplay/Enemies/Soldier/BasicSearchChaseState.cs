@@ -25,7 +25,13 @@ public class BasicSearchChaseState : IAbstractTargetState
     private Transform m_ViewPosition;
 
     [SerializeField]
+    private float m_ViewRadius;
+
+    [SerializeField]
     private float m_ViewAngle;
+
+    [SerializeField]
+    private LayerMask m_ScanLayerMask;
 
     [SerializeField]
     private BasicPatrolState m_PatrolState;
@@ -43,9 +49,7 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     public override void Enter()
     {
-        //Debug.Log("Entered Chase state!");
-        
-        m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
+        Debug.Log("Entered Chase state!");
 
         m_Behaviour.NavMeshAgent.isStopped = false;
         m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
@@ -61,13 +65,12 @@ public class BasicSearchChaseState : IAbstractTargetState
     {
         if (m_Behaviour == null)
             return;
-
-        m_Behaviour.TriggerStayEvent -= OnStateTriggerStay;
     }
 
     public override void StateUpdate()
     {
         HandleMovement();
+        HandleScanning();
 
         m_ChaseTimer += Time.deltaTime;
     }
@@ -85,44 +88,52 @@ public class BasicSearchChaseState : IAbstractTargetState
         }
     }
 
-    private void OnStateTriggerStay(Collider other)
+    private void HandleScanning()
     {
-        //Check if it's an enemy
-        FactionType factionType = other.GetComponent<FactionType>();
-        if (factionType == null)
-            return;
+        Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_ScanLayerMask);
 
-        if (m_Behaviour.FactionType.IsEnemy(factionType.Faction))
+        //For all targets in my radius
+        for (int i = 0; i < colliders.Length; ++i)
         {
-            IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
-            if (damageableObject == null)
+            Collider other = colliders[i];
+
+            //Check if it's an enemy
+            FactionType factionType = other.GetComponent<FactionType>();
+            if (factionType == null)
                 return;
 
-            damageableObject = damageableObject.GetMainDamageableObject();
-
-            if (damageableObject.IsDead())
-                return;
-
-            //If so check if he's within the specified angle
-            Vector3 diffPos = other.transform.position - m_Behaviour.transform.position;
-            float dot = Vector3.Dot(m_Behaviour.transform.forward, diffPos.normalized);
-            float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
-
-            if (degAngle <= m_ViewAngle)
+            if (m_Behaviour.FactionType.IsEnemy(factionType.Faction))
             {
-                Vector3 middleTop = other.bounds.center;
-                middleTop.y += other.bounds.extents.y * 0.5f;
+                IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
+                if (damageableObject == null)
+                    return;
 
-                Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+                damageableObject = damageableObject.GetMainDamageableObject();
 
-                RaycastHit hitInfo;
-                bool success = Physics.Raycast(ray, out hitInfo);
+                if (damageableObject.IsDead())
+                    return;
 
-                if (success && hitInfo.collider == other && m_ChaseTimer >= m_MinChaseTime)
+                //If so check if he's within the specified angle
+                Vector3 diffPos = other.transform.position - m_Behaviour.transform.position;
+                float dot = Vector3.Dot(m_Behaviour.transform.forward, diffPos.normalized);
+                float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+                if (degAngle <= m_ViewAngle)
                 {
-                    //Change to the firing state
-                    m_Behaviour.SwitchState(m_FireState);
-                    m_FireState.SetTarget(damageableObject);
+                    Vector3 middleTop = other.bounds.center;
+                    middleTop.y += other.bounds.extents.y * 0.5f;
+
+                    Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+
+                    RaycastHit hitInfo;
+                    bool success = Physics.Raycast(ray, out hitInfo);
+
+                    if (success && hitInfo.collider == other && m_ChaseTimer >= m_MinChaseTime)
+                    {
+                        //Change to the firing state
+                        m_Behaviour.SwitchState(m_FireState);
+                        m_FireState.SetTarget(damageableObject);
+                    }
                 }
             }
         }

@@ -71,8 +71,8 @@ public class RobotFireState : IAbstractTargetState
     {
         Debug.Log("Entered fire state!");
 
-        m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
-        m_Behaviour.TriggerExitEvent += OnStateTriggerExit;
+        //m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
+        //m_Behaviour.TriggerExitEvent += OnStateTriggerExit;
         m_Behaviour.AnimatorIKEvent += OnStateAnimatorIK;
 
         //Stop the character from moving, both gamewise as visually
@@ -91,8 +91,8 @@ public class RobotFireState : IAbstractTargetState
         if (m_Behaviour == null)
             return;
 
-        m_Behaviour.TriggerStayEvent -= OnStateTriggerStay;
-        m_Behaviour.TriggerExitEvent -= OnStateTriggerExit;
+        //m_Behaviour.TriggerStayEvent -= OnStateTriggerStay;
+        //m_Behaviour.TriggerExitEvent -= OnStateTriggerExit;
         m_Behaviour.AnimatorIKEvent -= OnStateAnimatorIK;
     }
 
@@ -114,7 +114,7 @@ public class RobotFireState : IAbstractTargetState
             return;
 
         //Check the distance between us and the target
-        Vector3 diff = m_Target.transform.position - m_FirePosition.position;
+        Vector3 diff = m_Target.GetPosition() - m_FirePosition.position;
         float distance = diff.magnitude;
 
         //If we are too far away, chase to the position!
@@ -303,7 +303,7 @@ public class RobotFireState : IAbstractTargetState
             //Rotate the head
             float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
             m_Behaviour.Animator.SetLookAtWeight(normTimer);
-            m_Behaviour.Animator.SetLookAtPosition(m_Target.transform.position);
+            m_Behaviour.Animator.SetLookAtPosition(m_Target.GetPosition());
 
             //Rotate the chest
             if (m_ChestRotationSpeed > 0)
@@ -334,7 +334,7 @@ public class RobotFireState : IAbstractTargetState
 
         if (m_IsSwitchingOut == false)
         {
-            Vector3 direction = (m_Target.transform.position - m_Behaviour.Animator.GetBoneTransform(boneType).position).normalized;
+            Vector3 direction = (m_Target.GetPosition() - m_Behaviour.Animator.GetBoneTransform(boneType).position).normalized;
             desiredRotation = Quaternion.LookRotation(direction);
             Vector3 euler = desiredRotation.eulerAngles;
 

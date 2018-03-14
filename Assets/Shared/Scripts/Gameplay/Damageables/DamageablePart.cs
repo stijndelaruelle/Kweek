@@ -60,6 +60,11 @@ public class DamageablePart : IDamageableObject
         return m_MainObject.IsDead();
     }
 
+    public override Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
     public override IDamageableObject GetMainDamageableObject()
     {
         return m_MainObject;

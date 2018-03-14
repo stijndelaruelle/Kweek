@@ -216,6 +216,7 @@ public class WeaponArsenal : MonoBehaviour
 
     public Weapon AddWeapon(Weapon weaponPrefab)
     {
+        //Todo pool this, make "m_MaxWeapons" of each weapon at the start!
         Weapon instancedWeapon = GameObject.Instantiate(weaponPrefab, transform);
 
         instancedWeapon.Setup(m_OwnerColliders, m_AmmoArsenal);

@@ -26,9 +26,6 @@ public class EnemyBehaviour : IAIBehaviour
     }
 
     [SerializeField]
-    private Collider m_TriggerCollider;
-
-    [SerializeField]
     private FactionTypeDefinition m_FactionTypeDefinition;
     public FactionTypeDefinition FactionType
     {
@@ -42,9 +39,9 @@ public class EnemyBehaviour : IAIBehaviour
     protected float m_LastSpeed; //Sometines the velocity can spike, if so reset to this value
 
     //Events
-    public event TriggerDelegate TriggerEnterEvent;
-    public event TriggerDelegate TriggerStayEvent;
-    public event TriggerDelegate TriggerExitEvent;
+    //public event TriggerDelegate TriggerEnterEvent;
+    //public event TriggerDelegate TriggerStayEvent; //Way too taxing!
+    //public event TriggerDelegate TriggerExitEvent;
     public event AnimatorIKDelegate AnimatorIKEvent;
 
     protected virtual void Start()
@@ -62,10 +59,10 @@ public class EnemyBehaviour : IAIBehaviour
     //IAIBehaviour
     public override void Setup(List<Collider> ownerColliders)
     {
-        foreach(Collider collider in ownerColliders)
-        {
-            Physics.IgnoreCollision(m_TriggerCollider, collider);
-        }
+        //foreach(Collider collider in ownerColliders)
+        //{
+        //    Physics.IgnoreCollision(m_TriggerCollider, collider);
+        //}
     }
 
     public override void OnDeath()
@@ -116,23 +113,24 @@ public class EnemyBehaviour : IAIBehaviour
         return m_CurrentState;
     }
 
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        if (TriggerEnterEvent != null)
-            TriggerEnterEvent(other);
-    }
+    //protected virtual void OnTriggerEnter(Collider other)
+    //{
+    //    if (TriggerEnterEvent != null)
+    //        TriggerEnterEvent(other);
+    //}
 
-    protected virtual void OnTriggerStay(Collider other)
-    {
-        if (TriggerStayEvent != null)
-            TriggerStayEvent(other);
-    }
+    //Wat too taxing!
+    //protected virtual void OnTriggerStay(Collider other)
+    //{
+    //    if (TriggerStayEvent != null)
+    //        TriggerStayEvent(other);
+    //}
 
-    protected virtual void OnTriggerExit(Collider other)
-    {
-        if (TriggerExitEvent != null)
-            TriggerExitEvent(other);
-    }
+    //protected virtual void OnTriggerExit(Collider other)
+    //{
+    //    if (TriggerExitEvent != null)
+    //        TriggerExitEvent(other);
+    //}
 
     protected virtual void OnAnimatorIK(int layerIndex)
     {

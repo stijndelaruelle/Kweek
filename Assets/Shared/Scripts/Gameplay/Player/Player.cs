@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
         //For testing purposes, normally you would never respawn but load a gamestate.
 
         //Max health
-        m_DamageableObject.Heal(m_DamageableObject.MaxHealth);
+        m_DamageableObject.ChangeHealth(m_DamageableObject.MaxHealth);
 
         if (RespawnEvent != null)
             RespawnEvent();

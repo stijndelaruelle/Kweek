@@ -67,7 +67,7 @@ public class ZombieAttackState : IAbstractState
     private void HandleStateSwitching()
     {
         //Target too far away
-        float distance = (transform.position - m_Target.transform.position).magnitude;
+        float distance = (transform.position - m_Target.GetPosition()).magnitude;
 
         if (distance > m_AttackDistance + 0.2f) //A little offset to avoid jittering
         {
@@ -76,7 +76,7 @@ public class ZombieAttackState : IAbstractState
         }
 
         //Target is behind us
-        Vector3 diffPos = m_Target.transform.position - m_Zombie.transform.position;
+        Vector3 diffPos = m_Target.GetPosition() - m_Zombie.transform.position;
         float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
         float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
 
@@ -100,7 +100,7 @@ public class ZombieAttackState : IAbstractState
             //Rotate the head
             //float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
             m_Zombie.Animator.SetLookAtWeight(1.0f);
-            m_Zombie.Animator.SetLookAtPosition(m_Target.transform.position);
+            m_Zombie.Animator.SetLookAtPosition(m_Target.GetPosition());
 
             //Rotate the chest
             if (m_ChestRotationSpeed > 0)
@@ -129,7 +129,7 @@ public class ZombieAttackState : IAbstractState
     {
         Quaternion desiredRotation;
 
-        Vector3 direction = (m_Target.transform.position - m_Zombie.Animator.GetBoneTransform(boneType).position).normalized;
+        Vector3 direction = (m_Target.GetPosition() - m_Zombie.Animator.GetBoneTransform(boneType).position).normalized;
         desiredRotation = Quaternion.LookRotation(direction);
         Vector3 euler = desiredRotation.eulerAngles;
 

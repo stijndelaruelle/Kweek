@@ -47,7 +47,13 @@ public class SoldierFireState : IAbstractTargetState
     private Transform m_ViewPosition;
 
     [SerializeField]
+    private float m_ViewRadius;
+
+    [SerializeField]
     private float m_ViewAngle;
+
+    [SerializeField]
+    private LayerMask m_ScanLayerMask;
 
     [SerializeField]
     private BasicPatrolState m_PatrolState;
@@ -72,10 +78,8 @@ public class SoldierFireState : IAbstractTargetState
 
     public override void Enter()
     {
-        //Debug.Log("Entered fire state!");
+        Debug.Log("Entered fire state!");
 
-        m_Soldier.TriggerStayEvent += OnStateTriggerStay;
-        m_Soldier.TriggerExitEvent += OnStateTriggerExit;
         m_Soldier.AnimatorIKEvent += OnStateAnimatorIK;
 
         //Stop the character from moving, both gamewise as visually
@@ -94,8 +98,6 @@ public class SoldierFireState : IAbstractTargetState
         if (m_Soldier == null)
             return;
 
-        m_Soldier.TriggerStayEvent -= OnStateTriggerStay;
-        m_Soldier.TriggerExitEvent -= OnStateTriggerExit;
         m_Soldier.AnimatorIKEvent -= OnStateAnimatorIK;
     }
 
@@ -105,6 +107,7 @@ public class SoldierFireState : IAbstractTargetState
         HandleSwitchOut();
 
         HandleShooting();
+        HandleScanning();
     }
 
     //Shooting
@@ -117,7 +120,7 @@ public class SoldierFireState : IAbstractTargetState
             return;
 
         //Check the distance between us and the target
-        Vector3 diff = m_Target.transform.position - m_FirePosition.position;
+        Vector3 diff = m_Target.GetPosition() - m_FirePosition.position;
         float distance = diff.magnitude;
 
         //If we are too far away, chase to the position!
@@ -169,7 +172,12 @@ public class SoldierFireState : IAbstractTargetState
             return false;
         }
 
-        Ray fireRay = new Ray(m_FirePosition.position, m_FirePosition.forward);
+        //We used to shoot in the direction of "m_FirePosition.forward", and it seemed to work with a bit of tweaking.
+        //However when our character is on a slope it consistently misses shots.
+        //Therefore the direction we shoot in and the visuals are now separate from eachother.
+        Vector3 normDirection = (m_Target.GetPosition() - m_FirePosition.position).normalized;
+        Ray fireRay = new Ray(m_FirePosition.position, normDirection);
+
         return m_Soldier.Weapon.Use(fireRay);
     }
 
@@ -223,77 +231,75 @@ public class SoldierFireState : IAbstractTargetState
         m_Soldier.Animator.SetTrigger("MovementTrigger");
     }
 
-    private void OnStateTriggerStay(Collider other)
+    private void HandleScanning()
     {
-        IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
-        if (damageableObject == null)
-            return;
+        Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_ScanLayerMask);
 
-        damageableObject = damageableObject.GetMainDamageableObject();
-
-        if (damageableObject == m_Target)
+        //For all targets in my radius
+        for (int i = 0; i < colliders.Length; ++i)
         {
-            if (m_Target.IsDead())
-            {
-                SwitchOut();
+            Collider other = colliders[i];
+
+            IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
+            if (damageableObject == null)
                 return;
-            }
 
-            //If so check if he's within the specified angle
-            Vector3 diffPos = other.transform.position - m_Soldier.transform.position;
-            float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
-            float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+            damageableObject = damageableObject.GetMainDamageableObject();
 
-            if (degAngle <= m_ViewAngle)
+            //Check if it's my target
+            if (damageableObject == m_Target)
             {
-                //If so, check line of sight
-                Vector3 middleTop = other.bounds.center;
-                middleTop.y += other.bounds.extents.y * 0.5f;
-
-                Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
-
-                RaycastHit hitInfo;
-                bool success = Physics.Raycast(ray, out hitInfo);
-
-                if (success)
+                if (m_Target.IsDead())
                 {
-                    IDamageableObject foundDamageableObject = hitInfo.collider.GetComponent<IDamageableObject>();
-                    if (foundDamageableObject != null)
-                    {
-                        foundDamageableObject = foundDamageableObject.GetMainDamageableObject();
+                    SwitchOut();
+                    return;
+                }
 
-                        if (damageableObject != foundDamageableObject)
+                //If so check if he's within the specified angle
+                Vector3 diffPos = other.transform.position - m_Soldier.transform.position;
+                float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
+                float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+                if (degAngle <= m_ViewAngle)
+                {
+                    //If so, check line of sight
+                    Vector3 middleTop = other.bounds.center;
+                    middleTop.y += other.bounds.extents.y * 0.5f;
+
+                    Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+
+                    RaycastHit hitInfo;
+                    bool success = Physics.Raycast(ray, out hitInfo);
+
+                    if (success)
+                    {
+                        IDamageableObject foundDamageableObject = hitInfo.collider.GetComponent<IDamageableObject>();
+                        if (foundDamageableObject != null)
                         {
-                            SwitchOut();
-                            return;
-                        }
-                        else
-                        {
-                            m_IsSwitchingOut = false;
-                            return;
+                            foundDamageableObject = foundDamageableObject.GetMainDamageableObject();
+
+                            if (damageableObject != foundDamageableObject)
+                            {
+                                SwitchOut();
+                                return;
+                            }
+                            else
+                            {
+                                m_IsSwitchingOut = false;
+                                return;
+                            }
                         }
                     }
                 }
+
+                //Our target is no longer in our line of sight, start chasing
+                SwitchOut();
+                return;
             }
-
-            //If not, stop firing
-            SwitchOut();
         }
-    }
 
-    public void OnStateTriggerExit(Collider other)
-    {
-        IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
-        if (damageableObject == null)
-            return;
-
-        damageableObject = damageableObject.GetMainDamageableObject();
-
-        if (damageableObject == m_Target)
-        {
-            //Change to the chasing state
-            SwitchOut();
-        }
+        //Our target is no longer in our radius, start chasing
+        SwitchOut();
     }
 
     private void OnStateAnimatorIK(int layerIndex)
@@ -304,9 +310,7 @@ public class SoldierFireState : IAbstractTargetState
             float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
             m_Soldier.Animator.SetLookAtWeight(normTimer);
 
-            //Aim a bit higher (TODO: Create a more generic way to find this value)
-            Vector3 aimPosition = m_Target.transform.position + (Vector3.up * 1.1f);
-            m_Soldier.Animator.SetLookAtPosition(aimPosition);
+            m_Soldier.Animator.SetLookAtPosition(m_Target.GetPosition());
 
             //Rotate the chest
             if (m_ChestRotationSpeed > 0)
@@ -337,10 +341,7 @@ public class SoldierFireState : IAbstractTargetState
 
         if (m_IsSwitchingOut == false)
         {
-            //Aim a bit higher (TODO: Create a more generic way to find this value)
-            Vector3 aimPosition = m_Target.transform.position + (Vector3.up * 1.1f);
-
-            Vector3 direction = (aimPosition - m_Soldier.Animator.GetBoneTransform(boneType).position).normalized;
+            Vector3 direction = (m_Target.GetPosition() - m_Soldier.Animator.GetBoneTransform(boneType).position).normalized;
             desiredRotation = Quaternion.LookRotation(direction);
             Vector3 euler = desiredRotation.eulerAngles;
 

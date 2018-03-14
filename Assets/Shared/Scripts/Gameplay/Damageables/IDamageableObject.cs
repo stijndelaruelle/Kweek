@@ -52,6 +52,7 @@ public abstract class IDamageableObject : MonoBehaviour
     public abstract int Heal(int health);
 
     public abstract bool IsDead();
+    public abstract Vector3 GetPosition(); //The point where you can aim at as using .trasform.position may be in the wrong place (for good reason).
 
     public abstract IDamageableObject GetMainDamageableObject();
 }

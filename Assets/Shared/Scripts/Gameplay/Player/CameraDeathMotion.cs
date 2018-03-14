@@ -55,7 +55,7 @@ public class CameraDeathMotion : MonoBehaviour
         }
 
         //Ignore collision between the player and the camera
-        Physics.IgnoreCollision(m_PlayerCollider, m_Collider, true);
+        //Physics.IgnoreCollision(m_PlayerCollider, m_Collider, true);
 
         Reset();
     }

@@ -69,14 +69,14 @@ public class ZombieChaseState : IAbstractState
         //Find a spot a little in front of our target
         Transform targetTransform = m_Target.transform;
 
-        Vector3 targetPos = targetTransform.position + (targetTransform.forward * m_DistanceMargin);
+        Vector3 targetPos = m_Target.GetPosition() + (targetTransform.forward * m_DistanceMargin);
         m_Zombie.NavMeshAgent.destination = targetPos;
 
         float distance = (transform.position - targetTransform.position).magnitude;
         if (distance < m_AttackState.AttackDistance)
         {
             //Check if we are looking towards the target
-            Vector3 diffPos = m_Target.transform.position - m_Zombie.transform.position;
+            Vector3 diffPos = m_Target.GetPosition() - m_Zombie.transform.position;
             float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
             float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
 
@@ -85,8 +85,6 @@ public class ZombieChaseState : IAbstractState
                 m_AttackState.SetTarget(m_Target);
                 m_Zombie.SwitchState(m_AttackState);
             }
-
-
         }
 
         //Target is dead

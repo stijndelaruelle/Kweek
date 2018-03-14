@@ -18,6 +18,9 @@ public class RegularDamageBehaviour : IDamageableObject
         get { return m_Health; }
     }
 
+    [SerializeField]
+    private Transform m_Position;
+
     private void Start()
     {
         ChangeHealth(m_MaxHealth);
@@ -80,6 +83,14 @@ public class RegularDamageBehaviour : IDamageableObject
     public override bool IsDead()
     {
         return (m_Health <= 0);
+    }
+
+    public override Vector3 GetPosition()
+    {
+        if (m_Position == null)
+            return transform.position;
+        else
+            return m_Position.position;
     }
 
     public override IDamageableObject GetMainDamageableObject()

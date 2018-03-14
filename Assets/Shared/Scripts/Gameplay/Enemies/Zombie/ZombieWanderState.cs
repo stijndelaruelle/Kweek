@@ -50,7 +50,7 @@ public class ZombieWanderState : IAbstractState
     {
         //Debug.Log("Entered wandering state!");
 
-        m_Zombie.TriggerStayEvent += OnStateTriggerStay;
+        //m_Zombie.TriggerStayEvent += OnStateTriggerStay;
 
         m_Zombie.NavMeshAgent.destination = transform.position;
         m_Zombie.NavMeshAgent.speed = m_MovementSpeed;
@@ -63,8 +63,8 @@ public class ZombieWanderState : IAbstractState
 
     public override void Exit()
     {
-        if (m_Zombie != null)
-            m_Zombie.TriggerStayEvent -= OnStateTriggerStay;
+        //if (m_Zombie != null)
+        //    m_Zombie.TriggerStayEvent -= OnStateTriggerStay;
 
         if (m_WanderInterbellumRoutine != null)
             StopCoroutine(m_WanderInterbellumRoutine);

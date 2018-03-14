@@ -110,12 +110,12 @@ public class PlayerMovementController : MonoBehaviour
         get { return m_CharacterController; }
     }
 
-    [SerializeField]
-    private CapsuleCollider m_OwnCollider;
-    public CapsuleCollider OwnCollider
-    {
-        get { return m_OwnCollider; }
-    }
+    //[SerializeField]
+    //private CapsuleCollider m_OwnCollider;
+    //public CapsuleCollider OwnCollider
+    //{
+    //    get { return m_OwnCollider; }
+    //}
 
     private Vector3 m_Velocity;
     public Vector3 Velocity
@@ -486,8 +486,7 @@ public class PlayerMovementController : MonoBehaviour
 
             m_PrevHeight = m_Player.CharacterController.height;
             m_Player.CharacterController.height = m_Player.CharacterController.height * 0.5f;
-            m_Player.OwnCollider.height = m_Player.CharacterController.height + 0.1f;
-            //m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 0.5f, m_Player.OwnCollider.center.z);
+            //m_Player.OwnCollider.height = m_Player.CharacterController.height + 0.1f;
         }
 
         public void Exit()
@@ -496,8 +495,7 @@ public class PlayerMovementController : MonoBehaviour
                 m_Player.DuckEvent(false);
 
             m_Player.CharacterController.height = m_Player.CharacterController.height * 2.0f;
-            m_Player.OwnCollider.height = m_Player.CharacterController.height + 0.1f;
-            //m_Player.OwnCollider.center = new Vector3(m_Player.OwnCollider.center.x, m_Player.OwnCollider.center.y * 2.0f, m_Player.OwnCollider.center.z);
+            //m_Player.OwnCollider.height = m_Player.CharacterController.height + 0.1f;
         }
 
         public void StateUpdate()
@@ -681,12 +679,12 @@ public class PlayerMovementController : MonoBehaviour
 
         public void Enter()
         {
-            m_Player.OwnCollider.enabled = false;
+            //m_Player.OwnCollider.enabled = false;
         }
 
         public void Exit()
         {
-            m_Player.OwnCollider.enabled = true;
+            //m_Player.OwnCollider.enabled = true;
         }
 
         //The player is dead, do absolutely nothing.

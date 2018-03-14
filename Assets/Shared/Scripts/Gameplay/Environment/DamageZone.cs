@@ -30,41 +30,56 @@ public class DamageZone : MonoBehaviour
             if (m_Timers[i] > m_TickRate)
             {
                 m_Timers[i] -= m_TickRate;
-                m_DamageableObjects[i].Damage(m_DamagePerTick);
+
+                IDamageableObject damageableObject = m_DamageableObjects[i];
+                damageableObject.Damage(m_DamagePerTick);
+               
+                if (damageableObject.IsDead())
+                {
+                    RemoveDamageableObject(damageableObject);
+                }
             }
         }
     }
 
-    //Doesn't work when objects suddenly dissapear
-    private void OnCollisionEnter(Collision collision)
+    private void AddDamageableObject(IDamageableObject damageableObject)
     {
-        IDamageableObject damageableObject = collision.gameObject.GetComponent<IDamageableObject>();
-
         if (damageableObject != null && damageableObject.IsDead() == false)
         {
             if (m_DamageableObjects.Contains(damageableObject) == false)
             {
-                Debug.Log("Started damaging: " + collision.gameObject.name);
+                Debug.Log("Started damaging: " + damageableObject.gameObject.name);
                 m_DamageableObjects.Add(damageableObject);
                 m_Timers.Add(0.0f);
             }
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void RemoveDamageableObject(IDamageableObject damageableObject)
     {
-        IDamageableObject damageableObject = collision.gameObject.GetComponent<IDamageableObject>();
-
         if (damageableObject != null)
         {
             int index = m_DamageableObjects.IndexOf(damageableObject);
             if (index != -1)
             {
-                Debug.Log("Stopped damaging: " + collision.gameObject.name);
+                Debug.Log("Stopped damaging: " + damageableObject.gameObject.name);
 
                 m_DamageableObjects.RemoveAt(index);
                 m_Timers.RemoveAt(index);
             }
         }
+    }
+
+    //Doesn't work when objects suddenly dissapear
+    private void OnTriggerEnter(Collider collider)
+    {
+        IDamageableObject damageableObject = collider.gameObject.GetComponent<IDamageableObject>();
+        AddDamageableObject(damageableObject);
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+        IDamageableObject damageableObject = collider.gameObject.GetComponent<IDamageableObject>();
+        RemoveDamageableObject(damageableObject);
     }
 }
