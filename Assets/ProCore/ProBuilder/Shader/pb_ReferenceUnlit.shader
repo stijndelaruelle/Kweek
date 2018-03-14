@@ -17,7 +17,7 @@ Shader "ProBuilder/Reference Unlit"
 		Cull Off
 		Offset 1,1
 
-		Pass 
+		Pass
 		{
 			AlphaTest Greater .25
 
