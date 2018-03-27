@@ -111,9 +111,12 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
             maxPosition += right * keys[keyID].value; //Horizontal
 
             //Recoil spread
-            float spreadRate = m_RecoilSpreadRate.Evaluate(m_CurrentRecoilBullet);
-            maxPosition += up * UnityEngine.Random.Range(-spreadRate, spreadRate);
-            maxPosition += right * UnityEngine.Random.Range(-spreadRate, spreadRate);
+            float recoilSpreadRate = m_RecoilSpreadRate.Evaluate(m_CurrentRecoilBullet);
+            if (recoilSpreadRate > 0.0f)
+            {
+                maxPosition += up * UnityEngine.Random.Range(-recoilSpreadRate, recoilSpreadRate);
+                maxPosition += right * UnityEngine.Random.Range(-recoilSpreadRate, recoilSpreadRate);
+            }
 
             //Natural gun spread
             if (m_Spread > 0.0f)
@@ -155,6 +158,8 @@ public class HitScanFireBehaviour : IWeaponUseBehaviour
         //Fire a single ray (get only the first target)
         RaycastHit hitInfo;
         bool success = Physics.Raycast(ray, out hitInfo, range);
+
+        Debug.DrawRay(ray.origin, ray.direction * range, Color.yellow, 5.0f);
 
         if (!success)
             return;

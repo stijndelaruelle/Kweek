@@ -108,12 +108,19 @@ public class BasicPickup : IPickup
 
     private IEnumerator IgnoreCollisionRoutine(List<Collider> throwerColliders)
     {
+        //Todo: Clean up this ignore collision clause.
         //Start ignoring
-        foreach (Collider collider in m_Colliders)
+        if (throwerColliders != null)
         {
-            foreach (Collider otherCollider in throwerColliders)
+            foreach (Collider collider in m_Colliders)
             {
-                Physics.IgnoreCollision(collider, otherCollider, true);
+                foreach (Collider otherCollider in throwerColliders)
+                {
+                    if (otherCollider != null)
+                    {
+                        Physics.IgnoreCollision(collider, otherCollider, true);
+                    } 
+                }
             }
         }
 
@@ -124,7 +131,10 @@ public class BasicPickup : IPickup
         {
             foreach (Collider otherCollider in throwerColliders)
             {
-                Physics.IgnoreCollision(collider, otherCollider, false);
+                if (otherCollider != null)
+                {
+                    Physics.IgnoreCollision(collider, otherCollider, false);
+                }
             }
         }
     }

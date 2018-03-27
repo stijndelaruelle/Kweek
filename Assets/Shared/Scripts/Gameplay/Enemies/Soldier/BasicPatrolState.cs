@@ -53,7 +53,7 @@ public class BasicPatrolState : IAbstractState
 
     public override void Enter()
     {
-        Debug.Log("Entered patrolling state!");
+        //Debug.Log("Entered patrolling state!");
 
         if (m_Path != null && m_Path.Count > 0)
         {

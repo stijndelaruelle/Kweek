@@ -166,7 +166,7 @@ public class PlayerMovementController : MonoBehaviour
         m_CharacterTargetRot = transform.localRotation;
         m_CameraTargetRot = m_Camera.localRotation;
 
-        SwitchState(PlayerState.Running);
+        SwitchState(PlayerState.Walking);
     }
 
     private void OnDestroy()
@@ -348,7 +348,7 @@ public class PlayerMovementController : MonoBehaviour
 
             //Walking
             bool isWalking = Input.GetKey(KeyCode.LeftShift);
-            if (isWalking)
+            if (isWalking == false)
             {
                 m_Player.SwitchState(PlayerState.Walking);
                 return;
@@ -433,9 +433,9 @@ public class PlayerMovementController : MonoBehaviour
                 return;
             }
 
-            //Running
+            //Running (used to be always run and shift to walk (like in Quake & Counter-Strike)
             bool isWalking = Input.GetKey(KeyCode.LeftShift);
-            if (isWalking == false)
+            if (isWalking == true)
             {
                 m_Player.SwitchState(PlayerState.Running);
                 return;

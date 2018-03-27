@@ -41,9 +41,16 @@ public class BulletShell : PoolableObject
 
     public void Eject(Vector3 force, List<Collider> ignoreColliders)
     {
-        foreach (Collider otherCollider in ignoreColliders)
+        //Todo: Clean up the ignore colliders clause (got removed)
+        if (ignoreColliders != null)
         {
-            Physics.IgnoreCollision(m_Collider, otherCollider);
+            foreach (Collider otherCollider in ignoreColliders)
+            {
+                if (otherCollider != null)
+                {
+                    Physics.IgnoreCollision(m_Collider, otherCollider);
+                }
+            }
         }
 
         if (m_Definition.DelayedDecouple == false)
