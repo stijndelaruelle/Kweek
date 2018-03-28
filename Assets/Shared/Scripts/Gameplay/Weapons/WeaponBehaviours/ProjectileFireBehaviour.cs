@@ -44,11 +44,8 @@ public class ProjectileFireBehaviour : IWeaponUseBehaviour
 
         if (projectile != null)
         {
-            //Vector3 targetPosition = originalRay.origin + (originalRay.direction * 1000.0f); //A position far away
-            //Vector3 direction = (targetPosition - m_ProjectileSpawn.position).normalized;
-
             //Look at this at a later stage. Controllers have undergone huge changes.
-            projectile.Fire(m_ProjectileSpawn.forward, Vector3.zero);
+            projectile.Fire(originalRay.direction, Vector3.zero);
 
             //Animation & Cooldown
             m_Animator.SetTrigger(m_TriggerName);

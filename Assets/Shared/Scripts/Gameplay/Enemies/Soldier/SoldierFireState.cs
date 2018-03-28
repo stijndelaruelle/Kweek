@@ -78,7 +78,7 @@ public class SoldierFireState : IAbstractTargetState
 
     public override void Enter()
     {
-        Debug.Log("Entered fire state!");
+        //Debug.Log("Entered fire state!");
 
         m_Soldier.AnimatorIKEvent += OnStateAnimatorIK;
 

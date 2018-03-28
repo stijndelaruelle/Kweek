@@ -49,7 +49,7 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     public override void Enter()
     {
-        Debug.Log("Entered Chase state!");
+        //Debug.Log("Entered Chase state!");
 
         m_Behaviour.NavMeshAgent.isStopped = false;
         m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;

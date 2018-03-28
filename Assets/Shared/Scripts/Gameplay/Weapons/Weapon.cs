@@ -54,7 +54,7 @@ public class Weapon : MonoBehaviour
 
     //Events
     public event WeaponUseDelegate WeaponUseEvent;
-    public event WeaponUseDelegate WeaponStopUseEvent;
+    public event WeaponStopUseDelegate WeaponStopUseEvent;
     public event UpdateAmmoDelegate UpdateAmmoEvent;
 
     public event SwitchWeaponCallback StartSwitchInEvent;
@@ -181,7 +181,7 @@ public class Weapon : MonoBehaviour
         if (success == false)
             return false;
 
-        FireWeaponUseEvent();
+        FireWeaponUseEvent(originalRay.direction);
         return true;
     }
 
@@ -267,10 +267,10 @@ public class Weapon : MonoBehaviour
     }
 
     //Event
-    public void FireWeaponUseEvent()
+    public void FireWeaponUseEvent(Vector3 direction)
     {
         if (WeaponUseEvent != null)
-            WeaponUseEvent();
+            WeaponUseEvent(direction);
     }
 
     public void FireWeaponStopUseEvent()

@@ -47,7 +47,7 @@ public class CharacterDamageEffect : MonoBehaviour
         if (m_AudioSource.isPlaying)
             return;
 
-        if (m_DamageableObject.Health > 0)
+        if (m_DamageableObject.Health > 0 && removedHealth > 0)
         {
             //Determine the percentage of health this was, the more damage the higher the index in the sound array
             float percent = (float)removedHealth / (float)m_DamageableObject.MaxHealth;

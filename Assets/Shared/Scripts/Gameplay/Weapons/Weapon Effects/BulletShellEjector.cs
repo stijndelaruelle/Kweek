@@ -47,7 +47,7 @@ public class BulletShellEjector : MonoBehaviour
         }
     }
 
-    private void OnWeaponFire()
+    private void OnWeaponFire(Vector3 direction)
     {
         if (m_Delay > 0.0f)
         {

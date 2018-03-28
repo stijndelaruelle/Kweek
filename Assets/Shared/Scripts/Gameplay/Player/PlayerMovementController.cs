@@ -677,11 +677,12 @@ public class PlayerMovementController : MonoBehaviour
     //Deathstate
     public class DeathState : IState
     {
-        private PlayerMovementController m_Player;
+        //Never used: Avoid warning
+        //private PlayerMovementController m_Player;
 
         public DeathState(PlayerMovementController player)
         {
-            m_Player = player;
+            //m_Player = player;
         }
 
         public void Enter()

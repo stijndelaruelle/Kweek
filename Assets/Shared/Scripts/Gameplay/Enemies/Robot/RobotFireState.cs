@@ -75,7 +75,7 @@ public class RobotFireState : IAbstractTargetState
 
     public override void Enter()
     {
-        Debug.Log("Entered fire state!");
+        //Debug.Log("Entered fire state!");
 
         m_Behaviour.AnimatorIKEvent += OnStateAnimatorIK;
 
@@ -165,8 +165,8 @@ public class RobotFireState : IAbstractTargetState
             return false;
         }
 
-
-        Ray fireRay = new Ray(m_FirePosition.position, m_FirePosition.forward);
+        Vector3 dir = (m_Target.GetPosition() - m_FirePosition.position).normalized;
+        Ray fireRay = new Ray(m_FirePosition.position, dir);
         return m_Behaviour.Weapon.StopUse(fireRay);
     }
 

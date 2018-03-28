@@ -65,7 +65,7 @@ public class MuzzleFlash : MonoBehaviour
         }
     }
 
-    private void OnWeaponFire()
+    private void OnWeaponFire(Vector3 direction)
     {
         m_Timer = m_ActiveTime;
 

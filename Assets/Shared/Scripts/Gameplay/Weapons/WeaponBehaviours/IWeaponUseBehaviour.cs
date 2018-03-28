@@ -8,7 +8,8 @@ using UnityEngine;
 //    void Fire();
 //}
 
-public delegate void WeaponUseDelegate();
+public delegate void WeaponUseDelegate(Vector3 direction);
+public delegate void WeaponStopUseDelegate();
 public delegate void AmmoUseDelegate(int ammo);
 
 public abstract class IWeaponUseBehaviour : MonoBehaviour

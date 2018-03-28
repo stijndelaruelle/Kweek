@@ -28,6 +28,8 @@ public class PhysicalProjectile : MonoBehaviour
 
     public void Fire(Vector3 direction, Vector3 baseVelocity)
     {
+        transform.forward = direction;
+
         Vector3 force = (direction * m_InitialSpeed) + baseVelocity;
         m_Rigidbody.AddForce(force);
     }
@@ -49,6 +51,12 @@ public class PhysicalProjectile : MonoBehaviour
 
     protected void Explode(IDamageableObject directImpactTarget)
     {
+        if (m_ExplosionRadius <= 0)
+            return;
+
+        if (m_ExplosionDamage <= 0 && m_ExplosionForce <= 0)
+            return;
+
         //Explosion damage & pushback
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius);
         List<IDamageableObject> hitObjects = new List<IDamageableObject>();
