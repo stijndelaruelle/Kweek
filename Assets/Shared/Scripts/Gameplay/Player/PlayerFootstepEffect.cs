@@ -48,7 +48,7 @@ public class PlayerFootstepEffect : MonoBehaviour
             return;
 
         float playerSpeed = m_Player.Velocity.magnitude;
-        if (m_Player.IsGrounded() == false || playerSpeed <= m_Player.MaxWalkSpeed)
+        if (m_Player.IsGrounded() == false || playerSpeed <= m_Player.MaxDuckSpeed)
         {
             m_StepTimer = m_TimeUntilFirstStep;
             return;
@@ -56,7 +56,7 @@ public class PlayerFootstepEffect : MonoBehaviour
 
         m_StepTimer -= Time.deltaTime;
 
-        if (m_StepTimer <= 0.0f)
+        if (m_StepTimer <= 0.0f && playerSpeed > 0)
         {
             PlayFootstepSound();
             m_StepTimer += (m_StepFrequency / playerSpeed);

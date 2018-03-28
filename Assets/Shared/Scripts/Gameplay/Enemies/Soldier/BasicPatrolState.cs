@@ -152,16 +152,14 @@ public class BasicPatrolState : IAbstractState
                 if (degAngle <= m_ViewAngle)
                 {
                     //Check if we can actually see him
-                    Vector3 middleTop = other.bounds.center;
-                    middleTop.y += other.bounds.extents.y * 0.5f;
-
-                    Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
 
                     RaycastHit hitInfo;
                     bool success = Physics.Raycast(ray, out hitInfo);
 
                     if (success && hitInfo.collider == other)
                     {
+                        Debug.DrawRay(ray.origin, ray.direction * 25, Color.blue, 5);
                         //Change to the firing state
                         if (m_FireState != null)
                         {

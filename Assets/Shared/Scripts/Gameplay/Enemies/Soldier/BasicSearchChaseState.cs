@@ -49,7 +49,7 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     public override void Enter()
     {
-        //Debug.Log("Entered Chase state!");
+        Debug.Log("Entered Chase state!");
 
         m_Behaviour.NavMeshAgent.isStopped = false;
         m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
@@ -120,10 +120,7 @@ public class BasicSearchChaseState : IAbstractTargetState
 
                 if (degAngle <= m_ViewAngle)
                 {
-                    Vector3 middleTop = other.bounds.center;
-                    middleTop.y += other.bounds.extents.y * 0.5f;
-
-                    Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
 
                     RaycastHit hitInfo;
                     bool success = Physics.Raycast(ray, out hitInfo);

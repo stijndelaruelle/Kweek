@@ -44,7 +44,13 @@ public class RobotFireState : IAbstractTargetState
     private Transform m_ViewPosition;
 
     [SerializeField]
+    private float m_ViewRadius;
+
+    [SerializeField]
     private float m_ViewAngle;
+
+    [SerializeField]
+    private LayerMask m_ScanLayerMask;
 
     [SerializeField]
     private BasicPatrolState m_PatrolState;
@@ -71,8 +77,6 @@ public class RobotFireState : IAbstractTargetState
     {
         Debug.Log("Entered fire state!");
 
-        //m_Behaviour.TriggerStayEvent += OnStateTriggerStay;
-        //m_Behaviour.TriggerExitEvent += OnStateTriggerExit;
         m_Behaviour.AnimatorIKEvent += OnStateAnimatorIK;
 
         //Stop the character from moving, both gamewise as visually
@@ -91,8 +95,6 @@ public class RobotFireState : IAbstractTargetState
         if (m_Behaviour == null)
             return;
 
-        //m_Behaviour.TriggerStayEvent -= OnStateTriggerStay;
-        //m_Behaviour.TriggerExitEvent -= OnStateTriggerExit;
         m_Behaviour.AnimatorIKEvent -= OnStateAnimatorIK;
     }
 
@@ -102,6 +104,7 @@ public class RobotFireState : IAbstractTargetState
         HandleSwitchOut();
 
         HandleShooting();
+        HandleScanning();
     }
 
     //Shooting
@@ -223,61 +226,66 @@ public class RobotFireState : IAbstractTargetState
         }
     }
 
-    private void OnStateTriggerStay(Collider other)
+    private void HandleScanning()
     {
-        IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
-        if (damageableObject == null)
-            return;
+        Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_ScanLayerMask);
 
-        damageableObject = damageableObject.GetMainDamageableObject();
-
-        if (damageableObject == m_Target)
+        //For all targets in my radius
+        for (int i = 0; i < colliders.Length; ++i)
         {
-            if (m_Target.IsDead())
-            {
-                SwitchOut();
+            Collider other = colliders[i];
+
+            IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
+            if (damageableObject == null)
                 return;
-            }
 
-            //If so check if he's within the specified angle
-            Vector3 diffPos = other.transform.position - m_Behaviour.transform.position;
-            float dot = Vector3.Dot(m_Behaviour.transform.forward, diffPos.normalized);
-            float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+            damageableObject = damageableObject.GetMainDamageableObject();
 
-            if (degAngle <= m_ViewAngle)
+            if (damageableObject == m_Target)
             {
-                //If so, check line of sight
-                Vector3 middleTop = other.bounds.center;
-                middleTop.y += other.bounds.extents.y * 0.5f;
-
-                Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
-
-                RaycastHit hitInfo;
-                bool success = Physics.Raycast(ray, out hitInfo);
-
-                if (success)
+                if (m_Target.IsDead())
                 {
-                    IDamageableObject foundDamageableObject = hitInfo.collider.GetComponent<IDamageableObject>();
-                    if (foundDamageableObject != null)
-                    {
-                        foundDamageableObject = foundDamageableObject.GetMainDamageableObject();
+                    SwitchOut();
+                    return;
+                }
 
-                        if (damageableObject != foundDamageableObject)
+                //If so check if he's within the specified angle
+                Vector3 diffPos = other.transform.position - m_Behaviour.transform.position;
+                float dot = Vector3.Dot(m_Behaviour.transform.forward, diffPos.normalized);
+                float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+                if (degAngle <= m_ViewAngle)
+                {
+                    //If so, check line of sight
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
+
+                    RaycastHit hitInfo;
+                    bool success = Physics.Raycast(ray, out hitInfo);
+
+                    if (success)
+                    {
+                        IDamageableObject foundDamageableObject = hitInfo.collider.GetComponent<IDamageableObject>();
+                        if (foundDamageableObject != null)
                         {
-                            SwitchOut();
-                            return;
-                        }
-                        else
-                        {
-                            m_IsSwitchingOut = false;
-                            return;
+                            foundDamageableObject = foundDamageableObject.GetMainDamageableObject();
+
+                            if (damageableObject != foundDamageableObject)
+                            {
+                                SwitchOut();
+                                return;
+                            }
+                            else
+                            {
+                                m_IsSwitchingOut = false;
+                                return;
+                            }
                         }
                     }
                 }
-            }
 
-            //If not, stop firing
-            SwitchOut();
+                //If not, stop firing
+                SwitchOut();
+            }
         }
     }
 

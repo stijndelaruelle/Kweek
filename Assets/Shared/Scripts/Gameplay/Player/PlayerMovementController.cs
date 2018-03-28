@@ -64,6 +64,13 @@ public class PlayerMovementController : MonoBehaviour
     }
 
     [SerializeField]
+    private float m_MaxDuckSpeed = 20.0f;
+    public float MaxDuckSpeed
+    {
+        get { return m_MaxDuckSpeed; }
+    }
+
+    [SerializeField]
     private float m_MaxAirialSpeed = 30.0f;
     public float MaxAirialSpeed
     {
@@ -559,7 +566,7 @@ public class PlayerMovementController : MonoBehaviour
 
             //Horizontal Acceleration
             m_Player.Velocity = Vector3.MoveTowards(m_Player.Velocity,
-                                                    accelerationDir * m_Player.MaxWalkSpeed,
+                                                    accelerationDir * m_Player.MaxDuckSpeed,
                                                     m_Player.Acceleration * Time.deltaTime); //controller.deltaTime
         }
 

@@ -78,7 +78,7 @@ public class SoldierFireState : IAbstractTargetState
 
     public override void Enter()
     {
-        //Debug.Log("Entered fire state!");
+        Debug.Log("Entered fire state!");
 
         m_Soldier.AnimatorIKEvent += OnStateAnimatorIK;
 
@@ -263,10 +263,7 @@ public class SoldierFireState : IAbstractTargetState
                 if (degAngle <= m_ViewAngle)
                 {
                     //If so, check line of sight
-                    Vector3 middleTop = other.bounds.center;
-                    middleTop.y += other.bounds.extents.y * 0.5f;
-
-                    Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
 
                     RaycastHit hitInfo;
                     bool success = Physics.Raycast(ray, out hitInfo);

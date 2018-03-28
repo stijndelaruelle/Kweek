@@ -131,10 +131,7 @@ public class ZombieWanderState : IAbstractState
             if (degAngle <= m_ViewAngle)
             {
                 //Check if there is line of sight
-                Vector3 middleTop = other.bounds.center;
-                middleTop.y += other.bounds.extents.y * 0.5f;
-
-                Ray ray = new Ray(m_ViewPosition.position, (middleTop - m_ViewPosition.position));
+                Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
 
                 RaycastHit hitInfo;
                 bool success = Physics.Raycast(ray, out hitInfo);
