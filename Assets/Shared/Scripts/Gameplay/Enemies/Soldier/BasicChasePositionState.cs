@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyBehaviour))]
-public class BasicPatrolState : IAbstractState
+public class BasicChasePositionState : IAbstractTargetState
 {
     private EnemyBehaviour m_Behaviour;
 
@@ -13,25 +12,15 @@ public class BasicPatrolState : IAbstractState
     [Space(5)]
     [SerializeField]
     private float m_MovementSpeed;
+    private Vector3 m_TargetPosition;
 
     [SerializeField]
-    private List<Transform> m_Path;
-    private int m_CurrentIndex = 0;
-    private bool m_IsStopped = false;
-
-    [SerializeField]
-    private bool m_LoopPath;
-
-    [SerializeField]
-    private bool m_BackAndForthPath;
-    private int m_TraverseDirection = 1;
+    private float m_MinChaseTime = 1.0f; //Fixes some back and forth state switching.
+    private float m_ChaseTimer;
 
     [Space(10)]
     [Header("Scanning")]
     [Space(5)]
-    [SerializeField]
-    private IAbstractTargetState m_TargetState;
-
     [SerializeField]
     private Transform m_ViewPosition;
 
@@ -44,33 +33,35 @@ public class BasicPatrolState : IAbstractState
     [SerializeField]
     private LayerMask m_ScanLayerMask;
 
+    [Space(10)]
+    [Header("Other States")]
+    [Space(5)]
+    [SerializeField]
+    private IAbstractState m_DefaultState;
+
+    [SerializeField]
+    private IAbstractTargetState m_AttackState;
+
+
     private void Awake()
     {
         //Assigning this manually clutters the inspector a LOT!
         //If we, at some point, want to detach state objects from their behaviour, revert this.
-        m_Behaviour = GetComponent<EnemyWeaponPickupBehaviour>();
+        m_Behaviour = GetComponent<EnemyBehaviour>();
     }
 
     public override void Enter()
     {
-        //Debug.Log("Entered patrolling state!");
+        //Debug.Log("Entered Chase state!");
 
-        if (m_Path != null && m_Path.Count > 0)
-        {
-            m_Behaviour.NavMeshAgent.destination = m_Path[m_CurrentIndex].transform.position;
-            m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
-
-            m_Behaviour.NavMeshAgent.isStopped = false;
-            m_IsStopped = false;
-        }
-        else
-        {
-            m_Behaviour.NavMeshAgent.isStopped = true;
-            m_IsStopped = true;
-        }
+        m_Behaviour.NavMeshAgent.isStopped = false;
+        m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
+        m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
 
         m_Behaviour.Animator.enabled = true;
         m_Behaviour.Animator.SetTrigger("MovementTrigger");
+
+        m_ChaseTimer = 0.0f;
     }
 
     public override void Exit()
@@ -83,39 +74,20 @@ public class BasicPatrolState : IAbstractState
     {
         HandleMovement();
         HandleScanning();
+
+        m_ChaseTimer += Time.deltaTime;
     }
 
     private void HandleMovement()
     {
-        if (m_IsStopped)
-            return;
-
         NavMeshAgent agent = m_Behaviour.NavMeshAgent;
-
-        if (agent == null )
-            return;
+        Animator animator = m_Behaviour.Animator;
 
         //Check if we reached our destination
         if (agent.remainingDistance <= 0.5f)
         {
-            m_CurrentIndex += m_TraverseDirection;
-
-            //Reached the end of our path
-            if (m_CurrentIndex < 0 || m_CurrentIndex >= m_Path.Count)
-            {
-                if (m_LoopPath)              { m_CurrentIndex = Math.Abs(m_CurrentIndex - m_Path.Count); }
-                else if (m_BackAndForthPath) { m_TraverseDirection = m_TraverseDirection * -1; m_CurrentIndex += m_TraverseDirection * 2; }
-                else
-                {
-                    m_CurrentIndex -= m_TraverseDirection;
-                    agent.velocity = new Vector3(0.0f, 0.0f, 0.0f);
-                    agent.isStopped = true;
-                    m_IsStopped = true;
-                    return;
-                }
-            }
-
-            agent.destination = m_Path[m_CurrentIndex].transform.position;
+            //If we still didn't switch to the fire state at this point, we lost the player. Go back to patrolling
+            m_Behaviour.SwitchState(m_DefaultState);
         }
     }
 
@@ -129,7 +101,7 @@ public class BasicPatrolState : IAbstractState
             Collider other = colliders[i];
 
             //Check if it's an enemy
-            FactionType factionType = other.gameObject.GetComponent<FactionType>();
+            FactionType factionType = other.GetComponent<FactionType>();
             if (factionType == null)
                 return;
 
@@ -151,35 +123,30 @@ public class BasicPatrolState : IAbstractState
 
                 if (degAngle <= m_ViewAngle)
                 {
-                    //Check if we can actually see him
                     Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
 
                     RaycastHit hitInfo;
                     bool success = Physics.Raycast(ray, out hitInfo);
 
-                    if (success && hitInfo.collider == other)
+                    if (success && hitInfo.collider == other && m_ChaseTimer >= m_MinChaseTime)
                     {
-                        Debug.DrawRay(ray.origin, ray.direction * 25, Color.blue, 5);
                         //Change to the firing state
-                        if (m_TargetState != null)
-                        {
-                            m_Behaviour.SwitchState(m_TargetState);
-                            m_TargetState.SetTarget(damageableObject);
-                        }
+                        m_Behaviour.SwitchState(m_AttackState);
+                        m_AttackState.SetTarget(damageableObject);
                     }
                 }
             }
-        } 
+        }
     }
 
-    private void OnDrawGizmosSelected()
+    public override void SetTarget(IDamageableObject target)
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(m_ViewPosition.position, m_ViewRadius);
+        m_TargetPosition = target.transform.position;
+        m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
     }
 
     public override string ToString()
     {
-        return "Patrolling";
+        return "Chasing Position";
     }
 }

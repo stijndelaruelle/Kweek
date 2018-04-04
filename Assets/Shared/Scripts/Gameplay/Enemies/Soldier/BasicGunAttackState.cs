@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyWeaponPickupBehaviour))]
-public class SoldierFireState : IAbstractTargetState
+public class BasicGunAttackState : IAbstractTargetState
 {
     private EnemyWeaponPickupBehaviour m_Soldier;
 
@@ -16,9 +16,6 @@ public class SoldierFireState : IAbstractTargetState
     [SerializeField]
     private float m_FireDelay;
     private float m_FireDelayTimer = 0.0f;
-
-    [SerializeField]
-    private float m_MaxShootRange = 5.0f;
 
     [SerializeField]
     private float m_BurstDistance = 5.0f;
@@ -44,6 +41,9 @@ public class SoldierFireState : IAbstractTargetState
     [Header("Scanning")]
     [Space(5)]
     [SerializeField]
+    private IAbstractTargetState m_ChaseState;
+
+    [SerializeField]
     private Transform m_ViewPosition;
 
     [SerializeField]
@@ -55,11 +55,11 @@ public class SoldierFireState : IAbstractTargetState
     [SerializeField]
     private LayerMask m_ScanLayerMask;
 
+    [Space(10)]
+    [Header("Other States")]
+    [Space(5)]
     [SerializeField]
-    private BasicPatrolState m_PatrolState;
-
-    [SerializeField]
-    private BasicSearchChaseState m_ChaseState;
+    private IAbstractState m_DefaultState;
 
     private bool m_IsInFireStance = false;
     private bool m_IsSwitchingOut = false;
@@ -122,12 +122,6 @@ public class SoldierFireState : IAbstractTargetState
         //Check the distance between us and the target
         Vector3 diff = m_Target.GetPosition() - m_FirePosition.position;
         float distance = diff.magnitude;
-
-        //If we are too far away, chase to the position!
-        if (distance > m_MaxShootRange)
-        {
-            SwitchOut();
-        }
 
         //Full auto
         if (distance < m_BurstDistance)
@@ -211,7 +205,7 @@ public class SoldierFireState : IAbstractTargetState
         {
             if (m_Target.IsDead())
             {
-                m_Soldier.SwitchState(m_PatrolState);
+                m_Soldier.SwitchState(m_DefaultState);
             }
             else
             {

@@ -53,10 +53,10 @@ public class RobotFireState : IAbstractTargetState
     private LayerMask m_ScanLayerMask;
 
     [SerializeField]
-    private BasicPatrolState m_PatrolState;
+    private IAbstractState m_PatrolState;
 
     [SerializeField]
-    private BasicSearchChaseState m_ChaseState;
+    private IAbstractTargetState m_ChaseState;
 
     private bool m_IsInFireStance = false;
     private bool m_IsSwitchingOut = false;

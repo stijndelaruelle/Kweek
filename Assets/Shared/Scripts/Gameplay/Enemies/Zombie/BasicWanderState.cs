@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyBehaviour))]
-public class ZombieWanderState : IAbstractState
+public class BasicWanderState : IAbstractState
 {
     private EnemyBehaviour m_Zombie;
 
@@ -30,14 +30,19 @@ public class ZombieWanderState : IAbstractState
     [Header("Scanning")]
     [Space(5)]
     [SerializeField]
+    private IAbstractTargetState m_TargetState;
+
+    [SerializeField]
     private Transform m_ViewPosition;
+
+    [SerializeField]
+    private float m_ViewRadius;
 
     [SerializeField]
     private float m_ViewAngle;
 
     [SerializeField]
-    private ZombieChaseState m_ChaseState;
-    private List<IDamageableObject> m_CheckedThisFrame;
+    private LayerMask m_ScanLayerMask;
 
     private void Awake()
     {
@@ -73,6 +78,7 @@ public class ZombieWanderState : IAbstractState
     public override void StateUpdate()
     {
         HandleMovement();
+        HandleScanning();
     }
 
     private void HandleMovement()
@@ -105,42 +111,50 @@ public class ZombieWanderState : IAbstractState
         m_WanderInterbellumRoutine = null;
     }
 
-    private void OnStateTriggerStay(Collider other)
+    private void HandleScanning()
     {
-        //Check if it's an enemy
-        FactionType factionType = other.GetComponent<FactionType>();
-        if (factionType == null)
-            return;
+        Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_ScanLayerMask);
 
-        if (m_Zombie.FactionType.IsEnemy(factionType.Faction))
+        //For all targets in my radius
+        for (int i = 0; i < colliders.Length; ++i)
         {
-            IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
-            if (damageableObject == null)
+            Collider other = colliders[i];
+
+            //Check if it's an enemy
+            FactionType factionType = other.GetComponent<FactionType>();
+            if (factionType == null)
                 return;
 
-            damageableObject = damageableObject.GetMainDamageableObject();
-
-            if (damageableObject.IsDead())
-                return;
-
-            //If so check if he's within the specified angle
-            Vector3 diffPos = other.transform.position - m_Zombie.transform.position;
-            float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
-            float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
-
-            if (degAngle <= m_ViewAngle)
+            if (m_Zombie.FactionType.IsEnemy(factionType.Faction))
             {
-                //Check if there is line of sight
-                Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
+                IDamageableObject damageableObject = other.GetComponent<IDamageableObject>();
+                if (damageableObject == null)
+                    return;
 
-                RaycastHit hitInfo;
-                bool success = Physics.Raycast(ray, out hitInfo);
+                damageableObject = damageableObject.GetMainDamageableObject();
 
-                if (success && hitInfo.collider == other)
+                if (damageableObject.IsDead())
+                    return;
+
+                //If so check if he's within the specified angle
+                Vector3 diffPos = other.transform.position - m_Zombie.transform.position;
+                float dot = Vector3.Dot(m_Zombie.transform.forward, diffPos.normalized);
+                float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
+
+                if (degAngle <= m_ViewAngle)
                 {
-                    //Change to the firing state
-                    m_ChaseState.SetTarget(damageableObject);
-                    m_Zombie.SwitchState(m_ChaseState);
+                    //Check if there is line of sight
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
+
+                    RaycastHit hitInfo;
+                    bool success = Physics.Raycast(ray, out hitInfo);
+
+                    if (success && hitInfo.collider == other)
+                    {
+                        //Change to the chasing state
+                        m_TargetState.SetTarget(damageableObject);
+                        m_Zombie.SwitchState(m_TargetState);
+                    }
                 }
             }
         }
@@ -154,6 +168,12 @@ public class ZombieWanderState : IAbstractState
         targetPosition.z += Random.Range(m_MinWanderRadius, m_MaxWanderRadius) * Mathf.Sign(Random.Range(-100, 100f));
 
         return targetPosition;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(m_ViewPosition.position, m_ViewRadius);
     }
 
     public override string ToString()

@@ -281,7 +281,8 @@ public class Weapon : MonoBehaviour
 
     private void OnAmmoUse(int ammo)
     {
-        m_AmmoUseBehaviour.UseAmmo(ammo);
+        if (m_AmmoUseBehaviour != null)
+            m_AmmoUseBehaviour.UseAmmo(ammo);
     }
 
     private void OnUpdateAmmo(int ammoInClip, int ammoInReserve)

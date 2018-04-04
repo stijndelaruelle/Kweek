@@ -16,12 +16,6 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
 
     [Header("HitBox")]
     [Space(5)]
-    [SerializeField]
-    private Collider m_Hitbox;
-
-    [Tooltip("Only use when the animator is not on this Game Object")]
-    [SerializeField]
-    private HitboxMethodsForwarder m_HitBoxMethodForwarder;
 
     [Space(10)]
     [Header("Damage")]
@@ -43,32 +37,8 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
     //Events
     public override event AmmoUseDelegate AmmoUseEvent;
 
-    private void Start()
-    {
-        m_Hitbox.enabled = false;
-
-        if (m_HitBoxMethodForwarder != null)
-        {
-            m_HitBoxMethodForwarder.HitboxEnableEvent += EnableHitbox;
-            m_HitBoxMethodForwarder.HitboxDisableEvent += DisableHitbox;
-        }
-    }
-
     public override void Setup(List<Collider> ignoredColliders)
     {
-        foreach (Collider collider in ignoredColliders)
-        {
-            Physics.IgnoreCollision(m_Hitbox, collider, true);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (m_HitBoxMethodForwarder != null)
-        {
-            m_HitBoxMethodForwarder.HitboxEnableEvent -= EnableHitbox;
-            m_HitBoxMethodForwarder.HitboxDisableEvent -= DisableHitbox;
-        }
     }
 
     private void Update()
@@ -88,6 +58,9 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
         //Use ammo (avoids warning)
         if (AmmoUseEvent != null)
             AmmoUseEvent(m_AmmoUseage);
+
+        //Actually do damage
+        //TODO
 
         return true;
     }
@@ -116,47 +89,17 @@ public class MeleeAttackBehaviour : IWeaponUseBehaviour
         }
     }
 
-    //Hitbox
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject go = other.gameObject;
-
-        //Did we hit a damageableobject?
-        IDamageableObject damageableObject = go.GetComponent<IDamageableObject>();
-
-        if (damageableObject != null)
-        {
-            //Damage calculation
-            damageableObject.Damage(m_Damage);
-            return;
-        }
-
-        ////Did we hit a surface?
-        //Vector3 position = collision.contacts[0].point;
-        //Vector3 normal = collision.contacts[0].normal;
-
-        //SurfaceType surfaceType = go.GetComponent<SurfaceType>();
-        //if (surfaceType != null)
-        //{
-        //    surfaceType.SpawnMeleeImpactEffect(position, normal);
-        //}
-
-        ////Did we hit a rigidbody?
-        //Rigidbody rigidBody = go.GetComponent<Rigidbody>();
-        //if (rigidBody != null)
-        //{
-        //    rigidBody.AddForceAtPosition(-normal * m_ImpactForce, position);
-        //}
-    }
 
     //Animation events
     private void EnableHitbox()
     {
-        m_Hitbox.enabled = true;
+        //The animation tells us when we can do damage
+        //m_Hitbox.enabled = true;
     }
 
     private void DisableHitbox()
     {
-        m_Hitbox.enabled = false;
+        //The animation tells us when we stop doing damage
+        //m_Hitbox.enabled = false;
     }
 }

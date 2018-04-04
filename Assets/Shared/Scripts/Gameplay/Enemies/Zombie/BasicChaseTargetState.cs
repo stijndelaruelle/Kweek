@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyBehaviour))]
-public class BasicSearchChaseState : IAbstractTargetState
+public class BasicChaseTargetState : IAbstractTargetState
 {
     private EnemyBehaviour m_Behaviour;
 
@@ -12,7 +12,7 @@ public class BasicSearchChaseState : IAbstractTargetState
     [Space(5)]
     [SerializeField]
     private float m_MovementSpeed;
-    private Vector3 m_TargetPosition;
+    private IDamageableObject m_Target;
 
     [SerializeField]
     private float m_MinChaseTime = 1.0f; //Fixes some back and forth state switching.
@@ -21,6 +21,9 @@ public class BasicSearchChaseState : IAbstractTargetState
     [Space(10)]
     [Header("Scanning")]
     [Space(5)]
+    [SerializeField]
+    private IAbstractTargetState m_TargetState;
+
     [SerializeField]
     private Transform m_ViewPosition;
 
@@ -33,12 +36,11 @@ public class BasicSearchChaseState : IAbstractTargetState
     [SerializeField]
     private LayerMask m_ScanLayerMask;
 
+    [Space(10)]
+    [Header("Other States")]
+    [Space(5)]
     [SerializeField]
-    private BasicPatrolState m_PatrolState;
-
-    [SerializeField]
-    private IAbstractTargetState m_FireState;
-
+    private IAbstractState m_DefaultState;
 
     private void Awake()
     {
@@ -49,11 +51,11 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     public override void Enter()
     {
-        //Debug.Log("Entered Chase state!");
+        Debug.Log("Entered Chase Target State!");
 
         m_Behaviour.NavMeshAgent.isStopped = false;
         m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;
-        m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
+        m_Behaviour.NavMeshAgent.destination = m_Target.GetPosition();
 
         m_Behaviour.Animator.enabled = true;
         m_Behaviour.Animator.SetTrigger("MovementTrigger");
@@ -77,15 +79,15 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     private void HandleMovement()
     {
-        NavMeshAgent agent = m_Behaviour.NavMeshAgent;
-        Animator animator = m_Behaviour.Animator;
+        m_Behaviour.NavMeshAgent.destination = m_Target.GetPosition();
 
         //Check if we reached our destination
-        if (agent.remainingDistance <= 0.5f)
-        {
-            //If we still didn't switch to the fire state at this point, we lost the player. Go back to patrolling
-            m_Behaviour.SwitchState(m_PatrolState);
-        }
+        //NavMeshAgent agent = m_Behaviour.NavMeshAgent;
+        //if (agent.remainingDistance <= 0.5f)
+        //{
+        //    //If we still didn't switch to the fire state at this point, we lost the player. Go back to patrolling
+        //    m_Behaviour.SwitchState(m_DefaultState);
+        //}
     }
 
     private void HandleScanning()
@@ -127,9 +129,9 @@ public class BasicSearchChaseState : IAbstractTargetState
 
                     if (success && hitInfo.collider == other && m_ChaseTimer >= m_MinChaseTime)
                     {
-                        //Change to the firing state
-                        m_Behaviour.SwitchState(m_FireState);
-                        m_FireState.SetTarget(damageableObject);
+                        //Change to the attacking state
+                        m_Behaviour.SwitchState(m_TargetState);
+                        m_TargetState.SetTarget(damageableObject);
                     }
                 }
             }
@@ -138,12 +140,12 @@ public class BasicSearchChaseState : IAbstractTargetState
 
     public override void SetTarget(IDamageableObject target)
     {
-        m_TargetPosition = target.transform.position;
-        m_Behaviour.NavMeshAgent.destination = m_TargetPosition;
+        m_Target = target;
+        m_Behaviour.NavMeshAgent.destination = m_Target.GetPosition();
     }
 
     public override string ToString()
     {
-        return "Chasing";
+        return "Chasing Target";
     }
 }
