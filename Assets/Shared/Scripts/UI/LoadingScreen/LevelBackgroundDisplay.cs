@@ -10,7 +10,12 @@ public class LevelBackgroundDisplay : MonoBehaviour
 
     private void Start()
     {
-        Sprite sprite = LevelManager.Instance.GetCurrentLevelData().Picture;
+        LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
+
+        if (levelData == null)
+            return;
+
+        Sprite sprite = levelData.Picture;
 
         if (sprite != null)
             m_Image.sprite = sprite;

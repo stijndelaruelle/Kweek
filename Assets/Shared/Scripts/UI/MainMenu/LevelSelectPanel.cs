@@ -29,17 +29,20 @@ public class LevelSelectPanel : MonoBehaviour
         List<LevelDataDefinition> levelData = LevelManager.Instance.GetLevelDataList();
         for (int i = 0; i < levelData.Count; ++i)
         {
-            LevelSelectToggle toggle = GameObject.Instantiate<LevelSelectToggle>(m_TogglePrefab);
-            toggle.Setup(levelData[i], m_ContentRoot, m_ToggleGroup);
-            toggle.LevelSelectEvent += OnLevelSelect;
+            if (levelData[i] != null)
+            {
+                LevelSelectToggle toggle = GameObject.Instantiate<LevelSelectToggle>(m_TogglePrefab);
+                toggle.Setup(levelData[i], m_ContentRoot, m_ToggleGroup);
+                toggle.LevelSelectEvent += OnLevelSelect;
 
-            //Enable the first toggle
-            if (i == 0)
-                toggle.IsOn(true);
-            else
-                toggle.IsOn(false);
+                //Enable the first toggle
+                if (i == 0)
+                    toggle.IsOn(true);
+                else
+                    toggle.IsOn(false);
 
-            m_LevelSelectToggles.Add(toggle);
+                m_LevelSelectToggles.Add(toggle);
+            }
         }
     }
 

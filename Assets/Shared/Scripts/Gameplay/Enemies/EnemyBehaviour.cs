@@ -104,7 +104,7 @@ public class EnemyBehaviour : IAIBehaviour
     {
         if (m_CurrentState == newState)
         {
-            Debug.LogWarning("State is trying to switch to itself, something is wrong.");
+            //Debug.LogWarning("State is trying to switch to itself, something is wrong.");
             return m_CurrentState;
         }
 

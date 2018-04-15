@@ -10,6 +10,11 @@ public class LevelNameDisplay : MonoBehaviour
 
     private void Start()
     {
-        m_Text.text = LevelManager.Instance.GetCurrentLevelData().LevelName;
+        LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
+
+        if (levelData == null)
+            return;
+
+        m_Text.text = levelData.LevelName;
     }
 }

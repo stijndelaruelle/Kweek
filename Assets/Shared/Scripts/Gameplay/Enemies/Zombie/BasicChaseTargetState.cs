@@ -51,7 +51,7 @@ public class BasicChaseTargetState : IAbstractTargetState
 
     public override void Enter()
     {
-        Debug.Log("Entered Chase Target State!");
+        //Debug.Log("Entered Chase Target State!");
 
         m_Behaviour.NavMeshAgent.isStopped = false;
         m_Behaviour.NavMeshAgent.speed = m_MovementSpeed;

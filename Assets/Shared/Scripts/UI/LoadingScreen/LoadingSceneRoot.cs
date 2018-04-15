@@ -30,7 +30,12 @@ public class LoadingSceneRoot : MonoBehaviour
 
     private void Start()
     {
-        m_SceneName = LevelManager.Instance.GetCurrentLevelData().SceneName;
+        LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
+
+        if (levelData == null)
+            return;
+
+        m_SceneName = levelData.SceneName;
 
         m_SceneLoader.SceneLoadedEvent    += OnSceneLoaded;
         m_SceneLoader.SceneActivatedEvent += OnSceneActivated;

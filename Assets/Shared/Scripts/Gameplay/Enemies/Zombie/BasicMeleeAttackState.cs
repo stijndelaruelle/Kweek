@@ -56,7 +56,7 @@ public class BasicMeleeAttackState : IAbstractTargetState
 
     public override void Enter()
     {
-        Debug.Log("Entered attacking state!");
+        //Debug.Log("Entered attacking state!");
 
         m_Behaviour.NavMeshAgent.isStopped = true;
 

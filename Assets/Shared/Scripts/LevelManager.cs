@@ -19,7 +19,6 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private string m_MainMenuSceneName;
 
-    //private int m_PreparedLevelID = -1;
     private int m_CurrentLevelID = -1;
 
     //public event LevelManagerDelegate PreparedLevelLoadEvent;
@@ -35,27 +34,33 @@ public class LevelManager : Singleton<LevelManager>
 
     public void LoadMainMenu()
     {
-        //m_PreparedLevelID = -1;
         m_CurrentLevelID = -1;
         m_SceneLoader.LoadScene(m_MainMenuSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false, true);
     }
 
     public void LoadLevel(int id)
     {
+        m_CurrentLevelID = id;
+
         //if the ID is invalid, return to the main menu
-        if (id < 0 || id >= m_LevelList.GetLevelCount())
+        if (id < 0 || id >= m_LevelList.GetLevelCount() || GetCurrentLevelData() == null)
         {
             LoadMainMenu();
             return;
         }
-
-        m_CurrentLevelID = id;
 
         m_SceneLoader.LoadScene(m_LoadingScreenSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single, false, true);
     }
 
     public void LoadLevel(LevelDataDefinition levelData)
     {
+        if (levelData == null)
+        {
+            Debug.Log("Tried loading an invalid level!");
+            LoadMainMenu();
+            return;
+        }
+
         LoadLevel(m_LevelList.GetLevelID(levelData));
     }
 
