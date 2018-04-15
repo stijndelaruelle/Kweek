@@ -97,11 +97,11 @@ public class WeaponArsenal : MonoBehaviour
                 m_Weapons[m_CurrentWeaponID].AltStopUse(originalRay);
             }
 
-            if (Input.GetKeyDown(KeyCode.R)) { m_Weapons[m_CurrentWeaponID].PerformAction(); }
+            if (Input.GetButtonDown("Reload")) { m_Weapons[m_CurrentWeaponID].PerformAction(); } //Input.GetKeyDown(KeyCode.R)
         }
 
         //Switch to the last used weapon
-        if (Input.GetKeyDown(KeyCode.A)) { SwitchWeapon(m_LastWeaponID); }
+        if (Input.GetButtonDown("LastUsed")) { SwitchWeapon(m_LastWeaponID); } //Input.GetKeyDown(KeyCode.A)
 
         //Switch weapons with the number keys
         if (Input.GetKeyDown(KeyCode.Keypad1)) { SwitchWeapon(0); }
@@ -138,7 +138,7 @@ public class WeaponArsenal : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetButtonDown("Drop")) //Input.GetKeyDown(KeyCode.G))
         {
             //Drop the current weapon
             DropWeapon();

@@ -34,7 +34,10 @@ public class BasicMeleeAttackState : IAbstractTargetState
     private float m_ViewAngle;
 
     [SerializeField]
-    private LayerMask m_ScanLayerMask;
+    private LayerMask m_RadiusLayerMask;
+
+    [SerializeField]
+    private LayerMask m_RaycastLayerMask;
 
     [Space(10)]
     [Header("Other States")]
@@ -80,7 +83,7 @@ public class BasicMeleeAttackState : IAbstractTargetState
 
     private void HandleScanning()
     {
-        Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_ScanLayerMask);
+        Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_RadiusLayerMask.value);
 
         //For all targets in my radius
         for (int i = 0; i < colliders.Length; ++i)
@@ -110,10 +113,37 @@ public class BasicMeleeAttackState : IAbstractTargetState
                 if (degAngle <= m_ViewAngle)
                 {
                     //If so, check line of sight
-                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
-
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position) * 100);
+                    //Debug.DrawRay(ray.origin, ray.direction * 100, Color.blue);
                     RaycastHit hitInfo;
-                    bool success = Physics.Raycast(ray, out hitInfo);
+
+                    m_Behaviour.MakeCollidersIgnoreRaycasts(true);
+                    bool success = Physics.Raycast(ray, out hitInfo, m_RaycastLayerMask.value);
+                    m_Behaviour.MakeCollidersIgnoreRaycasts(false);
+
+                    /*
+                    //If so, check line of sight
+                    Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
+                    //Debug.DrawRay(ray.origin, ray.direction, Color.blue);
+
+                    RaycastHit[] hitInfo = Physics.RaycastAll(ray, m_ViewRadius, m_RaycastLayerMask.value);
+
+                    foreach (RaycastHit hit in hitInfo)
+                    {
+                        IDamageableObject foundDamageableObject = hit.collider.GetComponent<IDamageableObject>();
+                        if (foundDamageableObject != null)
+                        {
+                            foundDamageableObject = foundDamageableObject.GetMainDamageableObject();
+
+                            if (damageableObject != foundDamageableObject)
+                            {
+                                SwitchOut();
+                            }
+
+                            return;
+                        }
+                    }
+                    */
 
                     if (success)
                     {

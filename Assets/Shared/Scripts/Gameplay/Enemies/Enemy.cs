@@ -6,6 +6,10 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private IDamageableObject m_DamageableObject;
+    public IDamageableObject DamageableObject
+    {
+        get { return m_DamageableObject; }
+    }
 
     [SerializeField]
     private IAIBehaviour m_AIBehaviour;

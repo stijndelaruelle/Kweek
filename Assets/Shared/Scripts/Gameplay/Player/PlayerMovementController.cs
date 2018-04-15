@@ -325,7 +325,7 @@ public class PlayerMovementController : MonoBehaviour
         private void HandleSwitchingStates()
         {
             //Jumping
-            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            bool isJumping = Input.GetButtonDown("Jump"); //Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
                 //On the edge of being dirty(?)
@@ -346,7 +346,7 @@ public class PlayerMovementController : MonoBehaviour
             }
 
             //Ducking
-            bool isDucking = Input.GetKey(KeyCode.LeftAlt);
+            bool isDucking = Input.GetButton("Crouch"); //Input.GetKey(KeyCode.LeftAlt);
             if (isDucking)
             {
                 m_Player.SwitchState(PlayerState.Ducking);
@@ -354,7 +354,7 @@ public class PlayerMovementController : MonoBehaviour
             }
 
             //Walking
-            bool isWalking = Input.GetKey(KeyCode.LeftShift);
+            bool isWalking = Input.GetButton("Sprint"); //Input.GetKey(KeyCode.LeftAlt);
             if (isWalking == false)
             {
                 m_Player.SwitchState(PlayerState.Walking);
@@ -412,7 +412,7 @@ public class PlayerMovementController : MonoBehaviour
         private void HandleSwitchingStates()
         {
             //Jumping
-            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            bool isJumping = Input.GetButtonDown("Jump"); //Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
                 //On the edge of being dirty(?)
@@ -433,7 +433,7 @@ public class PlayerMovementController : MonoBehaviour
             }
 
             //Ducking
-            bool isDucking = Input.GetKey(KeyCode.LeftAlt);
+            bool isDucking = Input.GetButton("Crouch"); //Input.GetKey(KeyCode.LeftAlt);
             if (isDucking)
             {
                 m_Player.SwitchState(PlayerState.Ducking);
@@ -441,7 +441,7 @@ public class PlayerMovementController : MonoBehaviour
             }
 
             //Running (used to be always run and shift to walk (like in Quake & Counter-Strike)
-            bool isWalking = Input.GetKey(KeyCode.LeftShift);
+            bool isWalking = Input.GetButton("Sprint"); //Input.GetKey(KeyCode.LeftShift);
             if (isWalking == true)
             {
                 m_Player.SwitchState(PlayerState.Running);
@@ -516,7 +516,7 @@ public class PlayerMovementController : MonoBehaviour
         private void HandleSwitchingStates()
         {
             //Jumping
-            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            bool isJumping = Input.GetButtonDown("Jump"); //Input.GetKeyDown(KeyCode.Space);
             if (isJumping)
             {
                 //On the edge of being dirty(?)
@@ -537,7 +537,7 @@ public class PlayerMovementController : MonoBehaviour
             }
 
             //Stop Ducking
-            bool isDucking = Input.GetKey(KeyCode.LeftAlt);
+            bool isDucking = Input.GetButton("Crouch"); //Input.GetKey(KeyCode.LeftAlt);
             if (isDucking == false)
             {
                 //Check if we are even allowed to leave the ducking state
@@ -610,7 +610,7 @@ public class PlayerMovementController : MonoBehaviour
 
             float horizInput = Input.GetAxisRaw("Horizontal");
             float vertInput = Input.GetAxisRaw("Vertical");
-            bool isJumping = Input.GetKeyDown(KeyCode.Space);
+            bool isJumping = Input.GetButtonDown("Jump"); //Input.GetKeyDown(KeyCode.Space);
 
             if (isJumping && m_NumberOfJumps > 0)
             {

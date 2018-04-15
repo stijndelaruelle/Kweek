@@ -55,7 +55,7 @@ public class PickupHandler : MonoBehaviour
 
         if (pickup != null)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetButtonDown("Use")) //Input.GetKeyDown(KeyCode.E)
             {
                 pickup.Pickup(m_Player);
             }

@@ -35,6 +35,9 @@ public class EnemyBehaviour : IAIBehaviour
     [SerializeField]
     protected UnityMethodsForwarder m_Forwarder;
 
+    private List<Collider> m_Colliders;
+    private List<int> m_ColliderLayers;
+
     protected IState m_CurrentState;
     protected float m_LastSpeed; //Sometines the velocity can spike, if so reset to this value
 
@@ -59,10 +62,13 @@ public class EnemyBehaviour : IAIBehaviour
     //IAIBehaviour
     public override void Setup(List<Collider> ownerColliders)
     {
-        //foreach(Collider collider in ownerColliders)
-        //{
-        //    Physics.IgnoreCollision(m_TriggerCollider, collider);
-        //}
+        m_Colliders = ownerColliders;
+
+        m_ColliderLayers = new List<int>();
+        foreach (Collider collider in m_Colliders)
+        {
+            m_ColliderLayers.Add(collider.gameObject.layer);
+        }
     }
 
     public override void OnDeath()
@@ -131,6 +137,17 @@ public class EnemyBehaviour : IAIBehaviour
     //    if (TriggerExitEvent != null)
     //        TriggerExitEvent(other);
     //}
+
+    public void MakeCollidersIgnoreRaycasts(bool value)
+    {
+        for (int i = 0; i < m_Colliders.Count; ++i)
+        {
+            int layerID = 2;
+            if (value == false) { layerID = m_ColliderLayers[i]; }
+
+            m_Colliders[i].gameObject.layer = layerID;
+        }
+    }
 
     protected virtual void OnAnimatorIK(int layerIndex)
     {

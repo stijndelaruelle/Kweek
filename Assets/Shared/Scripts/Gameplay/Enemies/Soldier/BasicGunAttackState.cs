@@ -258,7 +258,7 @@ public class BasicGunAttackState : IAbstractTargetState
                 {
                     //If so, check line of sight
                     Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
-
+                    Debug.DrawRay(ray.origin, ray.direction * 100, Color.blue);
                     RaycastHit hitInfo;
                     bool success = Physics.Raycast(ray, out hitInfo);
 

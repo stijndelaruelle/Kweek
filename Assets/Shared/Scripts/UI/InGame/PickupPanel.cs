@@ -35,6 +35,8 @@ public class PickupPanel : MonoBehaviour
         }
 
         m_Visuals.SetActive(true);
-        m_PickupText.text = "Press [E] to pickup " + pickup.PickupName + ".";
+
+        //TODO: Not actually bound to a key yet.
+        m_PickupText.text = "Press [F] to pickup " + pickup.PickupName + ".";
     }
 }
