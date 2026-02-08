@@ -1,87 +1,89 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileFireBehaviour : IWeaponUseBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private float m_ShootCooldown = 0.0f;
-    private float m_ShootCooldownTimer;
-
-    [Tooltip("How much ammo does firing the gun 1 time take.")]
-    [SerializeField]
-    private int m_AmmoUseage = 1;
-
-    [SerializeField]
-    private PhysicalProjectile m_Projectile;
-
-    [SerializeField]
-    private Transform m_ProjectileSpawn;
-
-    [Space(10)]
-    [Header("Required references")]
-    [Space(5)]
-    [SerializeField]
-    private Animator m_Animator;
-    [SerializeField]
-    private string m_TriggerName = "FireTrigger";
-
-    //Events
-    public override event AmmoUseDelegate AmmoUseEvent;
-
-    public override void Setup(List<Collider> ignoredColliders)
+    public class ProjectileFireBehaviour : IWeaponUseBehaviour
     {
-    }
+        [SerializeField]
+        private float m_ShootCooldown = 0.0f;
+        private float m_ShootCooldownTimer = 0.0f;
 
-    private void Update()
-    {
-        HandleShootingCooldown();
-    }
+        [Tooltip("How much ammo does firing the gun 1 time take.")]
+        [SerializeField]
+        private int m_AmmoUseage = 1;
 
-    public override bool Use(Ray originalRay)
-    {
-        PhysicalProjectile projectile = GameObject.Instantiate<PhysicalProjectile>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
+        [SerializeField]
+        private PhysicalProjectile m_Projectile = null;
 
-        if (projectile != null)
+        [SerializeField]
+        private Transform m_ProjectileSpawn = null;
+
+        [Space(10)]
+        [Header("Required references")]
+        [Space(5)]
+        [SerializeField]
+        private Animator m_Animator = null;
+        [SerializeField]
+        private string m_TriggerName = "FireTrigger";
+
+        //Events
+        public override event AmmoUseDelegate AmmoUseEvent = null;
+
+        public override void Setup(List<Collider> ignoredColliders)
         {
-            //Look at this at a later stage. Controllers have undergone huge changes.
-            projectile.Fire(originalRay.direction, Vector3.zero);
-
-            //Animation & Cooldown
-            m_Animator.SetTrigger(m_TriggerName);
-            m_ShootCooldownTimer = m_ShootCooldown;
-
-            //Use ammo
-            if (AmmoUseEvent != null)
-                AmmoUseEvent(m_AmmoUseage);
-
-            return true;
         }
 
-        return false;
-    }
-
-    public override bool StopUse(Ray originalRay)
-    {
-        //This weapon has no need for this, however it's still generic enough to be included in the interface.
-        return false;
-    }
-
-    private void HandleShootingCooldown()
-    {
-        if (m_ShootCooldownTimer > 0.0f)
+        private void Update()
         {
-            m_ShootCooldownTimer -= Time.deltaTime;
+            HandleShootingCooldown();
+        }
 
-            if (m_ShootCooldownTimer <= 0.0f)
+        public override bool Use(Ray originalRay)
+        {
+            PhysicalProjectile projectile = GameObject.Instantiate<PhysicalProjectile>(m_Projectile, m_ProjectileSpawn.position, m_ProjectileSpawn.rotation);
+
+            if (projectile != null)
             {
-                m_ShootCooldownTimer = 0.0f;
+                //Look at this at a later stage. Controllers have undergone huge changes.
+                projectile.Fire(originalRay.direction, Vector3.zero);
+
+                //Animation & Cooldown
+                m_Animator.SetTrigger(m_TriggerName);
+                m_ShootCooldownTimer = m_ShootCooldown;
+
+                //Use ammo
+                if (AmmoUseEvent != null)
+                    AmmoUseEvent(m_AmmoUseage);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool StopUse(Ray originalRay)
+        {
+            //This weapon has no need for this, however it's still generic enough to be included in the interface.
+            return false;
+        }
+
+        private void HandleShootingCooldown()
+        {
+            if (m_ShootCooldownTimer > 0.0f)
+            {
+                m_ShootCooldownTimer -= Time.deltaTime;
+
+                if (m_ShootCooldownTimer <= 0.0f)
+                {
+                    m_ShootCooldownTimer = 0.0f;
+                }
             }
         }
-    }
 
-    public override bool CanUse()
-    {
-        return (m_ShootCooldownTimer == 0.0f);
+        public override bool CanUse()
+        {
+            return (m_ShootCooldownTimer == 0.0f);
+        }
     }
 }

@@ -1,83 +1,100 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PickupHandler : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Player m_Player;
-
-    [SerializeField]
-    private float m_Range;
-    private bool m_IsEnabled = true;
-
-    //Event
-    public event ChangePickupDelegate ChangePickupEvent;
-
-    private void Start()
+    public class PickupHandler : MonoBehaviour
     {
-        m_Player.DeathEvent += OnPlayerDeath;
-        m_Player.RespawnEvent += OnPlayerRespawn;
-    }
+        [SerializeField]
+        private Player m_Player = null;
 
-    private void OnDestroy()
-    {
-        if (m_Player == null)
-            return;
+        [SerializeField]
+        private float m_Range = 0.0f;
+        private bool m_IsEnabled = true;
+        private IPickup m_CurrentHoveredPickup = null;
 
-        m_Player.DeathEvent -= OnPlayerDeath;
-        m_Player.RespawnEvent -= OnPlayerRespawn;
-    }
+        //Event
+        public event ChangePickupDelegate ChangeHoveredPickupEvent = null;
 
-    private void Update()
-    {
-        if (!m_IsEnabled)
-            return;
-
-        //Fire a single ray (get only the first target)
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        RaycastHit hitInfo;
-        bool success = Physics.Raycast(ray, out hitInfo, m_Range);
-
-        Debug.DrawRay(ray.origin, ray.direction * m_Range, Color.red);
-
-        if (!success)
+        private void Start()
         {
-            FireChangePickupEvent(null);
-            return;
-        }
-
-        GameObject go = hitInfo.collider.gameObject;
-
-        //Did we hit a pickup?
-        IPickup pickup = go.GetComponent<IPickup>();
-
-        if (pickup != null)
-        {
-            if (Input.GetButtonDown("Use")) //Input.GetKeyDown(KeyCode.E)
+            if (m_Player != null)
             {
-                pickup.Pickup(m_Player);
+                m_Player.DeathEvent += OnPlayerDeath;
+                m_Player.RespawnEvent += OnPlayerRespawn;
             }
         }
 
-        FireChangePickupEvent(pickup);
-    }
+        private void OnDestroy()
+        {
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent -= OnPlayerDeath;
+                m_Player.RespawnEvent -= OnPlayerRespawn;
+            }
+        }
 
-    private void FireChangePickupEvent(IPickup pickup)
-    {
-        if (ChangePickupEvent != null)
-            ChangePickupEvent(pickup);
-    }
+        private void Update()
+        {
+            if (!m_IsEnabled)
+                return;
 
-    private void OnPlayerDeath()
-    {
-        m_IsEnabled = false;
-        FireChangePickupEvent(null);
-    }
+            UpdateHoveredPickup();
+            HandleInput();
+        }
 
-    private void OnPlayerRespawn()
-    {
-        m_IsEnabled = true;
+        private void UpdateHoveredPickup()
+        {
+            //Fire a single ray from the middle of the screen (get only the first target)
+            Ray centerScreenRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            RaycastHit hitInfo = default(RaycastHit);
+            bool success = Physics.Raycast(centerScreenRay, out hitInfo, m_Range);
+
+            Debug.DrawRay(centerScreenRay.origin, centerScreenRay.direction * m_Range, Color.red);
+
+            if (success == false)
+            {
+                SetHoveredPickup(null);
+                return;
+            }
+
+            //Did we hit a pickup?
+            GameObject hitGameObject = hitInfo.collider.gameObject;
+            IPickup pickup = hitGameObject.GetComponent<IPickup>();
+
+            SetHoveredPickup(pickup); //Can still be null at this point
+        }
+
+        private void HandleInput()
+        {
+            if (m_CurrentHoveredPickup == null)
+                return;
+
+            if (Input.GetButtonDown("Use")) //Input.GetKeyDown(KeyCode.E)
+                m_CurrentHoveredPickup.Pickup(m_Player);
+        }
+
+        private void SetHoveredPickup(IPickup pickup)
+        {
+            if (pickup == m_CurrentHoveredPickup)
+                return;
+
+            m_CurrentHoveredPickup = pickup;
+
+            if (ChangeHoveredPickupEvent != null)
+                ChangeHoveredPickupEvent(pickup);
+        }
+
+        //Callbacks
+        private void OnPlayerDeath()
+        {
+            m_IsEnabled = false;
+            SetHoveredPickup(null);
+        }
+
+        private void OnPlayerRespawn()
+        {
+            m_IsEnabled = true;
+        }
     }
 }

@@ -1,37 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class HealthPickup : BasicPickup
+namespace Kweek
 {
-    [Header("Health")]
-    [SerializeField]
-    private int m_Health;
-
-    [SerializeField]
-    private bool m_Overheal = true;
-
-    public override void Pickup(Player player)
+    public class HealthPickup : BasicPickup
     {
-        base.Pickup(player);
+        [Header("Health")]
+        [SerializeField]
+        private int m_Health = 0;
 
-        IDamageableObject damageableObject = player.DamageableObject;
+        [SerializeField]
+        private bool m_Overheal = true;
 
-        if (damageableObject != null)
+        public override void Pickup(Player player)
         {
-            int addedHealth = m_Health;
+            base.Pickup(player);
 
-            if (m_Overheal == false)
-            {
-                int diff = damageableObject.MaxHealth - damageableObject.Health;
-                if (diff < addedHealth)
-                    addedHealth = diff;
-            }
+            IDamageableObject damageableObject = player.DamageableObject;
 
-            if (addedHealth > 0)
+            if (damageableObject != null)
             {
-                damageableObject.Heal(addedHealth);
-                DestroyPickup();
+                int addedHealth = m_Health;
+
+                if (m_Overheal == false)
+                {
+                    int diff = damageableObject.MaxHealth - damageableObject.Health;
+                    if (diff < addedHealth)
+                        addedHealth = diff;
+                }
+
+                if (addedHealth > 0)
+                {
+                    damageableObject.Heal(addedHealth);
+                    DestroyPickup();
+                }
             }
         }
     }

@@ -1,23 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
-public class ZombieBehaviour : EnemyBehaviour
+namespace Kweek
 {
-    [Space(10)]
-    [Header("Weapon")]
-    [Space(5)]
-    [SerializeField]
-    private Weapon m_Weapon;
-    public Weapon Weapon
+    public class ZombieBehaviour : EnemyBehaviour
     {
-        get { return m_Weapon; }
-    }
+        [Space(10)]
+        [Header("Weapon")]
+        [Space(5)]
+        [SerializeField]
+        private Weapon m_Weapon = null;
+        public Weapon Weapon
+        {
+            get { return m_Weapon; }
+        }
 
-    public override void Setup(List<Collider> ownerColliders)
-    {
-        base.Setup(ownerColliders);
-        m_Weapon.Setup(ownerColliders, null);
+        public override void Setup(List<Collider> ownerColliders)
+        {
+            base.Setup(ownerColliders);
+
+            if (m_Weapon != null)
+                m_Weapon.Setup(ownerColliders, null);
+        }
     }
 }

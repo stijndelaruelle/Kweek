@@ -1,16 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DifficultyModeDefinition : ScriptableObject
+namespace Kweek
 {
-    [SerializeField]
-    private string m_DifficultyName;
-    public string DifficultyName
+    [CreateAssetMenu(fileName = "DifficultyModeDefinition", menuName = "Kweek/Difficulty Mode Definition")]
+    public class DifficultyModeDefinition : ScriptableObject
     {
-        get { return m_DifficultyName; }
-    }
+        [SerializeField]
+        private string m_DifficultyName = string.Empty;
+        public string DifficultyName
+        {
+            get { return m_DifficultyName; }
+        }
 
-    //More options are expected to follow.
-    //Could become more than difficulty -> game mode
+        //More options are expected to follow.
+        //Could become more than difficulty -> game mode
+    }
 }

@@ -1,20 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelNameDisplay : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Text m_Text;
-
-    private void Start()
+    public class LevelNameDisplay : MonoBehaviour
     {
-        LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
+        [SerializeField]
+        private Text m_Text = null;
 
-        if (levelData == null)
-            return;
+        private void Start()
+        {
+            LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
 
-        m_Text.text = levelData.LevelName;
+            if (levelData == null)
+                return;
+
+            m_Text.text = levelData.LevelName;
+        }
     }
 }

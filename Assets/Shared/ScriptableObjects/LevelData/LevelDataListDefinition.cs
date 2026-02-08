@@ -1,32 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Looks silly, but this makes sure students don't have to edit the main menu file.
-public class LevelDataListDefinition : ScriptableObject
+namespace Kweek
 {
-    [SerializeField]
-    private List<LevelDataDefinition> m_Levels;
-    public List<LevelDataDefinition> Levels
+    [CreateAssetMenu(fileName = "LevelDataListDefinition", menuName = "Kweek/Level Data List Definition")]
+    public class LevelDataListDefinition : ScriptableObject
     {
-        get { return m_Levels; }
-    }
+        [SerializeField]
+        private List<LevelDataDefinition> m_Levels = null;
+        public List<LevelDataDefinition> Levels
+        {
+            get { return m_Levels; }
+        }
 
-    public int GetLevelCount()
-    {
-        return m_Levels.Count;
-    }
+        public int GetLevelCount()
+        {
+            if (m_Levels == null)
+                return 0;
 
-    public LevelDataDefinition GetLevel(int id)
-    {
-        if (id < 0 || id >= m_Levels.Count)
-            return null;
+            return m_Levels.Count;
+        }
 
-        return m_Levels[id];
-    }
+        public LevelDataDefinition GetLevel(int id)
+        {
+            if (m_Levels == null)
+                return null;
 
-    public int GetLevelID(LevelDataDefinition levelData)
-    {
-        return m_Levels.IndexOf(levelData);
+            if (id < 0 || id >= m_Levels.Count)
+                return null;
+
+            return m_Levels[id];
+        }
+
+        public int GetLevelID(LevelDataDefinition levelData)
+        {
+            if (m_Levels == null)
+                return -1;
+
+            return m_Levels.IndexOf(levelData);
+        }
     }
 }

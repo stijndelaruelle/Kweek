@@ -1,85 +1,87 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageZone : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private int m_DamagePerTick;
-
-    [SerializeField]
-    private float m_TickRate;
-
-    //Keep lists in sync. Didn't feel like creating an extra struct to hold these together
-    private List<float> m_Timers;
-    private List<IDamageableObject> m_DamageableObjects;
-    
-    private void Awake()
+    public class DamageZone : MonoBehaviour
     {
-        m_Timers = new List<float>();
-        m_DamageableObjects = new List<IDamageableObject>();
-    }
+        [SerializeField]
+        private int m_DamagePerTick = 0;
 
-    private void Update()
-    {
-        //Each object has their own timer
-        for (int i = 0; i < m_Timers.Count; ++i)
+        [SerializeField]
+        private float m_TickRate = 0.0f;
+
+        //Keep lists in sync. Didn't feel like creating an extra struct to hold these together
+        private List<float> m_Timers = null;
+        private List<IDamageableObject> m_DamageableObjects = null;
+
+        private void Awake()
         {
-            m_Timers[i] += Time.deltaTime;
+            m_Timers = new List<float>();
+            m_DamageableObjects = new List<IDamageableObject>();
+        }
 
-            if (m_Timers[i] > m_TickRate)
+        private void Update()
+        {
+            //Each object has their own timer
+            for (int i = 0; i < m_Timers.Count; ++i)
             {
-                m_Timers[i] -= m_TickRate;
+                m_Timers[i] += Time.deltaTime;
 
-                IDamageableObject damageableObject = m_DamageableObjects[i];
-                damageableObject.Damage(m_DamagePerTick);
-               
-                if (damageableObject.IsDead())
+                if (m_Timers[i] > m_TickRate)
                 {
-                    RemoveDamageableObject(damageableObject);
+                    m_Timers[i] -= m_TickRate;
+
+                    IDamageableObject damageableObject = m_DamageableObjects[i];
+                    damageableObject.Damage(m_DamagePerTick);
+
+                    if (damageableObject.IsDead())
+                    {
+                        RemoveDamageableObject(damageableObject);
+                    }
                 }
             }
         }
-    }
 
-    private void AddDamageableObject(IDamageableObject damageableObject)
-    {
-        if (damageableObject != null && damageableObject.IsDead() == false)
+        private void AddDamageableObject(IDamageableObject damageableObject)
         {
-            if (m_DamageableObjects.Contains(damageableObject) == false)
+            if (damageableObject != null && damageableObject.IsDead() == false)
             {
-                Debug.Log("Started damaging: " + damageableObject.gameObject.name);
-                m_DamageableObjects.Add(damageableObject);
-                m_Timers.Add(0.0f);
+                if (m_DamageableObjects.Contains(damageableObject) == false)
+                {
+                    Debug.Log("Started damaging: " + damageableObject.gameObject.name);
+                    m_DamageableObjects.Add(damageableObject);
+                    m_Timers.Add(0.0f);
+                }
             }
         }
-    }
 
-    private void RemoveDamageableObject(IDamageableObject damageableObject)
-    {
-        if (damageableObject != null)
+        private void RemoveDamageableObject(IDamageableObject damageableObject)
         {
-            int index = m_DamageableObjects.IndexOf(damageableObject);
-            if (index != -1)
+            if (damageableObject != null)
             {
-                Debug.Log("Stopped damaging: " + damageableObject.gameObject.name);
+                int index = m_DamageableObjects.IndexOf(damageableObject);
+                if (index != -1)
+                {
+                    Debug.Log("Stopped damaging: " + damageableObject.gameObject.name);
 
-                m_DamageableObjects.RemoveAt(index);
-                m_Timers.RemoveAt(index);
+                    m_DamageableObjects.RemoveAt(index);
+                    m_Timers.RemoveAt(index);
+                }
             }
         }
-    }
 
-    //Doesn't work when objects suddenly dissapear
-    private void OnTriggerEnter(Collider collider)
-    {
-        IDamageableObject damageableObject = collider.gameObject.GetComponent<IDamageableObject>();
-        AddDamageableObject(damageableObject);
-    }
+        //Doesn't work when objects suddenly dissapear
+        private void OnTriggerEnter(Collider collider)
+        {
+            IDamageableObject damageableObject = collider.gameObject.GetComponent<IDamageableObject>();
+            AddDamageableObject(damageableObject);
+        }
 
-    private void OnTriggerExit(Collider collider)
-    {
-        IDamageableObject damageableObject = collider.gameObject.GetComponent<IDamageableObject>();
-        RemoveDamageableObject(damageableObject);
+        private void OnTriggerExit(Collider collider)
+        {
+            IDamageableObject damageableObject = collider.gameObject.GetComponent<IDamageableObject>();
+            RemoveDamageableObject(damageableObject);
+        }
     }
 }

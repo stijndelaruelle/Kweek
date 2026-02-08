@@ -1,23 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class GrenadeShellProjectile : PhysicalProjectile
+namespace Kweek
 {
-    private bool m_HasBounced = false;
-
-    private void OnCollisionEnter(Collision collision)
+    public class GrenadeShellProjectile : PhysicalProjectile
     {
-        GameObject root = collision.gameObject.transform.root.gameObject;
+        private bool m_HasBounced = false;
 
-        //Direct hit
-        IDamageableObject damageableObject = root.GetComponent<IDamageableObject>();
-
-        if (damageableObject != null && m_HasBounced == false)
+        private void OnCollisionEnter(Collision collision)
         {
-            Explode(damageableObject);
-        }
+            GameObject root = collision.gameObject.transform.root.gameObject;
 
-        m_HasBounced = true;
+            //Direct hit
+            IDamageableObject damageableObject = root.GetComponent<IDamageableObject>();
+
+            if (damageableObject != null && m_HasBounced == false)
+                Explode(damageableObject);
+
+            m_HasBounced = true;
+        }
     }
 }

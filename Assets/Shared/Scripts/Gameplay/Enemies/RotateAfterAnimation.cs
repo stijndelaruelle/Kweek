@@ -1,21 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class RotateAfterAnimation : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Animator m_Animator;
-
-    [SerializeField]
-    private Vector3 m_EulerAngles;
-
-    private void LateUpdate()
+    public class RotateAfterAnimation : MonoBehaviour
     {
-        if (m_Animator.enabled == false)
-            return;
+        [SerializeField]
+        private Animator m_Animator = null;
 
-        //Rotate ourselves to the target direction, our model is a bit offset so we can't let the navmeshagent handle it.
-        transform.rotation *= Quaternion.Euler(m_EulerAngles);
+        [SerializeField]
+        private Vector3 m_EulerAngles = Vector3.zero;
+
+        //Cache
+        private Transform m_Transform = null;
+
+        private void Awake()
+        {
+            m_Transform = gameObject.GetComponent<Transform>();
+        }
+
+        private void LateUpdate()
+        {
+            if (m_Transform == null || m_Animator.enabled == false)
+                return;
+
+            //Rotate ourselves to the target direction, our model is a bit offset so we can't let the navmeshagent handle it.
+            m_Transform.rotation *= Quaternion.Euler(m_EulerAngles);
+        }
     }
 }

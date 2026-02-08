@@ -1,17 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class FullClipWeaponPickup : WeaponPickup
+﻿namespace Kweek
 {
-    public override void Pickup(Player player)
+    public class FullClipWeaponPickup : WeaponPickup
     {
-        base.Pickup(player);
-
-        FullClipReloadBehaviour reloadBehaviour = m_FirstPersonWeaponInstance.GetComponent<FullClipReloadBehaviour>();
-        if (reloadBehaviour != null)
+        public override void Pickup(Player player)
         {
-            reloadBehaviour.SetAmmo(m_Ammo);
+            base.Pickup(player);
+
+            FullClipReloadBehaviour reloadBehaviour = m_FirstPersonWeaponInstance.GetComponent<FullClipReloadBehaviour>();
+            
+            if (reloadBehaviour != null)
+                reloadBehaviour.SetAmmo(m_Ammo);
         }
     }
 }

@@ -1,31 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class WeaponPickup : BasicPickup
+namespace Kweek
 {
-    [Header("Weapon")]
-    [SerializeField]
-    private Weapon m_FirstPersonWeapon;
-    protected Weapon m_FirstPersonWeaponInstance;
-
-    //Every gun has the ability to have ammo (IAmmoUseBehaviour)
-    //How they use this value is completely up to them (see FullClipWeaponPickup for an example)
-    [SerializeField]
-    protected int m_Ammo;
-    public int Ammo
+    public class WeaponPickup : BasicPickup
     {
-        get { return m_Ammo; }
-        set { m_Ammo = value; }
-    }
+        [Header("Weapon")]
+        [SerializeField]
+        private Weapon m_FirstPersonWeapon = null;
+        protected Weapon m_FirstPersonWeaponInstance = null;
 
-    public override void Pickup(Player player)
-    {
-        base.Pickup(player);
+        //Every gun has the ability to have ammo (IAmmoUseBehaviour)
+        //How they use this value is completely up to them (see FullClipWeaponPickup for an example)
+        [SerializeField]
+        protected int m_Ammo = 0;
+        public int Ammo
+        {
+            get { return m_Ammo; }
+            set { m_Ammo = value; }
+        }
 
-        WeaponArsenal weaponArsenal = player.WeaponArsenal;
-        m_FirstPersonWeaponInstance = weaponArsenal.AddWeapon(m_FirstPersonWeapon);
+        public override void Pickup(Player player)
+        {
+            base.Pickup(player);
 
-        DestroyPickup();
+            WeaponArsenal weaponArsenal = player.WeaponArsenal;
+            m_FirstPersonWeaponInstance = weaponArsenal.AddWeapon(m_FirstPersonWeapon);
+
+            DestroyPickup();
+        }
     }
 }

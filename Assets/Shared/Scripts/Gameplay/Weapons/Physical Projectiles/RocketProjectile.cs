@@ -1,15 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class RocketProjectile : PhysicalProjectile
+namespace Kweek
 {
-    private void OnCollisionEnter(Collision collision)
+    public class RocketProjectile : PhysicalProjectile
     {
-        GameObject root = collision.gameObject.transform.root.gameObject;
+        private void OnCollisionEnter(Collision collision)
+        {
+            GameObject root = collision.gameObject.transform.root.gameObject;
 
-        //Direct hit
-        IDamageableObject damageableObject = root.GetComponent<IDamageableObject>();
-        Explode(damageableObject);
+            //Direct hit
+            IDamageableObject damageableObject = root.GetComponent<IDamageableObject>();
+            Explode(damageableObject);
+        }
     }
 }

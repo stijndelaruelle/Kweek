@@ -1,136 +1,159 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Very related to PhysicalProjectile, see if we can merge this later
-public delegate void FullyChargeDelegate();
-
-public class ChargeableProjectile : MonoBehaviour
+namespace Kweek
 {
-    [Header("Damage")]
-    [Space(5)]
-    [SerializeField]
-    [MinMaxRange(0f, 100f)]
-    [Tooltip("Min: Low charge / Max: High charge")]
-    protected MinMaxRange m_DirectImpactDamage;
+    //Very related to PhysicalProjectile, see if we can merge this later
+    public delegate void FullyChargeDelegate();
 
-    [SerializeField]
-    [MinMaxRange(0f, 100f)]
-    [Tooltip("Min: Low charge / Max: High charge")]
-    protected MinMaxRange m_ExplosionDamage;
-
-    [SerializeField]
-    [MinMaxRange(0f, 100f)]
-    [Tooltip("Min: Low charge / Max: High charge")]
-    protected MinMaxRange m_ExplosionRadius;
-
-    [SerializeField]
-    [MinMaxRange(0f, 10000f)]
-    [Tooltip("Min: Low charge / Max: High charge")]
-    protected MinMaxRange m_ExplosionForce;
-
-    [Space(10)]
-    [Header("Charging")]
-    [Space(5)]
-    [SerializeField]
-    [MinMaxRange(0f, 100f)]
-    [Tooltip("Uniform / Min: Low charge / Max: High charge")]
-    private MinMaxRange m_Scale;
-
-    [SerializeField]
-    [MinMaxRange(0f, 100f)]
-    [Tooltip("Min: Low charge / Max: High charge")]
-    private MinMaxRange m_LifeTime;
-    private float m_Counter;
-
-    [SerializeField]
-    [MinMaxRange(0f, 10000f)]
-    [Tooltip("Min: High charge / Max: Low charge")]
-    private MinMaxRange m_InitialSpeed;
-
-    [SerializeField]
-    [MinMaxRange(0f, 100f)]
-    protected MinMaxRange m_ChargeLimit;
-
-    [SerializeField]
-    private Rigidbody m_Rigidbody;
-    private float m_ChargeValue = 0.0f;
-
-    public event FullyChargeDelegate FullChargedEvent;
-
-    public void Charge(float value)
+    public class ChargeableProjectile : MonoBehaviour
     {
-        m_ChargeValue += value;
+        [Header("Damage")]
+        [Space(5)]
+        [SerializeField]
+        [MinMaxRange(0f, 100f)]
+        [Tooltip("Min: Low charge / Max: High charge")]
+        protected MinMaxRange m_DirectImpactDamage = null;
 
-        if (m_ChargeValue >= m_ChargeLimit.Max)
+        [SerializeField]
+        [MinMaxRange(0f, 100f)]
+        [Tooltip("Min: Low charge / Max: High charge")]
+        protected MinMaxRange m_ExplosionDamage = null;
+
+        [SerializeField]
+        [MinMaxRange(0f, 100f)]
+        [Tooltip("Min: Low charge / Max: High charge")]
+        protected MinMaxRange m_ExplosionRadius = null;
+
+        [SerializeField]
+        [MinMaxRange(0f, 10000f)]
+        [Tooltip("Min: Low charge / Max: High charge")]
+        protected MinMaxRange m_ExplosionForce = null;
+
+        [Space(10)]
+        [Header("Charging")]
+        [Space(5)]
+        [SerializeField]
+        [MinMaxRange(0f, 100f)]
+        [Tooltip("Uniform / Min: Low charge / Max: High charge")]
+        private MinMaxRange m_Scale = null;
+
+        [SerializeField]
+        [MinMaxRange(0f, 100f)]
+        [Tooltip("Min: Low charge / Max: High charge")]
+        private MinMaxRange m_LifeTime = null;
+        private float m_Counter = 0.0f;
+
+        [SerializeField]
+        [MinMaxRange(0f, 10000f)]
+        [Tooltip("Min: High charge / Max: Low charge")]
+        private MinMaxRange m_InitialSpeed = null;
+
+        [SerializeField]
+        [MinMaxRange(0f, 100f)]
+        protected MinMaxRange m_ChargeLimit = null;
+
+        [SerializeField]
+        private Rigidbody m_Rigidbody = null;
+        private float m_ChargeValue = 0.0f;
+
+        public event FullyChargeDelegate FullChargedEvent = null;
+
+        public void Charge(float value)
         {
-            if (FullChargedEvent != null)
-                FullChargedEvent();
-        }
+            m_ChargeValue += value;
 
-        //Make bigger
-        float scale = m_Scale.GetValue(GetNormalizedChargeTime());
-        transform.localScale = new Vector3(scale, scale, scale);
-    }
-
-    public bool Fire(Vector3 direction, Vector3 baseVelocity)
-    {
-        if (CanFire() == false)
-            return false;
-
-        float speed = m_InitialSpeed.GetValue(1.0f - GetNormalizedChargeTime());
-        Vector3 force = (direction * speed) + baseVelocity;
-        m_Rigidbody.AddForce(force);
-        return true;
-    }
-
-
-    private void Update()
-    {
-        HandleLifeTime();
-    }
-
-    private void HandleLifeTime()
-    {
-        m_Counter += Time.deltaTime;
-
-        if (m_Counter >= m_LifeTime.GetValue(GetNormalizedChargeTime()))
-        {
-            Explode(null);
-        }
-    }
-
-    protected void Explode(IDamageableObject directImpactTarget)
-    {
-        float directImpactDamage = m_DirectImpactDamage.GetValue(GetNormalizedChargeTime());
-        float explosionDamage = m_ExplosionDamage.GetValue(GetNormalizedChargeTime());
-
-        float explosionRadius = m_ExplosionRadius.GetValue(GetNormalizedChargeTime());
-        float explosionForce = m_ExplosionForce.GetValue(GetNormalizedChargeTime());
-
-
-        //Explosion damage & pushback
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
-        List<IDamageableObject> hitObjects = new List<IDamageableObject>();
-
-        //Collect all the unique objects (objects can consist of multiple colliders)
-        for (int i = 0; i < colliders.Length; ++i)
-        {
-            IDamageableObject root = null;
-
-            IDamageableObject damageableObject = colliders[i].gameObject.GetComponent<IDamageableObject>();
-            if (damageableObject != null) root = damageableObject.GetMainDamageableObject();
-
-            if (root != null && !hitObjects.Contains(root))
+            if (m_ChargeValue >= m_ChargeLimit.Max)
             {
-                hitObjects.Add(root);
+                if (FullChargedEvent != null)
+                    FullChargedEvent();
             }
 
-            //Did we hit a rigidbody?
-            Rigidbody rigidBody = colliders[i].transform.gameObject.GetComponent<Rigidbody>();
-            if (rigidBody != null)
+            //Make bigger
+            float scale = m_Scale.GetValue(GetNormalizedChargeTime());
+            transform.localScale = new Vector3(scale, scale, scale);
+        }
+
+        public bool Fire(Vector3 direction, Vector3 baseVelocity)
+        {
+            if (CanFire() == false)
+                return false;
+
+            float speed = m_InitialSpeed.GetValue(1.0f - GetNormalizedChargeTime());
+            Vector3 force = (direction * speed) + baseVelocity;
+            m_Rigidbody.AddForce(force);
+            return true;
+        }
+
+
+        private void Update()
+        {
+            HandleLifeTime();
+        }
+
+        private void HandleLifeTime()
+        {
+            m_Counter += Time.deltaTime;
+
+            if (m_Counter >= m_LifeTime.GetValue(GetNormalizedChargeTime()))
             {
-                Vector3 direction = (colliders[i].bounds.center - transform.position);
+                Explode(null);
+            }
+        }
+
+        protected void Explode(IDamageableObject directImpactTarget)
+        {
+            float directImpactDamage = m_DirectImpactDamage.GetValue(GetNormalizedChargeTime());
+            float explosionDamage = m_ExplosionDamage.GetValue(GetNormalizedChargeTime());
+
+            float explosionRadius = m_ExplosionRadius.GetValue(GetNormalizedChargeTime());
+            float explosionForce = m_ExplosionForce.GetValue(GetNormalizedChargeTime());
+
+
+            //Explosion damage & pushback
+            Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
+            List<IDamageableObject> hitObjects = new List<IDamageableObject>();
+
+            //Collect all the unique objects (objects can consist of multiple colliders)
+            for (int i = 0; i < colliders.Length; ++i)
+            {
+                IDamageableObject root = null;
+
+                IDamageableObject damageableObject = colliders[i].gameObject.GetComponent<IDamageableObject>();
+                if (damageableObject != null) root = damageableObject.GetMainDamageableObject();
+
+                if (root != null && !hitObjects.Contains(root))
+                {
+                    hitObjects.Add(root);
+                }
+
+                //Did we hit a rigidbody?
+                Rigidbody rigidBody = colliders[i].transform.gameObject.GetComponent<Rigidbody>();
+                if (rigidBody != null)
+                {
+                    Vector3 direction = (colliders[i].bounds.center - transform.position);
+                    Vector3 normDirection = direction.normalized;
+
+                    float distance = direction.magnitude;
+                    float normDistance = distance / explosionRadius; //0 = super close, 1 = furthest away
+                    if (normDistance > 1.0f) normDistance = 1.0f;
+                    float inversedNormDistance = 1.0f - normDistance;  //1 = super close, 0 = furthest away (used as a multiplier)
+
+                    rigidBody.AddForceAtPosition(normDirection * (explosionForce * inversedNormDistance), colliders[i].bounds.center);
+                }
+            }
+
+            //For each unique object do damage & push back calculations
+            foreach (IDamageableObject damageableObject in hitObjects)
+            {
+                IMoveableObject moveableObject = damageableObject.GetComponent<IMoveableObject>();
+
+                Vector3 centerOfMass = transform.position;
+                if (moveableObject != null) centerOfMass = moveableObject.GetCenterOfMass();
+
+                //Get the center position of 
+                //Calculate distance for damage falloff & explosion force
+                Vector3 direction = (centerOfMass - transform.position);
                 Vector3 normDirection = direction.normalized;
 
                 float distance = direction.magnitude;
@@ -138,78 +161,57 @@ public class ChargeableProjectile : MonoBehaviour
                 if (normDistance > 1.0f) normDistance = 1.0f;
                 float inversedNormDistance = 1.0f - normDistance;  //1 = super close, 0 = furthest away (used as a multiplier)
 
-                rigidBody.AddForceAtPosition(normDirection * (explosionForce * inversedNormDistance), colliders[i].bounds.center);
+                //Did we hit a damageableObjet
+                if (damageableObject != null) //directImpactTarget already had his fair share of damage
+                {
+                    if (damageableObject == directImpactTarget)
+                    {
+                        damageableObject.Damage(Mathf.CeilToInt(directImpactDamage));
+                    }
+                    else
+                    {
+                        damageableObject.Damage(Mathf.CeilToInt(explosionDamage * inversedNormDistance));
+                    }
+                }
+
+                //Did we hit a moveableObject?
+                if (moveableObject != null)
+                {
+                    //Always fly up a bit (for fun)
+                    normDirection.y += 0.75f;
+                    normDirection.Normalize();
+
+                    moveableObject.AddVelocity(normDirection * (explosionForce * inversedNormDistance));
+                    Debug.Log(inversedNormDistance);
+                }
             }
+
+            Destroy(gameObject);
         }
 
-        //For each unique object do damage & push back calculations
-        foreach (IDamageableObject damageableObject in hitObjects)
+        private float GetNormalizedChargeTime()
         {
-            IMoveableObject moveableObject = damageableObject.GetComponent<IMoveableObject>();
-
-            Vector3 centerOfMass = transform.position;
-            if (moveableObject != null) centerOfMass = moveableObject.GetCenterOfMass();
-
-            //Get the center position of 
-            //Calculate distance for damage falloff & explosion force
-            Vector3 direction = (centerOfMass - transform.position);
-            Vector3 normDirection = direction.normalized;
-
-            float distance = direction.magnitude;
-            float normDistance = distance / explosionRadius; //0 = super close, 1 = furthest away
-            if (normDistance > 1.0f) normDistance = 1.0f;
-            float inversedNormDistance = 1.0f - normDistance;  //1 = super close, 0 = furthest away (used as a multiplier)
-
-            //Did we hit a damageableObjet
-            if (damageableObject != null) //directImpactTarget already had his fair share of damage
-            {
-                if (damageableObject == directImpactTarget)
-                {
-                    damageableObject.Damage(Mathf.CeilToInt(directImpactDamage));
-                }
-                else
-                {
-                    damageableObject.Damage(Mathf.CeilToInt(explosionDamage * inversedNormDistance));
-                }
-            }
-
-            //Did we hit a moveableObject?
-            if (moveableObject != null)
-            {
-                //Always fly up a bit (for fun)
-                normDirection.y += 0.75f;
-                normDirection.Normalize();
-
-                moveableObject.AddVelocity(normDirection * (explosionForce * inversedNormDistance));
-                Debug.Log(inversedNormDistance);
-            }
+            return (m_ChargeValue / m_ChargeLimit.Max);
         }
 
-        Destroy(gameObject);
-    }
+        public bool CanFire()
+        {
+            return (m_ChargeValue >= m_ChargeLimit.Min);
+        }
 
-    private float GetNormalizedChargeTime()
-    {
-        return (m_ChargeValue / m_ChargeLimit.Max);
-    }
+        private void OnCollisionEnter(Collision collision)
+        {
+            GameObject root = collision.gameObject.transform.root.gameObject;
 
-    public bool CanFire()
-    {
-        return (m_ChargeValue >= m_ChargeLimit.Min);
-    }
+            //Direct hit
+            IDamageableObject damageableObject = root.GetComponent<IDamageableObject>();
+            Explode(damageableObject);
+        }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        GameObject root = collision.gameObject.transform.root.gameObject;
-
-        //Direct hit
-        IDamageableObject damageableObject = root.GetComponent<IDamageableObject>();
-        Explode(damageableObject);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, m_ExplosionRadius.GetValue(GetNormalizedChargeTime()));
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, m_ExplosionRadius.GetValue(GetNormalizedChargeTime()));
+        }
     }
 }

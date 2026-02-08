@@ -1,109 +1,110 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CameraDeathMotion : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Player m_Player;
-
-    [SerializeField]
-    private Collider m_PlayerCollider;
-
-    [Space(10)]
-    [Header("Position")]
-    [Space(5)]
-    [SerializeField]
-    private Transform m_TargetPosition;
-    private Vector3 m_DefaultPosition;
-
-    [SerializeField]
-    private float m_MovementSpeed;
-
-    [Space(10)]
-    [Header("Rotation")]
-    [Space(5)]
-    [SerializeField]
-    private Transform m_FollowObject;
-    private bool m_IsFollowing = false;
-
-    [SerializeField]
-    private float m_RotationSpeed;
-
-    //"Cheap" way to make sure we don't go trough walls
-    [Space(10)]
-    [Header("Physics")]
-    [Space(5)]
-
-    [SerializeField]
-    private Rigidbody m_RigidBody;
-
-    [SerializeField]
-    private Collider m_Collider;
-
-    private void Awake()
+    public class CameraDeathMotion : MonoBehaviour
     {
-        m_DefaultPosition = transform.localPosition.Copy();
-    }
+        [SerializeField]
+        private Player m_Player = null;
 
-    private void Start()
-    {
-        if (m_Player != null)
+        [SerializeField]
+        private Collider m_PlayerCollider = null;
+
+        [Space(10)]
+        [Header("Position")]
+        [Space(5)]
+        [SerializeField]
+        private Transform m_TargetTransform = null;
+        private Vector3 m_DefaultPosition = Vector3.zero;
+
+        [SerializeField]
+        private float m_MovementSpeed = 0.0f;
+
+        [Space(10)]
+        [Header("Rotation")]
+        [Space(5)]
+        [SerializeField]
+        private Transform m_FollowObject = null;
+        private bool m_IsFollowing = false;
+
+        [SerializeField]
+        private float m_RotationSpeed = 0.0f;
+
+        //"Cheap" way to make sure we don't go trough walls
+        [Space(10)]
+        [Header("Physics")]
+        [Space(5)]
+
+        [SerializeField]
+        private Rigidbody m_RigidBody = null;
+
+        [SerializeField]
+        private Collider m_Collider = null;
+
+        private void Awake()
         {
-            m_Player.DeathEvent += OnPlayerDeath;
-            m_Player.RespawnEvent += OnPlayerRespawn;
+            m_DefaultPosition = transform.localPosition.Copy();
         }
 
-        //Ignore collision between the player and the camera
-        //Physics.IgnoreCollision(m_PlayerCollider, m_Collider, true);
-
-        Reset();
-    }
-
-    private void OnDestroy()
-    {
-        if (m_Player != null)
+        private void Start()
         {
-            m_Player.DeathEvent -= OnPlayerDeath;
-            m_Player.RespawnEvent -= OnPlayerRespawn;
-        }
-    }
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent += OnPlayerDeath;
+                m_Player.RespawnEvent += OnPlayerRespawn;
+            }
 
-    private void Update()
-    {
-        if (m_IsFollowing)
+            //Ignore collision between the player and the camera
+            //Physics.IgnoreCollision(m_PlayerCollider, m_Collider, true);
+
+            Reset();
+        }
+
+        private void OnDestroy()
         {
-            Quaternion targetRotation = Quaternion.LookRotation(m_FollowObject.transform.position - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, m_RotationSpeed * Time.deltaTime);
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent -= OnPlayerDeath;
+                m_Player.RespawnEvent -= OnPlayerRespawn;
+            }
         }
-    }
 
-    private void Reset()
-    {
-        m_IsFollowing = false;
+        private void Update()
+        {
+            if (m_IsFollowing)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(m_FollowObject.transform.position - transform.position);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, m_RotationSpeed * Time.deltaTime);
+            }
+        }
 
-        transform.localPosition = m_DefaultPosition;
+        private void Reset()
+        {
+            m_IsFollowing = false;
 
-        m_RigidBody.isKinematic = true;
-        m_Collider.enabled = false;
-    }
+            transform.localPosition = m_DefaultPosition;
 
-    private void OnPlayerDeath()
-    {
-        if (m_IsFollowing == true)
-            return;
+            m_RigidBody.isKinematic = true;
+            m_Collider.enabled = false;
+        }
 
-        m_IsFollowing = true;
+        private void OnPlayerDeath()
+        {
+            if (m_IsFollowing == true)
+                return;
 
-        m_RigidBody.isKinematic = false;
-        m_Collider.enabled = true;
+            m_IsFollowing = true;
 
-        Vector3 diff = (m_TargetPosition.position - transform.position).normalized;
-        m_RigidBody.AddForce(diff * m_MovementSpeed, ForceMode.Impulse);
-    }
+            m_RigidBody.isKinematic = false;
+            m_Collider.enabled = true;
 
-    private void OnPlayerRespawn()
-    {
-        Reset();
+            Vector3 diff = (m_TargetTransform.position - transform.position).normalized;
+            m_RigidBody.AddForce(diff * m_MovementSpeed, ForceMode.Impulse);
+        }
+
+        private void OnPlayerRespawn()
+        {
+            Reset();
+        }
     }
 }

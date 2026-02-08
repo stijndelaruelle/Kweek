@@ -1,47 +1,46 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 
-public class CharacterFootstepEffect : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private SurfaceTypeDefinition m_DefaultSurfaceType;
-
-    [SerializeField]
-    private AudioSource m_AudioSource;
-
-    public void PlayFootstep()
+    public class CharacterFootstepEffect : MonoBehaviour
     {
-        List<AudioClip> footstepSounds = m_DefaultSurfaceType.FootstepSounds;
+        [SerializeField]
+        private SurfaceTypeDefinition m_DefaultSurfaceType = null;
 
-        //Determine the current underground
-        SurfaceType surfaceType = GetSurfaceType();
-        if (surfaceType != null)
+        [SerializeField]
+        private AudioSource m_AudioSource = null;
+
+        public void PlayFootstep()
         {
-            if (surfaceType.FootstepSounds != null)
-                footstepSounds = surfaceType.FootstepSounds;
+            List<AudioClip> footstepSounds = m_DefaultSurfaceType.FootstepSounds;
+
+            //Determine the current underground
+            SurfaceType surfaceType = GetSurfaceType();
+            if (surfaceType != null)
+            {
+                if (surfaceType.FootstepSounds != null)
+                    footstepSounds = surfaceType.FootstepSounds;
+            }
+
+            //Take a random footstep sound
+            int randSound = 0;
+            if (footstepSounds.Count > 1) randSound = UnityEngine.Random.Range(0, footstepSounds.Count - 1);
+
+            //Play the land sound
+            m_AudioSource.clip = footstepSounds[randSound];
+            m_AudioSource.Play();
         }
 
-        //Take a random footstep sound
-        int randSound = 0;
-        if (footstepSounds.Count > 1) randSound = UnityEngine.Random.Range(0, footstepSounds.Count - 1);
-
-        //Play the land sound
-        m_AudioSource.clip = footstepSounds[randSound];
-        m_AudioSource.Play();
-    }
-
-    private SurfaceType GetSurfaceType()
-    {
-        RaycastHit hitInfo;
-        bool success = Physics.Raycast(transform.position, Vector3.down, out hitInfo, 10.0f);
-
-        if (success)
+        private SurfaceType GetSurfaceType()
         {
-            return hitInfo.collider.gameObject.GetComponent<SurfaceType>();
-        }
+            RaycastHit hitInfo = default(RaycastHit);
+            bool success = Physics.Raycast(transform.position, Vector3.down, out hitInfo, 10.0f);
 
-        return null;
+            if (success)
+                return hitInfo.collider.gameObject.GetComponent<SurfaceType>();
+
+            return null;
+        }
     }
 }

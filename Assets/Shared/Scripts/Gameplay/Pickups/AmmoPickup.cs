@@ -1,35 +1,36 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class AmmoPickup : BasicPickup
+namespace Kweek
 {
-    [Header("Ammo")]
-    [SerializeField]
-    private AmmoTypeDefinition m_AmmoType;
-
-    [SerializeField]
-    private int m_Amount;
-
-    public override void Pickup(Player player)
+    public class AmmoPickup : BasicPickup
     {
-        base.Pickup(player);
+        [Header("Ammo")]
+        [SerializeField]
+        private AmmoTypeDefinition m_AmmoType = null;
 
-        AmmoArsenal ammoArsenal = player.WeaponArsenal.AmmoArsenal;
+        [SerializeField]
+        private int m_Amount = 0;
 
-        if (ammoArsenal != null)
+        public override void Pickup(Player player)
         {
-            int addedAmmo = m_Amount;
+            base.Pickup(player);
 
-            int diff = m_AmmoType.MaxAmmo - ammoArsenal.GetAmmo(m_AmmoType);
-            if (diff < addedAmmo)
-                addedAmmo = diff;
+            AmmoArsenal ammoArsenal = player.WeaponArsenal.AmmoArsenal;
 
-            //If we wouldn't pick up any ammo, don't do anything.
-            if (addedAmmo > 0)
+            if (ammoArsenal != null)
             {
-                ammoArsenal.ChangeAmmo(m_AmmoType, m_Amount);
-                DestroyPickup();
+                int addedAmmo = m_Amount;
+
+                int diff = m_AmmoType.MaxAmmo - ammoArsenal.GetAmmo(m_AmmoType);
+                if (diff < addedAmmo)
+                    addedAmmo = diff;
+
+                //If we wouldn't pick up any ammo, don't do anything.
+                if (addedAmmo > 0)
+                {
+                    ammoArsenal.ChangeAmmo(m_AmmoType, m_Amount);
+                    DestroyPickup();
+                }
             }
         }
     }

@@ -1,107 +1,109 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Ragdoll : MonoBehaviour
+namespace Kweek
 {
-    private struct TransformData
+    public class Ragdoll : MonoBehaviour
     {
-        private Vector3 m_LocalPosition;
-        private Quaternion m_LocalRotation;
-        private Vector3 m_LocalScale;
-
-        public TransformData(Transform transform)
+        private struct TransformData
         {
-            m_LocalPosition = transform.localPosition.Copy();
-            m_LocalRotation = transform.localRotation.Copy();
-            m_LocalScale = transform.localScale.Copy();
+            private Vector3 m_LocalPosition;
+            private Quaternion m_LocalRotation;
+            private Vector3 m_LocalScale;
+
+            public TransformData(Transform transform)
+            {
+                m_LocalPosition = transform.localPosition.Copy();
+                m_LocalRotation = transform.localRotation.Copy();
+                m_LocalScale = transform.localScale.Copy();
+            }
+
+            public void RestoreTransform(Transform transform)
+            {
+                transform.localPosition = m_LocalPosition;
+                transform.localRotation = m_LocalRotation;
+                transform.localScale = m_LocalScale;
+            }
         }
 
-        public void RestoreTransform(Transform transform)
+        [SerializeField]
+        private Animator m_Animator = null;
+
+        //Get component instead of assigning, because assigning these manually is very error prone
+        private RagdollPart[] m_RagdollParts = null;
+        public RagdollPart[] RagdollParts
         {
-            transform.localPosition = m_LocalPosition;
-            transform.localRotation = m_LocalRotation;
-            transform.localScale = m_LocalScale;
+            get { return m_RagdollParts; }
         }
-    }
 
-    [SerializeField]
-    private Animator m_Animator;
+        private Rigidbody[] m_Rigidbodies = null;
 
-    //Get component instead of assigning, because assigning these manually is very error prone
-    private RagdollPart[] m_RagdollParts;
-    public RagdollPart[] RagdollParts
-    {
-        get { return m_RagdollParts; }
-    }
+        private List<TransformData> m_RagdollTransformData = null;
 
-    private Rigidbody[] m_Rigidbodies;
-
-    private List<TransformData> m_RagdollTransformData;
-
-    private void Awake()
-    {
-        m_RagdollParts = GetComponentsInChildren<RagdollPart>();
-        m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
-
-        //Save all transform data
-        m_RagdollTransformData = new List<TransformData>();
-        SaveTransformData();
-    }
-
-    private void SaveTransformData()
-    {
-        m_RagdollTransformData.Clear();
-
-        m_RagdollTransformData.Add(new TransformData(transform)); //Add the root
-        foreach (RagdollPart ragdollPart in m_RagdollParts)
+        private void Awake()
         {
-            m_RagdollTransformData.Add(new TransformData(ragdollPart.transform));
+            m_RagdollParts = GetComponentsInChildren<RagdollPart>();
+            m_Rigidbodies = GetComponentsInChildren<Rigidbody>();
+
+            //Save all transform data
+            m_RagdollTransformData = new List<TransformData>();
+            SaveTransformData();
         }
-    }
 
-    public void SetParent(Transform newTransform)
-    {
-        transform.parent = newTransform;
-    }
-
-    public void SetTransform(Transform newTransform)
-    {
-        transform.position = newTransform.position;
-        transform.rotation = newTransform.rotation;
-        transform.localScale = newTransform.localScale;
-    }
-
-    public void Reset()
-    {
-        m_RagdollTransformData[0].RestoreTransform(transform); //Root
-
-        for (int i = 0; i < m_RagdollParts.Length; ++i)
+        private void SaveTransformData()
         {
-            m_RagdollTransformData[i + 1].RestoreTransform(m_RagdollParts[i].transform);
+            m_RagdollTransformData.Clear();
+
+            m_RagdollTransformData.Add(new TransformData(transform)); //Add the root
+            foreach (RagdollPart ragdollPart in m_RagdollParts)
+            {
+                m_RagdollTransformData.Add(new TransformData(ragdollPart.transform));
+            }
         }
-    }
 
-
-    public void SetKinematic(bool value)
-    {
-        for (int i = 0; i < m_Rigidbodies.Length; ++i)
+        public void SetParent(Transform newTransform)
         {
-            m_Rigidbodies[i].isKinematic = value;
+            transform.parent = newTransform;
         }
-    }
 
-    public void SetActive(bool value)
-    {
-        if (m_Animator != null)
-            m_Animator.enabled = (!value);
-    }
+        public void SetTransform(Transform newTransform)
+        {
+            transform.position = newTransform.position;
+            transform.rotation = newTransform.rotation;
+            transform.localScale = newTransform.localScale;
+        }
 
-    public bool IsRagdollEnabled()
-    {
-        if (m_Animator != null)
-            return (!m_Animator.enabled);
-        else
-            return true;
+        public void Reset()
+        {
+            m_RagdollTransformData[0].RestoreTransform(transform); //Root
+
+            for (int i = 0; i < m_RagdollParts.Length; ++i)
+            {
+                m_RagdollTransformData[i + 1].RestoreTransform(m_RagdollParts[i].transform);
+            }
+        }
+
+
+        public void SetKinematic(bool value)
+        {
+            for (int i = 0; i < m_Rigidbodies.Length; ++i)
+            {
+                m_Rigidbodies[i].isKinematic = value;
+            }
+        }
+
+        public void SetActive(bool value)
+        {
+            if (m_Animator != null)
+                m_Animator.enabled = (!value);
+        }
+
+        public bool IsRagdollEnabled()
+        {
+            if (m_Animator != null)
+                return (!m_Animator.enabled);
+            else
+                return true;
+        }
     }
 }

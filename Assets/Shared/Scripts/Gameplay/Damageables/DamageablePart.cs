@@ -1,72 +1,106 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-//This is the part that has the collider
-//It sends the damage to the main damageableobject
-public class DamageablePart : IDamageableObject
+namespace Kweek
 {
-    [SerializeField]
-    private IDamageableObject m_MainObject;
-    public IDamageableObject MainObject
+    //This is the part that has the collider
+    //It sends the damage to the main damageableobject
+    public class DamageablePart : IDamageableObject
     {
-        get { return m_MainObject; }
-    }
+        [SerializeField]
+        private IDamageableObject m_MainObject = null;
+        public IDamageableObject MainObject
+        {
+            get { return m_MainObject; }
+        }
 
-    public override int MaxHealth
-    {
-        get { return m_MainObject.MaxHealth; }
-    }
-    public override int Health
-    {
-        get { return m_MainObject.Health; }
-    }
+        public override int MaxHealth
+        {
+            get
+            {
+                if (m_MainObject == null)
+                    return 0;
 
+                return m_MainObject.MaxHealth;
+            }
+        }
+        public override int Health
+        {
+            get
+            {
+                if (m_MainObject == null)
+                    return 0;
 
-    [SerializeField]
-    private float m_DamageMultiplier = 1.0f;
+                return m_MainObject.Health;
+            }
+        }
 
-    public override int ChangeHealth(int health)
-    {
-        int reserveHealth = m_MainObject.ChangeHealth(health);
-        CallChangeHealthEvent(health);
+        [SerializeField]
+        private float m_DamageMultiplier = 1.0f;
 
-        return reserveHealth;
-    }
+        //Cache
+        private Transform m_Transform = null;
 
-    public override int Damage(int health)
-    {
-        int actualDamage = Mathf.CeilToInt(health * m_DamageMultiplier);
+        private void Awake()
+        {
+            m_Transform = gameObject.GetComponent<Transform>();
+        }
 
-        int reserveDamage = m_MainObject.Damage(actualDamage);
-        CallDamageEvent(actualDamage);
+        public override int ChangeHealth(int health)
+        {
+            if (m_MainObject == null)
+                return 0;
 
-        return reserveDamage;
-    }
+            int reserveHealth = m_MainObject.ChangeHealth(health);
+            FireChangeHealthEvent(health);
 
-    public override int Heal(int health)
-    {
-        int actualHealing = Mathf.CeilToInt(health * m_DamageMultiplier);
+            return reserveHealth;
+        }
 
-        int reserveHealth = m_MainObject.Heal(actualHealing);
-        CallHealEvent(actualHealing);
+        public override int Damage(int health)
+        {
+            if (m_MainObject == null)
+                return 0;
 
-        return reserveHealth;
-    }
+            int actualDamage = Mathf.CeilToInt(health * m_DamageMultiplier);
 
-    public override bool IsDead()
-    {
-        return m_MainObject.IsDead();
-    }
+            int reserveDamage = m_MainObject.Damage(actualDamage);
+            FireDamageEvent(actualDamage);
 
-    public override Vector3 GetPosition()
-    {
-        return transform.position;
-    }
+            return reserveDamage;
+        }
 
-    public override IDamageableObject GetMainDamageableObject()
-    {
-        return m_MainObject;
+        public override int Heal(int health)
+        {
+            if (m_MainObject == null)
+                return 0;
+
+            int actualHealing = Mathf.CeilToInt(health * m_DamageMultiplier);
+
+            int reserveHealth = m_MainObject.Heal(actualHealing);
+            FireHealEvent(actualHealing);
+
+            return reserveHealth;
+        }
+
+        public override bool IsDead()
+        {
+            if (m_MainObject == null)
+                return true;
+
+            return m_MainObject.IsDead();
+        }
+
+        public override Vector3 GetPosition()
+        {
+            if (m_Transform == null)
+                return Vector3.zero;
+
+            return m_Transform.position;
+        }
+
+        public override IDamageableObject GetMainDamageableObject()
+        {
+            return m_MainObject;
+        }
     }
 }

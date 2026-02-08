@@ -1,114 +1,116 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioFader : MonoBehaviour
+namespace Kweek
 {
-    public delegate void FadeDelegate();
-
-    [SerializeField]
-    private AudioMixer m_Mixer;
-
-    [SerializeField]
-    private string m_VariableName;
-
-    [SerializeField]
-    private float m_FadeSpeed;
-
-    [SerializeField]
-    private float m_MinVolume;
-
-    [SerializeField]
-    private float m_MaxVolume;
-    private Coroutine m_FadeRoutine;
-
-    private float GetVolume()
+    public class AudioFader : MonoBehaviour
     {
-        float volume = 0.0f;
-        bool success = m_Mixer.GetFloat(m_VariableName, out volume);
+        public delegate void FadeDelegate();
 
-        if (success == false)
-            Debug.LogError("AudioFader is trying to change the volume of " + m_Mixer.ToString() + ": " + m_VariableName);
+        [SerializeField]
+        private AudioMixer m_Mixer = null;
 
-        return volume;
-    }
+        [SerializeField]
+        private string m_VariableName = string.Empty;
 
-    public void SetVolume(float volume)
-    {
-        bool success = m_Mixer.SetFloat(m_VariableName, volume);
+        [SerializeField]
+        private float m_FadeSpeed = 0.0f;
 
-        if (success == false)
-            Debug.LogError("AudioFader is trying to change the volume of " + m_Mixer.ToString() + ": " + m_VariableName);
-    }
+        [SerializeField]
+        private float m_MinVolume = 0.0f;
 
-    public void SetVolumeMin()
-    {
-        SetVolume(m_MinVolume);
-    }
+        [SerializeField]
+        private float m_MaxVolume = 0.0f;
+        private Coroutine m_FadeRoutine = null;
 
-    public void SetVolumeMax()
-    {
-        SetVolume(m_MaxVolume);
-    }
-
-
-    public void FadeOut()
-    {
-        FadeOut(null);
-    }
-
-    public void FadeOut(FadeDelegate callback)
-    {
-        StartFading(callback, m_MinVolume);
-    }
-
-    public void FadeIn()
-    {
-        FadeIn(null);
-    }
-
-    public void FadeIn(FadeDelegate callback)
-    {
-        StartFading(callback, m_MaxVolume);
-    }
-
-
-    private void StartFading(FadeDelegate callback, float targetAlhpa)
-    {
-        if (m_FadeRoutine != null)
-            StopCoroutine(m_FadeRoutine);
-
-        m_FadeRoutine = StartCoroutine(FadeRoutine(callback, targetAlhpa));
-    }
-
-    private IEnumerator FadeRoutine(FadeDelegate callback, float targetAlhpa)
-    {
-        float currentVolume = GetVolume();
-        while (currentVolume != targetAlhpa)
+        private float GetVolume()
         {
-            float prevSign = Mathf.Sign(targetAlhpa - currentVolume);
+            float volume = 0.0f;
+            bool success = m_Mixer.GetFloat(m_VariableName, out volume);
 
-            //Change the volume
-            float newVolume = currentVolume + (prevSign * m_FadeSpeed * Time.deltaTime);
+            if (success == false)
+                Debug.LogError("AudioFader is trying to change the volume of " + m_Mixer.ToString() + ": " + m_VariableName);
 
-            float afterSign = Mathf.Sign(targetAlhpa - newVolume);
-
-            //We flipped
-            if (prevSign != afterSign)
-            {
-                newVolume = targetAlhpa;
-            }
-
-            SetVolume(newVolume);
-            currentVolume = newVolume;
-
-            yield return new WaitForEndOfFrame();
+            return volume;
         }
 
-        if (callback != null)
-            callback();
+        public void SetVolume(float volume)
+        {
+            bool success = m_Mixer.SetFloat(m_VariableName, volume);
 
-        m_FadeRoutine = null;
+            if (success == false)
+                Debug.LogError("AudioFader is trying to change the volume of " + m_Mixer.ToString() + ": " + m_VariableName);
+        }
+
+        public void SetVolumeMin()
+        {
+            SetVolume(m_MinVolume);
+        }
+
+        public void SetVolumeMax()
+        {
+            SetVolume(m_MaxVolume);
+        }
+
+
+        public void FadeOut()
+        {
+            FadeOut(null);
+        }
+
+        public void FadeOut(FadeDelegate callback)
+        {
+            StartFading(callback, m_MinVolume);
+        }
+
+        public void FadeIn()
+        {
+            FadeIn(null);
+        }
+
+        public void FadeIn(FadeDelegate callback)
+        {
+            StartFading(callback, m_MaxVolume);
+        }
+
+
+        private void StartFading(FadeDelegate callback, float targetAlhpa)
+        {
+            if (m_FadeRoutine != null)
+                StopCoroutine(m_FadeRoutine);
+
+            m_FadeRoutine = StartCoroutine(FadeRoutine(callback, targetAlhpa));
+        }
+
+        private IEnumerator FadeRoutine(FadeDelegate callback, float targetAlhpa)
+        {
+            float currentVolume = GetVolume();
+            while (currentVolume != targetAlhpa)
+            {
+                float prevSign = Mathf.Sign(targetAlhpa - currentVolume);
+
+                //Change the volume
+                float newVolume = currentVolume + (prevSign * m_FadeSpeed * Time.deltaTime);
+
+                float afterSign = Mathf.Sign(targetAlhpa - newVolume);
+
+                //We flipped
+                if (prevSign != afterSign)
+                {
+                    newVolume = targetAlhpa;
+                }
+
+                SetVolume(newVolume);
+                currentVolume = newVolume;
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (callback != null)
+                callback();
+
+            m_FadeRoutine = null;
+        }
     }
 }

@@ -1,23 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelBackgroundDisplay : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Image m_Image;
-
-    private void Start()
+    public class LevelBackgroundDisplay : MonoBehaviour
     {
-        LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
+        [SerializeField]
+        private Image m_Image = null;
 
-        if (levelData == null)
-            return;
+        private void Start()
+        {
+            LevelDataDefinition levelData = LevelManager.Instance.GetCurrentLevelData();
 
-        Sprite sprite = levelData.Picture;
+            if (levelData == null)
+                return;
 
-        if (sprite != null)
-            m_Image.sprite = sprite;
+            Sprite sprite = levelData.Picture;
+
+            if (sprite != null)
+                m_Image.sprite = sprite;
+        }
     }
 }

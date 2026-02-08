@@ -1,46 +1,47 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DamageTestDummy : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private IDamageableObject m_DamageableObject;
-
-    private void Start()
+    public class DamageTestDummy : MonoBehaviour
     {
-        if (m_DamageableObject != null)
+        [SerializeField]
+        private IDamageableObject m_DamageableObject;
+
+        private void Start()
         {
-            m_DamageableObject.ChangeHealthEvent += OnChangeHealth;
-            m_DamageableObject.DamageEvent += OnDamage;
-            m_DamageableObject.DeathEvent += OnDeath;
+            if (m_DamageableObject != null)
+            {
+                m_DamageableObject.ChangeHealthEvent += OnChangeHealth;
+                m_DamageableObject.DamageEvent += OnDamage;
+                m_DamageableObject.DeathEvent += OnDeath;
+            }
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (m_DamageableObject == null)
-            return;
+        private void OnDestroy()
+        {
+            if (m_DamageableObject != null)
+            {
+                m_DamageableObject.ChangeHealthEvent -= OnChangeHealth;
+                m_DamageableObject.DamageEvent -= OnDamage;
+                m_DamageableObject.DeathEvent -= OnDeath;
+            }
+        }
 
-        m_DamageableObject.ChangeHealthEvent -= OnChangeHealth;
-        m_DamageableObject.DamageEvent -= OnDamage;
-        m_DamageableObject.DeathEvent -= OnDeath;
-    }
+        //Damage handling
+        private void OnDamage(int removedHealth)
+        {
+            Debug.Log(gameObject.name + ": Hit for " + removedHealth + ".");
+        }
 
-    //Damage handling
-    private void OnDamage(int removedHealth)
-    {
-        Debug.Log(gameObject.name + ": Hit for " + removedHealth + ".");
-    }
+        private void OnDeath()
+        {
+            //Debug.Log("DUMMY: Died!");
+            m_DamageableObject.ChangeHealth(m_DamageableObject.MaxHealth);
+        }
 
-    private void OnDeath()
-    {
-        //Debug.Log("DUMMY: Died!");
-        m_DamageableObject.ChangeHealth(m_DamageableObject.MaxHealth);
-    }
-
-    private void OnChangeHealth(int health)
-    {
-        //Debug.Log("DUMMY: Health has been set to " + health + ".");
+        private void OnChangeHealth(int health)
+        {
+            //Debug.Log("DUMMY: Health has been set to " + health + ".");
+        }
     }
 }

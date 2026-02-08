@@ -1,58 +1,59 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Once collisions are enabled this script turns the character in a ragdoll once it hits a surface
-//F.e.: The animator will do an animation until they hit a wall, then the ragdoll will take over
-
-public class RagdollPart : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Ragdoll m_Ragdoll;
-    private List<GameObject> m_OtherParts;
-
-    private void Start()
+    //Once collisions are enabled this script turns the character in a ragdoll once it hits a surface
+    //F.e.: The animator will do an animation until they hit a wall, then the ragdoll will take over
+    public class RagdollPart : MonoBehaviour
     {
-        m_OtherParts = new List<GameObject>();
+        [SerializeField]
+        private Ragdoll m_Ragdoll = null;
+        private List<GameObject> m_OtherParts = null;
 
-        if (m_Ragdoll != null)
+        private void Start()
         {
-            foreach (RagdollPart part in m_Ragdoll.RagdollParts)
+            m_OtherParts = new List<GameObject>();
+
+            if (m_Ragdoll != null)
             {
-                m_OtherParts.Add(part.gameObject);
+                foreach (RagdollPart part in m_Ragdoll.RagdollParts)
+                {
+                    m_OtherParts.Add(part.gameObject);
+                }
             }
         }
-    }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (m_Ragdoll != null)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (m_OtherParts.Contains(collision.gameObject))
-                return;
+            if (m_Ragdoll != null)
+            {
+                if (m_OtherParts.Contains(collision.gameObject))
+                    return;
 
-            //Play a hit sound
-            PlaySurfaceImpactSound(collision);
+                //Play a hit sound
+                PlaySurfaceImpactSound(collision);
 
-            //Used for when death animations collide with the world collision
-            //if (m_Ragdoll.IsRagdollEnabled())
-            //    return;
+                //Used for when death animations collide with the world collision
+                //if (m_Ragdoll.IsRagdollEnabled())
+                //    return;
 
-            ////Don't start ragdolls when we just hit a regular floor (not a slope!)
-            //if (collision.contacts[0].normal == Vector3.up)
-            //    return;
+                ////Don't start ragdolls when we just hit a regular floor (not a slope!)
+                //if (collision.contacts[0].normal == Vector3.up)
+                //    return;
 
-            //Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
-            //m_Ragdoll.SetActive(true);
+                //Debug.Log(gameObject.name + " enabled the ragdoll!", gameObject);
+                //m_Ragdoll.SetActive(true);
+            }
         }
-    }
 
-    private void PlaySurfaceImpactSound(Collision collision)
-    {
-        SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
-        if (surfaceType != null)
+        private void PlaySurfaceImpactSound(Collision collision)
         {
-            surfaceType.SpawnCharacterImpactEffect(collision.contacts[0].point, collision.contacts[0].normal);
+            SurfaceType surfaceType = collision.gameObject.GetComponent<SurfaceType>();
+            if (surfaceType != null)
+            {
+                surfaceType.SpawnCharacterImpactEffect(collision.contacts[0].point, collision.contacts[0].normal);
+            }
         }
     }
 }

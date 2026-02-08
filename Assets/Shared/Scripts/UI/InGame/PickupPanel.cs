@@ -1,42 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PickupPanel : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private GameObject m_Visuals;
-
-    [SerializeField]
-    private Text m_PickupText;
-
-    [SerializeField]
-    private PickupHandler m_PickupHandler;
-
-    private void Start()
+    public class PickupPanel : MonoBehaviour
     {
-        m_PickupHandler.ChangePickupEvent += OnChangePickup;
-        m_Visuals.SetActive(false);
-    }
+        [SerializeField]
+        private GameObject m_Visuals = null;
 
-    private void OnDestroy()
-    {
-        if (m_PickupHandler != null)
-            m_PickupHandler.ChangePickupEvent -= OnChangePickup;
-    }
+        [SerializeField]
+        private Text m_PickupText = null;
 
-    public void OnChangePickup(IPickup pickup)
-    {
-        if (pickup == null)
+        [SerializeField]
+        private PickupHandler m_PickupHandler = null;
+
+        private void Start()
         {
+            m_PickupHandler.ChangeHoveredPickupEvent += OnChangePickup;
             m_Visuals.SetActive(false);
-            return;
         }
 
-        m_Visuals.SetActive(true);
+        private void OnDestroy()
+        {
+            if (m_PickupHandler != null)
+                m_PickupHandler.ChangeHoveredPickupEvent -= OnChangePickup;
+        }
 
-        //TODO: Not actually bound to a key yet.
-        m_PickupText.text = "Press [F] to pickup " + pickup.PickupName + ".";
+        public void OnChangePickup(IPickup pickup)
+        {
+            if (pickup == null)
+            {
+                m_Visuals.SetActive(false);
+                return;
+            }
+
+            m_Visuals.SetActive(true);
+
+            //TODO: Not actually bound to a key yet.
+            m_PickupText.text = "Press [F] to pickup " + pickup.PickupName + ".";
+        }
     }
 }

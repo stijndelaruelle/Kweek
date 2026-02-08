@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public interface IMoveableObject
+namespace Kweek
 {
-    void AddVelocity(Vector3 velocity);
-    Vector3 GetCenterOfMass();
+    public interface IMoveableObject
+    {
+        void AddVelocity(Vector3 velocity);
+        Vector3 GetCenterOfMass();
+    }
 }

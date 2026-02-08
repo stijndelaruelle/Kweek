@@ -1,29 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthPanel : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Text m_HealthText;
-
-    [SerializeField]
-    private IDamageableObject m_DamageableObject;
-
-    private void Awake()
+    public class HealthPanel : MonoBehaviour
     {
-        m_DamageableObject.ChangeHealthEvent += OnUpdateHealth;
-    }
+        [SerializeField]
+        private Text m_HealthText = null;
 
-    private void OnDestroy()
-    {
-        if (m_DamageableObject != null)
-            m_DamageableObject.ChangeHealthEvent -= OnUpdateHealth;
-    }
+        [SerializeField]
+        private IDamageableObject m_DamageableObject = null;
 
-    public void OnUpdateHealth(int health)
-    {
-        m_HealthText.text = health.ToString();
+        private void Awake()
+        {
+            m_DamageableObject.ChangeHealthEvent += OnUpdateHealth;
+        }
+
+        private void OnDestroy()
+        {
+            if (m_DamageableObject != null)
+                m_DamageableObject.ChangeHealthEvent -= OnUpdateHealth;
+        }
+
+        public void OnUpdateHealth(int health)
+        {
+            m_HealthText.text = health.ToString();
+        }
     }
 }

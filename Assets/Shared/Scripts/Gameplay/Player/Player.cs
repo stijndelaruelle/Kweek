@@ -1,62 +1,63 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Player : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private IDamageableObject m_DamageableObject;
-    public IDamageableObject DamageableObject
+    public class Player : MonoBehaviour
     {
-        get { return m_DamageableObject; }
-    }
-
-    [SerializeField]
-    private WeaponArsenal m_WeaponArsenal;
-    public WeaponArsenal WeaponArsenal
-    {
-        get { return m_WeaponArsenal; }
-    }
-
-    //Events
-    public event DeathDelegate DeathEvent;
-    public event DeathDelegate RespawnEvent;
-
-    private void Start()
-    {
-        m_DamageableObject.DeathEvent += OnDeath;
-    }
-
-    private void OnDestroy()
-    {
-        if (m_DamageableObject != null)
-            m_DamageableObject.DeathEvent -= OnDeath;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F2))
+        [SerializeField]
+        private IDamageableObject m_DamageableObject = null;
+        public IDamageableObject DamageableObject
         {
-            Respawn();
+            get { return m_DamageableObject; }
         }
-    }
 
-    private void OnDeath()
-    {
-        Debug.Log("THE PLAYER DIED!");
+        [SerializeField]
+        private WeaponArsenal m_WeaponArsenal = null;
+        public WeaponArsenal WeaponArsenal
+        {
+            get { return m_WeaponArsenal; }
+        }
 
-        if (DeathEvent != null)
-            DeathEvent();
-    }
+        //Events
+        public event DeathDelegate DeathEvent = null;
+        public event DeathDelegate RespawnEvent = null;
 
-    private void Respawn()
-    {
-        //For testing purposes, normally you would never respawn but load a gamestate.
+        private void Start()
+        {
+            m_DamageableObject.DeathEvent += OnDeath;
+        }
 
-        //Max health
-        m_DamageableObject.ChangeHealth(m_DamageableObject.MaxHealth);
+        private void OnDestroy()
+        {
+            if (m_DamageableObject != null)
+                m_DamageableObject.DeathEvent -= OnDeath;
+        }
 
-        if (RespawnEvent != null)
-            RespawnEvent();
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                Respawn();
+            }
+        }
+
+        private void OnDeath()
+        {
+            Debug.Log("THE PLAYER DIED!");
+
+            if (DeathEvent != null)
+                DeathEvent();
+        }
+
+        private void Respawn()
+        {
+            //For testing purposes, normally you would never respawn but load a gamestate.
+
+            //Max health
+            m_DamageableObject.ChangeHealth(m_DamageableObject.MaxHealth);
+
+            if (RespawnEvent != null)
+                RespawnEvent();
+        }
     }
 }

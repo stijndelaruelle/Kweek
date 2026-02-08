@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 //http://www.grapefruitgames.com/blog/2013/11/a-min-max-range-for-unity/
 
 public class MinMaxRangeAttribute : PropertyAttribute
 {
-    private float m_MinLimit;
+    private float m_MinLimit = 0.0f;
     public float MinLimit
     {
         get { return m_MinLimit; }
     }
 
-    private float m_MaxLimit;
+    private float m_MaxLimit = 0.0f;
     public float MaxLimit
     {
         get { return m_MaxLimit; }
@@ -28,14 +26,14 @@ public class MinMaxRangeAttribute : PropertyAttribute
 [System.Serializable]
 public class MinMaxRange
 {
-    public float m_Min;
+    public float m_Min = 0.0f;
     public float Min
     {
         get { return m_Min; }
         set { m_Min = value; }
     }
 
-    public float m_Max;
+    public float m_Max = 0.0f;
     public float Max
     {
         get { return m_Max; }

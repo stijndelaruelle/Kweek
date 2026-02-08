@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class AmmoTypeDefinition : ScriptableObject
+namespace Kweek
 {
-    [Tooltip("Maximum amount of ammo we can have of this ammo type")]
-    [SerializeField]
-    private int m_MaxAmmo;
-    public int MaxAmmo
+    [CreateAssetMenu(fileName = "AmmoTypeDefinition", menuName = "Kweek/Ammo Type Definition")]
+    public class AmmoTypeDefinition : ScriptableObject
     {
-        get { return m_MaxAmmo; }
+        [Tooltip("Maximum amount of ammo we can have of this ammo type")]
+        [SerializeField]
+        private int m_MaxAmmo = 0;
+        public int MaxAmmo
+        {
+            get { return m_MaxAmmo; }
+        }
     }
 }

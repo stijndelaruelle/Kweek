@@ -1,43 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PlayerRagdoll : Ragdoll
+namespace Kweek
 {
-    [SerializeField]
-    private Player m_Player;
-
-    private void Start()
+    public class PlayerRagdoll : Ragdoll
     {
-        if (m_Player != null)
+        [SerializeField]
+        private Player m_Player = null;
+
+        private void Start()
         {
-            m_Player.DeathEvent += OnPlayerDeath;
-            m_Player.RespawnEvent += OnPlayerRespawn;
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent += OnPlayerDeath;
+                m_Player.RespawnEvent += OnPlayerRespawn;
+            }
+
+            gameObject.SetActive(false);
         }
 
-        gameObject.SetActive(false);
-    }
-
-    private void OnDestroy()
-    {
-        if (m_Player != null)
+        private void OnDestroy()
         {
-            m_Player.DeathEvent -= OnPlayerDeath;
-            m_Player.RespawnEvent -= OnPlayerRespawn;
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent -= OnPlayerDeath;
+                m_Player.RespawnEvent -= OnPlayerRespawn;
+            }
         }
-    }
 
-    private void OnPlayerDeath()
-    {
-        SetParent(null);
-        gameObject.SetActive(true);
-    }
+        private void OnPlayerDeath()
+        {
+            SetParent(null);
+            gameObject.SetActive(true);
+        }
 
-    private void OnPlayerRespawn()
-    {
-        SetParent(m_Player.transform);
-        SetTransform(m_Player.transform);
-        Reset();
-        gameObject.SetActive(false);
+        private void OnPlayerRespawn()
+        {
+            SetParent(m_Player.transform);
+            SetTransform(m_Player.transform);
+            Reset();
+            gameObject.SetActive(false);
+        }
     }
 }

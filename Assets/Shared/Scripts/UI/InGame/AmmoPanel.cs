@@ -1,37 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class AmmoPanel : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private GameObject m_Visuals;
-
-    [SerializeField]
-    private Text m_AmmoInClipText;
-
-    [SerializeField]
-    private Text m_AmmoInReserveText;
-
-    [SerializeField]
-    private WeaponArsenal m_WeaponArsenal;
-
-    private void Start()
+    public class AmmoPanel : MonoBehaviour
     {
-        m_WeaponArsenal.UpdateAmmoEvent += OnUpdateAmmo;
-    }
+        [SerializeField]
+        private GameObject m_Visuals = null;
 
-    private void OnDestroy()
-    {
-        if (m_WeaponArsenal != null)
-            m_WeaponArsenal.UpdateAmmoEvent -= OnUpdateAmmo;
-    }
+        [SerializeField]
+        private Text m_AmmoInClipText = null;
 
-    public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
-    {
-        m_Visuals.SetActive(true);
-        m_AmmoInClipText.text = ammoInClip.ToString();
-        m_AmmoInReserveText.text = ammoInReserve.ToString();
+        [SerializeField]
+        private Text m_AmmoInReserveText = null;
+
+        [SerializeField]
+        private WeaponArsenal m_WeaponArsenal = null;
+
+        private void Start()
+        {
+            m_WeaponArsenal.UpdateAmmoEvent += OnUpdateAmmo;
+        }
+
+        private void OnDestroy()
+        {
+            if (m_WeaponArsenal != null)
+                m_WeaponArsenal.UpdateAmmoEvent -= OnUpdateAmmo;
+        }
+
+        public void OnUpdateAmmo(int ammoInClip, int ammoInReserve)
+        {
+            m_Visuals.SetActive(true);
+            m_AmmoInClipText.text = ammoInClip.ToString();
+            m_AmmoInReserveText.text = ammoInReserve.ToString();
+        }
     }
 }

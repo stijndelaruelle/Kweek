@@ -1,30 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FactionTypeDefinition : ScriptableObject
+namespace Kweek
 {
-    [SerializeField]
-    private string m_FactionName;
-
-    [SerializeField]
-    private List<FactionTypeDefinition> m_Allies;
-
-    [SerializeField]
-    private List<FactionTypeDefinition> m_Enemies;
-
-    public bool IsAlly(FactionTypeDefinition factionType)
+    [CreateAssetMenu(fileName = "FactionTypeDefinition", menuName = "Kweek/Faction Type Definition")]
+    public class FactionTypeDefinition : ScriptableObject
     {
-        return (m_Allies.Contains(factionType));
-    }
+        [SerializeField]
+        private string m_FactionName = string.Empty;
 
-    public bool IsEnemy(FactionTypeDefinition factionType)
-    {
-        return (m_Enemies.Contains(factionType));
-    }
+        [SerializeField]
+        private List<FactionTypeDefinition> m_Allies = null;
 
-    public override string ToString()
-    {
-        return "Faction: " + m_FactionName;
+        [SerializeField]
+        private List<FactionTypeDefinition> m_Enemies = null;
+
+        public bool IsAlly(FactionTypeDefinition factionType)
+        {
+            if (m_Allies == null)
+                return false;
+
+            return (m_Allies.Contains(factionType));
+        }
+
+        public bool IsEnemy(FactionTypeDefinition factionType)
+        {
+            if (m_Enemies == null)
+                return false;
+
+            return (m_Enemies.Contains(factionType));
+        }
+
+        public override string ToString()
+        {
+            return "Faction: " + m_FactionName;
+        }
     }
 }

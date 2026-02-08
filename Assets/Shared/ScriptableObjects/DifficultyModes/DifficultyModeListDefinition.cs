@@ -1,31 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class DifficultyModeListDefinition : ScriptableObject
+namespace Kweek
 {
-    [SerializeField]
-    private List<DifficultyModeDefinition> m_DifficultyModes;
-    public List<DifficultyModeDefinition> DifficultyModes
+    [CreateAssetMenu(fileName = "DifficultyModeListDefinition", menuName = "Kweek/Difficulty Mode List Definition")]
+    public class DifficultyModeListDefinition : ScriptableObject
     {
-        get { return m_DifficultyModes; }
-    }
+        [SerializeField]
+        private List<DifficultyModeDefinition> m_DifficultyModes = null;
+        public List<DifficultyModeDefinition> DifficultyModes
+        {
+            get { return m_DifficultyModes; }
+        }
 
-    public int GetDifficultyModeCount()
-    {
-        return m_DifficultyModes.Count;
-    }
+        public int GetDifficultyModeCount()
+        {
+            if (m_DifficultyModes == null)
+                return 0;
 
-    public DifficultyModeDefinition GetDifficultyMode(int id)
-    {
-        if (id < 0 || id >= m_DifficultyModes.Count)
-            return null;
+            return m_DifficultyModes.Count;
+        }
 
-        return m_DifficultyModes[id];
-    }
+        public DifficultyModeDefinition GetDifficultyMode(int id)
+        {
+            if (m_DifficultyModes == null)
+                return null;
 
-    public int GetDifficultyModeID(DifficultyModeDefinition difficultyMode)
-    {
-        return m_DifficultyModes.IndexOf(difficultyMode);
+            if (id < 0 || id >= m_DifficultyModes.Count)
+                return null;
+
+            return m_DifficultyModes[id];
+        }
+
+        public int GetDifficultyModeID(DifficultyModeDefinition difficultyMode)
+        {
+            if (m_DifficultyModes == null)
+                return -1;
+
+            return m_DifficultyModes.IndexOf(difficultyMode);
+        }
     }
 }

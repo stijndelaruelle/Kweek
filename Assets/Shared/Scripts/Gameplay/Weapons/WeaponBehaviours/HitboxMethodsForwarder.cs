@@ -1,24 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public delegate void HitboxMethodDelegate();
-
-public class HitboxMethodsForwarder : MonoBehaviour
+namespace Kweek
 {
-    public event HitboxMethodDelegate HitboxEnableEvent;
-    public event HitboxMethodDelegate HitboxDisableEvent;
+    public delegate void HitboxMethodDelegate();
 
-    //More will follow if i end up using them
-    private void EnableHitbox()
+    public class HitboxMethodsForwarder : MonoBehaviour
     {
-        if (HitboxEnableEvent != null)
-            HitboxEnableEvent();
-    }
+        public event HitboxMethodDelegate HitboxEnableEvent = null;
+        public event HitboxMethodDelegate HitboxDisableEvent = null;
 
-    private void DisableHitbox()
-    {
-        if (HitboxDisableEvent != null)
-            HitboxDisableEvent();
+        //More will follow if i end up using them
+        private void EnableHitbox()
+        {
+            if (HitboxEnableEvent != null)
+                HitboxEnableEvent();
+        }
+
+        private void DisableHitbox()
+        {
+            if (HitboxDisableEvent != null)
+                HitboxDisableEvent();
+        }
     }
 }

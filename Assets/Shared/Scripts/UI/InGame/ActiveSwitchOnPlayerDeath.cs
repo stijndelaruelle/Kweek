@@ -1,42 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ActiveSwitchOnPlayerDeath : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private Player m_Player;
-
-    [SerializeField]
-    private bool m_Enable;
-
-    private void Start()
+    public class ActiveSwitchOnPlayerDeath : MonoBehaviour
     {
-        if (m_Player != null)
+        [SerializeField]
+        private Player m_Player = null;
+
+        [SerializeField]
+        private bool m_Enable = false;
+
+        private void Start()
         {
-            m_Player.DeathEvent += OnPlayerDeath;
-            m_Player.RespawnEvent += OnPlayerRespawn;
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent += OnPlayerDeath;
+                m_Player.RespawnEvent += OnPlayerRespawn;
+            }
+
+            gameObject.SetActive(!m_Enable);
         }
 
-        gameObject.SetActive(!m_Enable);
-    }
-
-    private void OnDestroy()
-    {
-        if (m_Player != null)
+        private void OnDestroy()
         {
-            m_Player.DeathEvent -= OnPlayerDeath;
-            m_Player.RespawnEvent -= OnPlayerRespawn;
+            if (m_Player != null)
+            {
+                m_Player.DeathEvent -= OnPlayerDeath;
+                m_Player.RespawnEvent -= OnPlayerRespawn;
+            }
         }
-    }
 
-    private void OnPlayerDeath()
-    {
-        gameObject.SetActive(m_Enable);
-    }
+        private void OnPlayerDeath()
+        {
+            gameObject.SetActive(m_Enable);
+        }
 
-    private void OnPlayerRespawn()
-    {
-        gameObject.SetActive(!m_Enable);
+        private void OnPlayerRespawn()
+        {
+            gameObject.SetActive(!m_Enable);
+        }
     }
 }
