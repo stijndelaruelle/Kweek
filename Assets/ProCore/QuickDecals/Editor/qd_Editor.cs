@@ -1239,7 +1239,7 @@ public class qd_Editor : EditorWindow
 		decal = qd_Mesh.CreateDecal(mat, uvCoordinates, scale);
 		Undo.RegisterCreatedObjectUndo(decal, "Place Decal");
 
-		StaticEditorFlags flags = StaticEditorFlags.BatchingStatic | StaticEditorFlags.LightmapStatic | StaticEditorFlags.OccludeeStatic;
+		StaticEditorFlags flags = StaticEditorFlags.BatchingStatic | StaticEditorFlags.ContributeGI | StaticEditorFlags.OccludeeStatic;
 		GameObjectUtility.SetStaticEditorFlags(decal, flags);
 
 		decal.transform.position = hit.point + hit.normal.normalized * .01f;
