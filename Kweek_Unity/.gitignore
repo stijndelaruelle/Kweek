@@ -73,4 +73,7 @@ crashlytics-build.properties
 
 # OpenCV plugin is just too big
 /[Aa]ssets/[Pp]lugins/OpenCVForUnity/
+/[Aa]ssets/[Pp]lugins/DlibFaceLandmarkDetector
+/[Aa]ssets/[Pp]lugins/DlibFaceLandmarkDetectorWithOpenCVExample
 /[Aa]ssets/[Ss]treamingAssets/OpenCVForUnityExamples/
+/[Aa]ssets/[Ss]treamingAssets/DlibFaceLandmarkDetector/
