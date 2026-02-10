@@ -1,11 +1,11 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.3/respin/6000.3.6f1-732c1ec89f18' branch; Version is '6000.3.6f1 (bbb010bdb8a3) revision 12300304'; Using compiler version '194234433'; Build Type 'Release'
 OS: 'Windows 11  (10.0.26100) Professional' Language: 'en' Physical Memory: 65372 MB
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Stijn" at "2026-02-10T13:15:15.7193661Z"
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Stijn" at "2026-02-10T13:28:39.5228348Z"
 System  architecture: x64
 Process architecture: x64
-Date: 2026-02-10T13:15:15Z
+Date: 2026-02-10T13:28:39Z
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.6f1\Editor\Unity.exe
@@ -19,7 +19,7 @@ D:/Git/kweek
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-55921
+51347
 -licensingIpc
 LicenseClient-Stijn
 -job-worker-count
@@ -67,12 +67,12 @@ D:/Git/kweek
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [13660]  Target information:
+Player connection [2760]  Target information:
 
-Player connection [13660]  * "[IP] 192.168.1.7 [Port] 0 [Flags] 2 [Guid] 1950151872 [EditorId] 1950151872 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-STIJN) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [2760]  * "[IP] 192.168.1.7 [Port] 0 [Flags] 2 [Guid] 1165436155 [EditorId] 1165436155 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-STIJN) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [13660] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [13660] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [2760] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [2760] Host joined alternative multi-casting on [225.0.0.222:34997]...
 JobSystem: Creating JobQueue using job-worker-count value 9
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -84,7 +84,7 @@ Library Redirect Path: Library/
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Refreshing native plugins compatible for Editor in 0.45 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 0.34 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.6f1 (bbb010bdb8a3)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.6f1/Editor/Data/Resources/UnitySubsystems
@@ -100,7 +100,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.6f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.6f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.6f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56168
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56916
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.6f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
@@ -108,14 +108,14 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.6f1/E
 [Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.17.4+4293ba1
-  Session Id:              7a52c0a9e16648f9ba1d170f4ee69fd0
+  Session Id:              56630c8997d044c480c1ac6378c62fba
   Correlation Id:          b6c772e1cb8cafe607b54e67cdc932fa
-  External correlation Id: 1223193306431670278
+  External correlation Id: 5748739460970117404
   Machine Id:              QhGBEh8RRdaccYt7DuPJbceqiCc=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Stijn" (connect: 0.00s, validation: 0.01s, handshake: 0.67s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Stijn-notifications" at "2026-02-10T13:15:16.3984285Z"
-[Licensing::Module] Licensing Background thread has ended after 0.68s
-[Licensing::Module] Licensing is initialized (took 0.10s).
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Stijn" (connect: 0.00s, validation: 0.00s, handshake: 0.61s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Stijn-notifications" at "2026-02-10T13:28:40.129352Z"
+[Licensing::Module] Licensing Background thread has ended after 0.61s
+[Licensing::Module] Licensing is initialized (took 0.09s).
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
   Id: F4-AUWP-G4KN-QJ7R-NX3V-XXXX
@@ -128,43 +128,43 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.6f1/E
   Type: Assigned
   Expiration: Unlimited
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.6f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
-Registered in 0.099848 seconds.
-- Loaded All Assemblies, in  0.396 seconds
+Registered in 0.091320 seconds.
+- Loaded All Assemblies, in  0.371 seconds
 Native extension for Android target not found
-Android Extension - Scanning For ADB Devices 147 ms
+Android Extension - Scanning For ADB Devices 127 ms
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.480 seconds
-Domain Reload Profiling: 875ms
-	BeginReloadAssembly (109ms)
+- Finished resetting the current domain, in  0.441 seconds
+Domain Reload Profiling: 811ms
+	BeginReloadAssembly (87ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
 		CreateAndSetChildDomain (1ms)
 	RebuildCommonClasses (25ms)
-	RebuildNativeTypeToScriptingClass (10ms)
-	initialDomainReloadingComplete (131ms)
-	LoadAllAssembliesAndSetupDomain (120ms)
-		LoadAssemblies (107ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (120ms)
+	LoadAllAssembliesAndSetupDomain (128ms)
+		LoadAssemblies (86ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (117ms)
-			TypeCache.Refresh (116ms)
-				TypeCache.ScanAssembly (106ms)
+		AnalyzeDomain (126ms)
+			TypeCache.Refresh (124ms)
+				TypeCache.ScanAssembly (115ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (480ms)
+	FinalizeReload (441ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (450ms)
+		SetupLoadedEditorAssemblies (418ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (219ms)
-			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (69ms)
-			ProcessInitializeOnLoadAttributes (104ms)
-			ProcessInitializeOnLoadMethodAttributes (54ms)
+			InitializePlatformSupportModulesInManaged (198ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (61ms)
+			ProcessInitializeOnLoadAttributes (106ms)
+			ProcessInitializeOnLoadMethodAttributes (50ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -185,8 +185,8 @@ Begin MonoManager ReloadAssembly
   Type: Assigned
   Expiration: Unlimited
 Symbol file LoadedFromMemory is not a mono symbol file
-- Loaded All Assemblies, in  0.507 seconds
-Refreshing native plugins compatible for Editor in 0.21 ms, found 0 plugins.
+- Loaded All Assemblies, in  0.487 seconds
+Refreshing native plugins compatible for Editor in 0.28 ms, found 0 plugins.
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
@@ -199,35 +199,35 @@ Package Manager log level set to [2]
 [MODES] Loading mode Default (0) for mode-current-id-RoZoSho
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.646 seconds
-Domain Reload Profiling: 1151ms
-	BeginReloadAssembly (122ms)
+- Finished resetting the current domain, in  0.644 seconds
+Domain Reload Profiling: 1130ms
+	BeginReloadAssembly (124ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (4ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (23ms)
-	RebuildCommonClasses (24ms)
+		CreateAndSetChildDomain (24ms)
+	RebuildCommonClasses (25ms)
 	RebuildNativeTypeToScriptingClass (9ms)
 	initialDomainReloadingComplete (24ms)
-	LoadAllAssembliesAndSetupDomain (326ms)
-		LoadAssemblies (259ms)
+	LoadAllAssembliesAndSetupDomain (304ms)
+		LoadAssemblies (247ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (133ms)
-			TypeCache.Refresh (101ms)
-				TypeCache.ScanAssembly (88ms)
+		AnalyzeDomain (123ms)
+			TypeCache.Refresh (92ms)
+				TypeCache.ScanAssembly (79ms)
 			BuildScriptInfoCaches (26ms)
 			ResolveRequiredComponents (3ms)
-	FinalizeReload (646ms)
+	FinalizeReload (644ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (560ms)
+		SetupLoadedEditorAssemblies (555ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (7ms)
 			SetLoadedEditorAssemblies (4ms)
 			BeforeProcessingInitializeOnLoad (113ms)
-			ProcessInitializeOnLoadAttributes (201ms)
-			ProcessInitializeOnLoadMethodAttributes (233ms)
+			ProcessInitializeOnLoadAttributes (197ms)
+			ProcessInitializeOnLoadMethodAttributes (232ms)
 			AfterProcessingInitializeOnLoad (2ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -236,48 +236,48 @@ Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 second
 Refreshing native plugins compatible for Editor in 0.26 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Unloading 30 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4137 unused Assets / (5.0 MB). Loaded Objects now: 4812.
-Memory consumption went from 116.1 MB to 111.1 MB.
-Total: 15.057500 ms (FindLiveObjects: 0.508600 ms CreateObjectMapping: 0.357800 ms MarkObjects: 12.756900 ms  DeleteObjects: 1.432400 ms)
+Unloading 4137 unused Assets / (4.9 MB). Loaded Objects now: 4814.
+Memory consumption went from 122.0 MB to 117.0 MB.
+Total: 14.151800 ms (FindLiveObjects: 0.311900 ms CreateObjectMapping: 0.132800 ms MarkObjects: 12.428200 ms  DeleteObjects: 1.277600 ms)
 
 ========================================================================
 Received Import Request.
-  Time since last request: 790288.415036 seconds.
-  path: Assets/Plugins/Kubacho/vFolders/VFoldersPaletteEditor.cs
-  artifactKey: Guid(085d323b143d5403fb4beda728e65139) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders/VFoldersPaletteEditor.cs using Guid(085d323b143d5403fb4beda728e65139) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '5f802a625811e01cfcc262be23c0cec5') in 0.0555582 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000014 seconds.
-  path: Assets/Shared/Scenes/DemoScene.unity
-  artifactKey: Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Scenes/DemoScene.unity using Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '06f1a2d80f57dca13dfdd589abbb84c4') in 0.0165609 seconds
+  Time since last request: 791092.090155 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.pdb
+  artifactKey: Guid(5c65184932ff4fd48a343e2360250a6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.pdb using Guid(5c65184932ff4fd48a343e2360250a6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '8b89e8ae16e6fb89bd3b637112af8e8b') in 0.0422939 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000022 seconds.
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersPaletteEditor.cs
+  artifactKey: Guid(085d323b143d5403fb4beda728e65139) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersPaletteEditor.cs using Guid(085d323b143d5403fb4beda728e65139) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '35b7831fd09ac3d5ed39fd4047c1c837') in 0.0257448 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Shared/Scenes/DemoScene.unity
+  artifactKey: Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Scenes/DemoScene.unity using Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '148ed22c004d7e8d121e992bd78f275c') in 0.0156936 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
   path: Assets/Plugins/Kubacho/vFolders/VFoldersMenu.cs
   artifactKey: Guid(f118e09f35fa241fda19f1f3b1e7c5a2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders/VFoldersMenu.cs using Guid(f118e09f35fa241fda19f1f3b1e7c5a2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c6155a73e6d6e6fca371f98f1cc4ad73') in 0.0107203 seconds
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersMenu.cs using Guid(f118e09f35fa241fda19f1f3b1e7c5a2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e9151b3f64558aa5e0bbb1cd3e1f77a0') in 0.0090762 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000036 seconds.
-  path: Assets/Plugins/Kubacho/vTabs/VTabs.cs
-  artifactKey: Guid(fc570418b0cd44cd49a39403a3ba1cf7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs/VTabs.cs using Guid(fc570418b0cd44cd49a39403a3ba1cf7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e4690f89db85154729938c300a7c5cf3') in 0.0105484 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000025 seconds.
-  path: Assets/Shared/Materials/MatTransparantChecker.mat
-  artifactKey: Guid(48a02f5543c87714d81e95322e9d8231) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Materials/MatTransparantChecker.mat using Guid(48a02f5543c87714d81e95322e9d8231) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c6a4cc9c78159a3e57183a575fd89d38') in 0.0228995 seconds
+  Time since last request: 0.000015 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden
+  artifactKey: Guid(e22dad2728c77344f8da0d2789866a0e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden using Guid(e22dad2728c77344f8da0d2789866a0e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '94fe4303484774816bf2249e8d961f31') in 0.0096592 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
@@ -285,654 +285,805 @@ Received Import Request.
   Time since last request: 0.000016 seconds.
   path: Assets/Plugins/Kubacho/vHierarchy
   artifactKey: Guid(dd2b9e231b0ec4a9f97e258072ae2b33) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy using Guid(dd2b9e231b0ec4a9f97e258072ae2b33) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '41e55dffed31a976e9e6933a2b9c874f') in 0.0104448 seconds
+Start importing Assets/Plugins/Kubacho/vHierarchy using Guid(dd2b9e231b0ec4a9f97e258072ae2b33) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c352e0815db9ab54f1411c69f5707a70') in 0.0109835 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000022 seconds.
-  path: Assets/Shared/Materials/MatPurpleLaser.mat
-  artifactKey: Guid(5c989712f6ba2b345987bdd79b94b90e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Materials/MatPurpleLaser.mat using Guid(5c989712f6ba2b345987bdd79b94b90e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '7e7bc64de0db234c86b5c0a7a413fc55') in 0.0104255 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000016 seconds.
-  path: Assets/Plugins/Kubacho/vTabs
-  artifactKey: Guid(baa6e88cc47804cafb29dc337c1e639b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs using Guid(baa6e88cc47804cafb29dc337c1e639b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '8f3398032c167037c7948955784c6fd6') in 0.0103871 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000016 seconds.
-  path: Assets/Shared/Materials/MatLightGrayChecker.mat
-  artifactKey: Guid(bc402b79f75687c4f8051d103ef15ad4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Materials/MatLightGrayChecker.mat using Guid(bc402b79f75687c4f8051d103ef15ad4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '4983f04ff5fd99225880c738ee45e84b') in 0.0110196 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000013 seconds.
-  path: Assets/Plugins/Kubacho/vTabs/VTabsCache.cs
-  artifactKey: Guid(e727e3495b7464d28aa9d2d5cf3a06bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs/VTabsCache.cs using Guid(e727e3495b7464d28aa9d2d5cf3a06bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'bbaf50451d05eb63f910ba93fb9a33cb') in 0.0124033 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000016 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyCache.cs
-  artifactKey: Guid(3fd3b966dd497472d86df0d7c9271088) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyCache.cs using Guid(3fd3b966dd497472d86df0d7c9271088) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a157396505cb3f6274b88ccb642e8518') in 0.0117484 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000101 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorComponentWindow.cs
-  artifactKey: Guid(295e0a9b2039246c59fbe00423b2723e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorComponentWindow.cs using Guid(295e0a9b2039246c59fbe00423b2723e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '2aa8ea31e93519ff36f3ed46c104d277') in 0.0120089 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000048 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchy.asmdef
-  artifactKey: Guid(2c3f48364a5004fd3a152fbdf5fea703) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchy.asmdef using Guid(2c3f48364a5004fd3a152fbdf5fea703) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3e777cdaa6bc914d5985145f370ba38a') in 0.01198 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000025 seconds.
-  path: Assets/Plugins/Kubacho/vFolders/VFoldersHistory.cs
-  artifactKey: Guid(2d3e0e15bb2714894bdfb696f7509428) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders/VFoldersHistory.cs using Guid(2d3e0e15bb2714894bdfb696f7509428) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'bfd76719fe7dfbfd433f226347678c6a') in 0.0114087 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000029 seconds.
-  path: Assets/ProCore/ProBuilderData/ProBuilderPreferences.asset
-  artifactKey: Guid(4aede4497c43e8b4d8168c0c83604af3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/ProCore/ProBuilderData/ProBuilderPreferences.asset using Guid(4aede4497c43e8b4d8168c0c83604af3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a2ef8e028e6f7a5332199b09be362f75') in 0.0110603 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000017 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyGUI.cs
-  artifactKey: Guid(879081410e5ee4ddcb0145a4a9937193) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyGUI.cs using Guid(879081410e5ee4ddcb0145a4a9937193) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '72caaa2024ad278a325ca5aa1ea4e415') in 0.0118718 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000042 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorMenu.cs
-  artifactKey: Guid(07852b6b534474f7fb57529201e123e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorMenu.cs using Guid(07852b6b534474f7fb57529201e123e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6ea4d33dd7763456a17653c217204ed4') in 0.0115482 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000051 seconds.
-  path: Assets/Plugins/Kubacho/vInspector
-  artifactKey: Guid(f42d0374f4587401395165a2788ee07c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector using Guid(f42d0374f4587401395165a2788ee07c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '086f65227b4f51867aa0b1f6eb52ca11') in 0.0108966 seconds
+  Time since last request: 0.000027 seconds.
+  path: Assets/Shared/Materials/MatRedChecker.mat
+  artifactKey: Guid(68cf8782064ce154ba845b35cd66415d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatRedChecker.mat using Guid(68cf8782064ce154ba845b35cd66415d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '7d6f7d1fe5a0408405d7d0cd0792cfea') in 0.027329 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000029 seconds.
-  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesData.cs
-  artifactKey: Guid(066cf82f8f80d408c856e48fc8f1127b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesData.cs using Guid(066cf82f8f80d408c856e48fc8f1127b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'b60d5351975e1e91bba96df60222d6f7') in 0.0113654 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000034 seconds.
-  path: Assets/Shared/Materials/MatOrangeChecker.mat
-  artifactKey: Guid(c4e5e3ca195c40f4c8c44c25ec5753e7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Materials/MatOrangeChecker.mat using Guid(c4e5e3ca195c40f4c8c44c25ec5753e7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '1d37da3858cae39888ab056b7042edc9') in 0.011228 seconds
+  path: Assets/Shared/Materials/MatDarkGrayChecker.mat
+  artifactKey: Guid(12b28058739ab18438ef99454f7671d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatDarkGrayChecker.mat using Guid(12b28058739ab18438ef99454f7671d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ce9b6219a2f8c7a98229c80d42b5f237') in 0.0126331 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000020 seconds.
-  path: Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Mathematics/manifest.txt
-  artifactKey: Guid(cc29b60f0ba976c48b3e9409d71d2cd4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Mathematics/manifest.txt using Guid(cc29b60f0ba976c48b3e9409d71d2cd4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '83fcad2c3836f7a6b2858cac72ec8994') in 0.0112075 seconds
+  Time since last request: 0.000015 seconds.
+  path: Assets/Shared/Scenes/LoadingScene
+  artifactKey: Guid(f0db10a0ddbe3ca4aa7e2283324e1c33) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Scenes/LoadingScene using Guid(f0db10a0ddbe3ca4aa7e2283324e1c33) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '07125ead85da241b84a9a7905009b1e9') in 0.0109857 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000029 seconds.
-  path: Assets/Plugins/Kubacho/vTabs/VTabsMenuItems.cs
-  artifactKey: Guid(102836a637c684c11b7581d444fecb04) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs/VTabsMenuItems.cs using Guid(102836a637c684c11b7581d444fecb04) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '321534c77bfd0a666442a142fd7ca990') in 0.0125287 seconds
+  Time since last request: 0.000024 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.dll
+  artifactKey: Guid(47a84ebde4ec47fabb620b30cc7a3e5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.dll using Guid(47a84ebde4ec47fabb620b30cc7a3e5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3b062f8229ca421d30abedd822dce875') in 0.0197681 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000034 seconds.
-  path: Assets/Plugins/Kubacho/vTabs/VTabsLibs.cs
-  artifactKey: Guid(91d4456e469254096af9035b29263ca5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs/VTabsLibs.cs using Guid(91d4456e469254096af9035b29263ca5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '4d3a92d0c33f19a82fe5117c928bd3d2') in 0.0121917 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000021 seconds.
-  path: Assets/Plugins/Kubacho
-  artifactKey: Guid(e6a904b6864d4f94f8abd1307033c240) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho using Guid(e6a904b6864d4f94f8abd1307033c240) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd28a6dcad8df179912e0f7c5b07db701') in 0.0102858 seconds
+  Time since last request: 0.000033 seconds.
+  path: Assets/Levels/Level 11/LevelScene_11.unity
+  artifactKey: Guid(ae0ab96557849964783efb4e7b124a76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 11/LevelScene_11.unity using Guid(ae0ab96557849964783efb4e7b124a76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '55258a825e1a5c66344d45bfd522f81d') in 0.0124309 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000019 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspector.cs
-  artifactKey: Guid(cb0378825d0df482cb66e646e57e5153) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspector.cs using Guid(cb0378825d0df482cb66e646e57e5153) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '0b0f2435b2a98e97e334ee3553052acf') in 0.0129411 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000046 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorClipboard.cs
-  artifactKey: Guid(2e946bdceafc44945ad0c659f550d6d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorClipboard.cs using Guid(2e946bdceafc44945ad0c659f550d6d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e11233fc94cb8f9245ac96a52d2ab8b1') in 0.0121776 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000037 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorEditor.cs
-  artifactKey: Guid(4a8eec962d2dd440196b02dca0f62e3e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorEditor.cs using Guid(4a8eec962d2dd440196b02dca0f62e3e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd911d740b2ddb02a2bf3cb21d41cfb42') in 0.0136934 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000030 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorNavbar.cs
-  artifactKey: Guid(f27f798b17a724efc8b05c54e23eff97) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorNavbar.cs using Guid(f27f798b17a724efc8b05c54e23eff97) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '93bac086f5b4cedd9b79b1141144f8fc') in 0.0218885 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000032 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyPaletteEditor.cs
-  artifactKey: Guid(2b7dce55e9e9b476fb5d1d669c006123) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyPaletteEditor.cs using Guid(2b7dce55e9e9b476fb5d1d669c006123) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3a41dee5051d562db710cdac3b78cc2e') in 0.023498 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000041 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyComponentEditor.cs
-  artifactKey: Guid(d51d8117d96b64eaa9a83667bf4297d6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyComponentEditor.cs using Guid(d51d8117d96b64eaa9a83667bf4297d6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3fb471bc5a00c4e73bbcce4e9a2c9b6b') in 0.0122651 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000037 seconds.
-  path: Assets/Plugins/Kubacho/vFolders/VFoldersIconEditor.cs
-  artifactKey: Guid(fc2d205dd3ec1446d843e566b05c2eda) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders/VFoldersIconEditor.cs using Guid(fc2d205dd3ec1446d843e566b05c2eda) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'f9cf3bef5b2080a9bbdda3fedb3fbf9b') in 0.0120973 seconds
+  Time since last request: 0.000015 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersData.cs
+  artifactKey: Guid(adb9c12a8c6c949f7af83a3d238359d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersData.cs using Guid(adb9c12a8c6c949f7af83a3d238359d0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c168f35d63e638f984e7bf3c775eb1ed') in 0.0107565 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000018 seconds.
-  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesState.cs
-  artifactKey: Guid(362e220c378db4e97ae41fa35a6fb58f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesState.cs using Guid(362e220c378db4e97ae41fa35a6fb58f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'f25bc93836735d99ee7026fae1febe37') in 0.0115997 seconds
+  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesLibs.cs
+  artifactKey: Guid(38092f82a4c054086826261d88277942) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesLibs.cs using Guid(38092f82a4c054086826261d88277942) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e95526a03ca94bc9540b68818b64fe62') in 0.0101202 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000045 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyIconEditor.cs
-  artifactKey: Guid(8710ada63f66c4909ab73d206f31e954) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyIconEditor.cs using Guid(8710ada63f66c4909ab73d206f31e954) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'da5907ddfb53bb17d48c42031c9b5938') in 0.0105208 seconds
+  Time since last request: 0.000022 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/OdinPathLookup.asset
+  artifactKey: Guid(08379ccefc05200459f90a1c0711a340) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/OdinPathLookup.asset using Guid(08379ccefc05200459f90a1c0711a340) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '75fa2a76dc711a8b60da7e64b453aa87') in 0.0131734 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000012 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Localization.data
+  artifactKey: Guid(5a1693d73a4f6e34d955789129c71e11) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Localization.data using Guid(5a1693d73a4f6e34d955789129c71e11) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e95c1e69ecc3755d5b2a57dcc6029581') in 0.0113468 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Plugins/Kubacho/vInspector/VInspectorMenu.cs
+  artifactKey: Guid(07852b6b534474f7fb57529201e123e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vInspector/VInspectorMenu.cs using Guid(07852b6b534474f7fb57529201e123e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'b8c14b602cd22eb84b8efb6f9922a77b') in 0.011524 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000036 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/Read me.pdf
-  artifactKey: Guid(5bc65026e2b5e458b838d06e4ef39409) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/Read me.pdf using Guid(5bc65026e2b5e458b838d06e4ef39409) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '632d5a1dbb960aab6c6703705133c893') in 0.010549 seconds
+  Time since last request: 0.000022 seconds.
+  path: Assets/Plugins/Kubacho/vInspector
+  artifactKey: Guid(f42d0374f4587401395165a2788ee07c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vInspector using Guid(f42d0374f4587401395165a2788ee07c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd37ed11a0370f33c6355d801c4bc10bf') in 0.0098922 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000015 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/SdfIconAtlas.png
+  artifactKey: Guid(2a0112a98875dfd488b5d10bdb8a4903) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/SdfIconAtlas.png using Guid(2a0112a98875dfd488b5d10bdb8a4903) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ff7d7bc05af88201a012e1d3cc2bdb36') in 0.0483875 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000015 seconds.
+  path: Assets/Levels/Level 4/LevelScene_4.unity
+  artifactKey: Guid(fad128bdb1c6e4941b40ec472ef2efa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 4/LevelScene_4.unity using Guid(fad128bdb1c6e4941b40ec472ef2efa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '950f552b98bb1054f2b41f743aa28eb1') in 0.0134343 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/OdinVisualDesignerConfig.asset
+  artifactKey: Guid(320361ef0f9970b458c8bd4e9faedf8d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/OdinVisualDesignerConfig.asset using Guid(320361ef0f9970b458c8bd4e9faedf8d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'dda205089833c0bae52b6c9fe45a6d13') in 0.0116879 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000025 seconds.
-  path: Assets/Plugins/Kubacho/vTabs/VTabsAddTabWindow.cs
-  artifactKey: Guid(928f84418aa3c41649729951fe66405c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs/VTabsAddTabWindow.cs using Guid(928f84418aa3c41649729951fe66405c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd5d11aacd8aa3ae683ffb56f0462fe74') in 0.0120226 seconds
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.xml
+  artifactKey: Guid(4873f2a8bdae42baa0406e8a6136096f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.xml using Guid(4873f2a8bdae42baa0406e8a6136096f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '65d31cc2ccb26baae52b2c20e66c2b26') in 0.0107241 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000030 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/ExtractSpriteShader.shader
+  artifactKey: Guid(0675e2791073a4147b190e55f1da7ac2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/ExtractSpriteShader.shader using Guid(0675e2791073a4147b190e55f1da7ac2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '830dd349467c20c45d3d4aa2b70a3161') in 0.0132482 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000019 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/vFolders Data.asset
+  artifactKey: Guid(c4dcbfb4656a7f241b8d40218c8de2b6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/vFolders Data.asset using Guid(c4dcbfb4656a7f241b8d40218c8de2b6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '2052cb08f9ac1f84d505942a122a2f47') in 0.0123305 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyDataComponent.cs
+  artifactKey: Guid(9e20c7ea1a24b4a899ba82e98ad2b375) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyDataComponent.cs using Guid(9e20c7ea1a24b4a899ba82e98ad2b375) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd07eff146b195b8aeb305d83bf88b985') in 0.0111547 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000048 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyLibs.cs
-  artifactKey: Guid(cd278e4ae9a8649f59f016c7d739ce1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyLibs.cs using Guid(cd278e4ae9a8649f59f016c7d739ce1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '40c53d1da1ee088c4e582e434682a3ff') in 0.0113887 seconds
+  Time since last request: 0.000038 seconds.
+  path: Assets/Plugins/Kubacho
+  artifactKey: Guid(e6a904b6864d4f94f8abd1307033c240) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho using Guid(e6a904b6864d4f94f8abd1307033c240) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '632f30204377653780c862b937fe8509') in 0.0091931 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000011 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Entities.data
+  artifactKey: Guid(728df0e3465c1a148b83053a3f31d489) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Entities.data using Guid(728df0e3465c1a148b83053a3f31d489) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6356e4e79ffe56077c6f4b781746565b') in 0.0095938 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000014 seconds.
+  path: Assets/Plugins/Kubacho/vInspector/VInspectorEditor.cs
+  artifactKey: Guid(4a8eec962d2dd440196b02dca0f62e3e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vInspector/VInspectorEditor.cs using Guid(4a8eec962d2dd440196b02dca0f62e3e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '94c835410ff3589d431b3cc4c9497e6b') in 0.0111168 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000043 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorComponentHeader.cs
-  artifactKey: Guid(69daed4ccfde7447ba633e320119de35) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorComponentHeader.cs using Guid(69daed4ccfde7447ba633e320119de35) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c39b90710133b65ea30bdfab7fcbaba6') in 0.0111952 seconds
+  Time since last request: 0.000032 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets
+  artifactKey: Guid(52c0fd243c6c01e4d9efa03616b655d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets using Guid(52c0fd243c6c01e4d9efa03616b655d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'f6daab222aced8fb7e245f959976fc47') in 0.0110883 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Shared/Materials/MatWhiteChecker.mat
+  artifactKey: Guid(4936e771cf5283f48b69f16bbde18b04) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatWhiteChecker.mat using Guid(4936e771cf5283f48b69f16bbde18b04) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ee75c84ddddcaaa4725e616d37d2f682') in 0.0121044 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000014 seconds.
+  path: Assets/Plugins/Kubacho/vInspector/VInspectorNavbar.cs
+  artifactKey: Guid(f27f798b17a724efc8b05c54e23eff97) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vInspector/VInspectorNavbar.cs using Guid(f27f798b17a724efc8b05c54e23eff97) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '2ecf0033e46e5d87866172e1bc395ae0') in 0.0109371 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Plugins/Sirenix/Demos/Custom Drawers.unitypackage
+  artifactKey: Guid(48e08dc33330d11e9d4a1b246c52e4f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Demos/Custom Drawers.unitypackage using Guid(48e08dc33330d11e9d4a1b246c52e4f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3d823dce706ed9c3c795110f9d274349') in 0.0107151 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000026 seconds.
+  path: Assets/Levels/Level 2/LevelScene_2Settings.lighting
+  artifactKey: Guid(71e3b86faa9b9aa43a87cd19884fcf7b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 2/LevelScene_2Settings.lighting using Guid(71e3b86faa9b9aa43a87cd19884fcf7b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
+ -> (artifact id: '38e35389d188c177374822e53ad3c677') in 0.017983 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000067 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersIconEditor.cs
+  artifactKey: Guid(fc2d205dd3ec1446d843e566b05c2eda) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersIconEditor.cs using Guid(fc2d205dd3ec1446d843e566b05c2eda) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ca50b37277aa8ab33ace1d794c36ba30') in 0.0097321 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000015 seconds.
+  path: Assets/Levels/Level 7/LevelScene_7Settings.lighting
+  artifactKey: Guid(046280c28589bb946b72b073cac611a7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 7/LevelScene_7Settings.lighting using Guid(046280c28589bb946b72b073cac611a7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
+ -> (artifact id: '351ed6ab0e46c45758d3b8af78b78894') in 0.010763 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/Levels/Level 10/LevelScene_10Settings.lighting
+  artifactKey: Guid(6ec5a5558cdd5a2409c9308c0e604b3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 10/LevelScene_10Settings.lighting using Guid(6ec5a5558cdd5a2409c9308c0e604b3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
+ -> (artifact id: 'ef121c88a1a3744835cb93c0177263a5') in 0.0112704 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000014 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.xml
+  artifactKey: Guid(47a84ebde4ec47fabb620b30cc7a096f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.xml using Guid(47a84ebde4ec47fabb620b30cc7a096f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '03c6211621a7f39c71b2ea9f960901d2') in 0.0108453 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000011 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersPaletteWindow.cs
+  artifactKey: Guid(68011e63381a84f3bacee6e5ee9e0b82) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersPaletteWindow.cs using Guid(68011e63381a84f3bacee6e5ee9e0b82) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3e3200003c998c38454b281e0b433c94') in 0.0117709 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000014 seconds.
+  path: Assets/Shared/Scenes/LoadingScene/ReflectionProbe-0.exr
+  artifactKey: Guid(87ff9b6e52d706c4d85cb9cf80124b82) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Scenes/LoadingScene/ReflectionProbe-0.exr using Guid(87ff9b6e52d706c4d85cb9cf80124b82) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'f805da45b9b04aa98e7ca90de81a7e40') in 0.0162344 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000019 seconds.
   path: Assets/Shared/Materials/MatDarkBrownChecker.mat
   artifactKey: Guid(a105be5bf8dee0d46abcd1fd31787940) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Materials/MatDarkBrownChecker.mat using Guid(a105be5bf8dee0d46abcd1fd31787940) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '23aa0165968f6d3d37bf2027fb66f112') in 0.0104495 seconds
+Start importing Assets/Shared/Materials/MatDarkBrownChecker.mat using Guid(a105be5bf8dee0d46abcd1fd31787940) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '287a0e35792301057022e6cd38dfcd21') in 0.0126929 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000010 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyNavbar.cs
-  artifactKey: Guid(b0951d821533c4f9486bb1430540ef3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyNavbar.cs using Guid(b0951d821533c4f9486bb1430540ef3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '54ddf2e807d73f936ab1b61ab58ffb77') in 0.0115694 seconds
+  Time since last request: 0.000032 seconds.
+  path: Assets/Plugins/Kubacho/vFavorites
+  artifactKey: Guid(d454140e53231466b8d485f9ff487b2e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites using Guid(d454140e53231466b8d485f9ff487b2e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e881d58704090ce21b41e2970eb121bd') in 0.0088548 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyController.cs
+  artifactKey: Guid(3513d7b44a8b94c8d800e841067bf035) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyController.cs using Guid(3513d7b44a8b94c8d800e841067bf035) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '679c29be55469f04abf7a718d40bfcfc') in 0.0105995 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000039 seconds.
+  path: Assets/Levels/Level 2/LevelScene_2.unity
+  artifactKey: Guid(75d9929769b44cd429e38360c36feccb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 2/LevelScene_2.unity using Guid(75d9929769b44cd429e38360c36feccb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '4282d78cfe514b00bb55db44c25bcbc7') in 0.011452 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/Levels/Level 9/LevelScene_9.unity
+  artifactKey: Guid(53c62bdb5324f35408fdd7d8ff108327) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 9/LevelScene_9.unity using Guid(53c62bdb5324f35408fdd7d8ff108327) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3e9d0c759508d617caa64882b8d3bea9') in 0.0118173 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Plugins/Kubacho/vTabs/VTabsGUI.cs
+  artifactKey: Guid(291c4a11da18041c49b4772d9e054145) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vTabs/VTabsGUI.cs using Guid(291c4a11da18041c49b4772d9e054145) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'fe8cc76598c4b05cf49b5cff1045cd82') in 0.0106111 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000052 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersController.cs
+  artifactKey: Guid(380edf2cfb553464d9f7ec73602e93d1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersController.cs using Guid(380edf2cfb553464d9f7ec73602e93d1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3a781b0cb23745d516e0aabd24a0603c') in 0.0104443 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Levels/Level 1/LevelScene_1.unity
+  artifactKey: Guid(dba26c2f2058c1f45b9fd18b8e826bd3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 1/LevelScene_1.unity using Guid(dba26c2f2058c1f45b9fd18b8e826bd3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a074a497e6327cb10e5a670d689d7a0a') in 0.0117458 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000022 seconds.
+  path: Assets/Shared/Materials/MatTransparantChecker.mat
+  artifactKey: Guid(48a02f5543c87714d81e95322e9d8231) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatTransparantChecker.mat using Guid(48a02f5543c87714d81e95322e9d8231) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a1fe21e57d4964614b108b0592641dff') in 0.0120906 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Shared/Scenes/TestScene.unity
+  artifactKey: Guid(abb809390820c0740b09347f36b8d44a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Scenes/TestScene.unity using Guid(abb809390820c0740b09347f36b8d44a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '752241fd9c6391dd515e6010a6e73b1a') in 0.0133016 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Plugins/Kubacho/vTabs
+  artifactKey: Guid(baa6e88cc47804cafb29dc337c1e639b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vTabs using Guid(baa6e88cc47804cafb29dc337c1e639b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'bc99cbd72704b60b535e86a80b775831') in 0.0087942 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersGUI.cs
+  artifactKey: Guid(0743ead56bea942af9c21d27c5c45b62) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersGUI.cs using Guid(0743ead56bea942af9c21d27c5c45b62) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'f835a097f42638972e12eb3fc485904d') in 0.0099766 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000028 seconds.
-  path: Assets/Plugins/Kubacho/vTabs/VTabsPlaceholderWindow.cs
-  artifactKey: Guid(176a13b0483f24d39af2f0b00467885b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vTabs/VTabsPlaceholderWindow.cs using Guid(176a13b0483f24d39af2f0b00467885b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6198f52e0875dfd5cbd0326be47d4b45') in 0.0115881 seconds
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/LazyEditorIconShader.shader
+  artifactKey: Guid(2ad0a53eacb91bd4fbe0dc668bf25e6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/LazyEditorIconShader.shader using Guid(2ad0a53eacb91bd4fbe0dc668bf25e6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '5a60304989df8c00c2796fd354b15578') in 0.0115257 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/NoEditor/Sirenix.Utilities.dll
+  artifactKey: Guid(5978f8f3dd274e848fbb7a123bde1fb9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/NoEditor/Sirenix.Utilities.dll using Guid(5978f8f3dd274e848fbb7a123bde1fb9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '419aa82ef213f645e70c3e67bc61de29') in 0.0113074 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000033 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyData.cs
-  artifactKey: Guid(3a9752b0c8e144801967e6897679604b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyData.cs using Guid(3a9752b0c8e144801967e6897679604b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'f36874dc1d9f6bb0e67f3a5ee632692c') in 0.0108573 seconds
+  Time since last request: 0.000046 seconds.
+  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesMenuItems.cs
+  artifactKey: Guid(e1b1b30cd63e14da9a295742be768842) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesMenuItems.cs using Guid(e1b1b30cd63e14da9a295742be768842) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'b39460b7a4fe6deabc701dfcdf129f8c') in 0.010748 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/TypeRegistryUserConfig.asset
+  artifactKey: Guid(248ae131f422eee4c866c8ad1ce75ce1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/TypeRegistryUserConfig.asset using Guid(248ae131f422eee4c866c8ad1ce75ce1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c30ade1259c57fa71758d38582283818') in 0.0153336 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/Levels/Level 10/LevelScene_10.unity
+  artifactKey: Guid(51c13ce6cbb2fc54db88a05350b21cb9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 10/LevelScene_10.unity using Guid(51c13ce6cbb2fc54db88a05350b21cb9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c90b7a29c5b012e5eb0a9cd68ff8368e') in 0.0128473 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000015 seconds.
+  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesData.cs
+  artifactKey: Guid(066cf82f8f80d408c856e48fc8f1127b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesData.cs using Guid(066cf82f8f80d408c856e48fc8f1127b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '916238a80529c67e6d004f778dbc16ad') in 0.0118511 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000014 seconds.
-  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesMenu.cs
-  artifactKey: Guid(65f8f6586ea4740238f667f8337cf6fb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesMenu.cs using Guid(65f8f6586ea4740238f667f8337cf6fb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '4ed3f4f8e0cbde79b15fc7683eb3f37e') in 0.0123783 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000021 seconds.
-  path: Assets/Plugins/Kubacho/vHierarchy/Read me.pdf
-  artifactKey: Guid(520b2a02f70c04615b08281be020f305) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vHierarchy/Read me.pdf using Guid(520b2a02f70c04615b08281be020f305) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3f48c404e5234a612995f54ed2ad16dc') in 0.0112247 seconds
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.pdb
+  artifactKey: Guid(4873f2a8bdae42baa0406e8a61360a6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.pdb using Guid(4873f2a8bdae42baa0406e8a61360a6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3372344b5272c767e98119295441501d') in 0.0105839 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000011 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorDrawers.cs
-  artifactKey: Guid(481331f9e0bfe494f98ee0fc8ebfeb84) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorDrawers.cs using Guid(481331f9e0bfe494f98ee0fc8ebfeb84) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '03d1181bc3d8a0965a219d20ff0b6ac6') in 0.0128541 seconds
+  Time since last request: 0.000014 seconds.
+  path: Assets/Plugins/Kubacho/vFavorites/VFavorites.asmdef
+  artifactKey: Guid(d8266c7db84a045d3b706b23e60aa197) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites/VFavorites.asmdef using Guid(d8266c7db84a045d3b706b23e60aa197) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '7a17cb832bca17102fd3df898651c280') in 0.0111543 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/NoEditor/Sirenix.Serialization.dll
+  artifactKey: Guid(5651992cdad94894a3af7dc3f1da9170) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/NoEditor/Sirenix.Serialization.dll using Guid(5651992cdad94894a3af7dc3f1da9170) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '9e7b8277e49a80efbe21713b820408a5') in 0.011142 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Plugins/Sirenix
+  artifactKey: Guid(7db84c72b2408b24da5a225550b562ff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix using Guid(7db84c72b2408b24da5a225550b562ff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '453fea95d2dc83c03238128347416dfe') in 0.009492 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.dll
+  artifactKey: Guid(4873f2a8bdae42baa0406e8a61366ca1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.dll using Guid(4873f2a8bdae42baa0406e8a61366ca1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '153164a81d0470e7ed6a0392462e7d94') in 0.0112638 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000345 seconds.
+  path: Assets/Plugins/Kubacho/vInspector/VInspector.cs
+  artifactKey: Guid(cb0378825d0df482cb66e646e57e5153) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vInspector/VInspector.cs using Guid(cb0378825d0df482cb66e646e57e5153) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'b77e69460396e2d1470b1a5c5b240502') in 0.0093023 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000019 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.pdb
+  artifactKey: Guid(a4865f1ab4504ed8a368670db22f0a6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.pdb using Guid(a4865f1ab4504ed8a368670db22f0a6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '4cbbf2bb5eeef194be55d750031d4856') in 0.0113565 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000015 seconds.
+  path: Assets/Shared/Materials/MatBlueChecker.mat
+  artifactKey: Guid(312893457228b37469740e0486b6ab39) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatBlueChecker.mat using Guid(312893457228b37469740e0486b6ab39) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '220ac9acaee6c9cfb6203628f05f829b') in 0.0120887 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchy.cs
+  artifactKey: Guid(67e949be20d3641adbc9494ed5bd764e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchy.cs using Guid(67e949be20d3641adbc9494ed5bd764e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e7f9b613a349df49408cc224964571ac') in 0.0115767 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000044 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/NoEmitAndNoEditor/Sirenix.Serialization.dll
+  artifactKey: Guid(d2a8f0021d6b47c5923d8972dfb81ef1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/NoEmitAndNoEditor/Sirenix.Serialization.dll using Guid(d2a8f0021d6b47c5923d8972dfb81ef1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a372d88e9e663dd3df6eaa94289e15e0') in 0.0128905 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000018 seconds.
+  path: Assets/Shared/Scenes/MainMenuBackgroundSceneSettings.lighting
+  artifactKey: Guid(03187ada3ac179d40a68915cd12b6abd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Scenes/MainMenuBackgroundSceneSettings.lighting using Guid(03187ada3ac179d40a68915cd12b6abd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
+ -> (artifact id: 'efd9d41d99cdc233f5de7267260f4bfd') in 0.0133503 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyIconEditor.cs
+  artifactKey: Guid(8710ada63f66c4909ab73d206f31e954) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyIconEditor.cs using Guid(8710ada63f66c4909ab73d206f31e954) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd50e7cdbd2a47ae0bfcb6c04443be6ec') in 0.0110503 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFoldersCache.cs
+  artifactKey: Guid(69c14c9fceb5b4c968f55fe5786a0bee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFoldersCache.cs using Guid(69c14c9fceb5b4c968f55fe5786a0bee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'bcacfa975637d8bb35e685e57417c146') in 0.0097246 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
   Time since last request: 0.000045 seconds.
-  path: Assets/Plugins/Kubacho/vFolders/VFoldersPalette.cs
-  artifactKey: Guid(618f730fcd14941fab38169a7dde8c64) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders/VFoldersPalette.cs using Guid(618f730fcd14941fab38169a7dde8c64) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '31fe3251d5c1d73062c268bba586ad0e') in 0.0110173 seconds
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyPalette.cs
+  artifactKey: Guid(61290d425f1c94a8cbfb56f754ca6757) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyPalette.cs using Guid(61290d425f1c94a8cbfb56f754ca6757) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '3c27d9f2351101da5914feedf54b1d0d') in 0.0123494 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000042 seconds.
-  path: Assets/Plugins/Kubacho/vFolders/VFolders.asmdef
-  artifactKey: Guid(3331bc437f3a24586b7e86e7bdd62b5e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders/VFolders.asmdef using Guid(3331bc437f3a24586b7e86e7bdd62b5e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '46730e85df7d30b78d010419389dfae2') in 0.0111817 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000127 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorResettableVariables.cs
-  artifactKey: Guid(4efb7d95707f0459ba76cac7fa149875) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorResettableVariables.cs using Guid(4efb7d95707f0459ba76cac7fa149875) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'e504ea9eb38c7251682f2b412e5c7ec4') in 0.0106212 seconds
+  Time since last request: 0.000039 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyLibs.cs
+  artifactKey: Guid(cd278e4ae9a8649f59f016c7d739ce1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyLibs.cs using Guid(cd278e4ae9a8649f59f016c7d739ce1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'dbe13f3de70e9009ed49a327e6fedeeb') in 0.0103518 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000035 seconds.
-  path: Assets/Plugins/Kubacho/vFavorites/VFavorites.cs
-  artifactKey: Guid(6651039474d594cdd91489768cf293f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFavorites/VFavorites.cs using Guid(6651039474d594cdd91489768cf293f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '185ef7749559456a577bd3f0ece01f18') in 0.0120617 seconds
+  Time since last request: 0.000022 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Config/Editor
+  artifactKey: Guid(529577a30af49384490036360aa13de2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Config/Editor using Guid(529577a30af49384490036360aa13de2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6aab627d3a1e8ba5b49912694b0f0465') in 0.0098143 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000044 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyNavbar.cs
+  artifactKey: Guid(b0951d821533c4f9486bb1430540ef3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyNavbar.cs using Guid(b0951d821533c4f9486bb1430540ef3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ac313a14dbe834ea303268acaf67266e') in 0.0121368 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000043 seconds.
-  path: Assets/Plugins/Kubacho/vFolders
-  artifactKey: Guid(109ccfb08b9fd4bf5a9d8deee2ace2ed) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vFolders using Guid(109ccfb08b9fd4bf5a9d8deee2ace2ed) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a2b1507c73eac2626238f78e64b4bac8') in 0.0093803 seconds
+  Time since last request: 0.000013 seconds.
+  path: Assets/Levels/Level 4/LevelScene_4Settings.lighting
+  artifactKey: Guid(adcc2d297e7a18548a222be5281f4894) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 4/LevelScene_4Settings.lighting using Guid(adcc2d297e7a18548a222be5281f4894) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
+ -> (artifact id: '62eae49361e1bac2bdd48613d94a894b') in 0.011419 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000018 seconds.
-  path: Assets/Plugins/Kubacho/vInspector/VInspectorSerializedDictionary.cs
-  artifactKey: Guid(00ee9a38e8fee47c29efb5789be8458c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Plugins/Kubacho/vInspector/VInspectorSerializedDictionary.cs using Guid(00ee9a38e8fee47c29efb5789be8458c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '957323c1456684ca1968ad3608f5f8c4') in 0.0122785 seconds
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vTabs/VTabsPlaceholderWindow.cs
+  artifactKey: Guid(176a13b0483f24d39af2f0b00467885b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vTabs/VTabsPlaceholderWindow.cs using Guid(176a13b0483f24d39af2f0b00467885b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'abd026fe24da6118aab32f1a369daa91') in 0.0116729 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 2.076018 seconds.
-  path: Assets/Shared/Scenes/DemoScene.unity
-  artifactKey: Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Scenes/DemoScene.unity using Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6aaec23f80c11631580afe791e4f6188') in 0.0156325 seconds
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vFavorites/VFavoritesMenu.cs
+  artifactKey: Guid(65f8f6586ea4740238f667f8337cf6fb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites/VFavoritesMenu.cs using Guid(65f8f6586ea4740238f667f8337cf6fb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c506d47453aadfa7f1f849b4c6d7a2e3') in 0.011695 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/Read me.pdf
+  artifactKey: Guid(520b2a02f70c04615b08281be020f305) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/Read me.pdf using Guid(520b2a02f70c04615b08281be020f305) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '03061048e58d6c7cf3831f16bd6d1f7f') in 0.0103768 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 141.930730 seconds.
-  path: Assets/Shared/Scenes/DemoScene.unity
-  artifactKey: Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Scenes/DemoScene.unity using Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '16d9b878785e30c878bf48d9e8ad2eaf') in 0.0149587 seconds
+  Time since last request: 0.000021 seconds.
+  path: Assets/Levels/Level 5/LevelScene_5.unity
+  artifactKey: Guid(7db9821514b67f544b862afe687dacbb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 5/LevelScene_5.unity using Guid(7db9821514b67f544b862afe687dacbb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ce849d6b8e7df3752dc17b752ae0a113') in 0.0113963 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 128.321199 seconds.
+  Time since last request: 0.000016 seconds.
   path: Assets/Shared/Scenes/TestSceneSettings.lighting
   artifactKey: Guid(8e1a8df6808d4ca469d5edd4fa08266e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
 Start importing Assets/Shared/Scenes/TestSceneSettings.lighting using Guid(8e1a8df6808d4ca469d5edd4fa08266e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
- -> (artifact id: 'ac0462e1888d9a3d7c192b1476b2de15') in 0.0257432 seconds
+ -> (artifact id: 'a69eb9e54eb44834c38f43cb31fdcd0d') in 0.0111501 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 5.431295 seconds.
-  path: Assets/Shared/Scenes/MainMenuBackgroundScene
-  artifactKey: Guid(12ec4f91949824945980f6892bd9f0fb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Shared/Scenes/MainMenuBackgroundScene using Guid(12ec4f91949824945980f6892bd9f0fb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ccf861e134a920000b2f6707eb76b3c1') in 0.000407 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 1.241669 seconds.
-  path: Assets/Shared/Scenes/DemoScene
-  artifactKey: Guid(f8cc333c170f5e44ba07ded7d23213dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Shared/Scenes/DemoScene using Guid(f8cc333c170f5e44ba07ded7d23213dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '311f90708f3d53d34a092ca8d5759aae') in 0.0003621 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 2.054397 seconds.
-  path: Assets/Shared/Scenes/LoadingScene.unity
-  artifactKey: Guid(4d30ac598a344fa4f94cb5885529fae5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Shared/Scenes/LoadingScene.unity using Guid(4d30ac598a344fa4f94cb5885529fae5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '324151498781132d27fd3f29cb8d31d0') in 0.0003686 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 2.172969 seconds.
-  path: Assets/Shared/Scenes/MainMenuBackgroundScene.unity
-  artifactKey: Guid(ac1d74a9680cd1946a806c1b225e8aae) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Shared/Scenes/MainMenuBackgroundScene.unity using Guid(ac1d74a9680cd1946a806c1b225e8aae) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ed0ec89bd959c450d72c9ce67517dab5') in 0.0003463 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 1.667902 seconds.
-  path: Assets/Shared/Scenes/LoadingScene/ReflectionProbe-0.exr
-  artifactKey: Guid(87ff9b6e52d706c4d85cb9cf80124b82) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Scenes/LoadingScene/ReflectionProbe-0.exr using Guid(87ff9b6e52d706c4d85cb9cf80124b82) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)[Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] License group:
-  Id: F4-AUWP-G4KN-QJ7R-NX3V-XXXX
-  Product: Unity Personal
-  Type: ULF
-  Expiration: Unlimited
-[Licensing::Module] License group:
-  Id: 2476475-UnityPersXXXX
-  Product: Unity Personal
-  Type: Assigned
-  Expiration: Unlimited
- -> (artifact id: '49dc47dbcde5b181217c07fca2b7738b') in 0.0340638 seconds
+  Time since last request: 0.000014 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/SdfIconShader.shader
+  artifactKey: Guid(99e0f263ae4ed2d4d962a2e995dff6df) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Hidden/SdfIconShader.shader using Guid(99e0f263ae4ed2d4d962a2e995dff6df) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'a9029aa4d7bc57457101bfa5773c64d2') in 0.0109057 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 15.045048 seconds.
-  path: Assets/Shared/Scenes/MainMenuBackgroundSceneSettings.lighting
-  artifactKey: Guid(03187ada3ac179d40a68915cd12b6abd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Shared/Scenes/MainMenuBackgroundSceneSettings.lighting using Guid(03187ada3ac179d40a68915cd12b6abd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
- -> (artifact id: 'ae2bb443ab470a144d61c014486f5b7f') in 0.0098194 seconds
+  Time since last request: 0.000017 seconds.
+  path: Assets/Plugins/Kubacho/vFavorites/vFavorites Data.asset
+  artifactKey: Guid(39d0979fbdd413a429421e30a357d70b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFavorites/vFavorites Data.asset using Guid(39d0979fbdd413a429421e30a357d70b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd8396a44d4433120da092d4386fcfea3') in 0.0171544 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 3.196880 seconds.
-  path: Assets/Shared/Scenes/TestScene.unity
-  artifactKey: Guid(abb809390820c0740b09347f36b8d44a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Shared/Scenes/TestScene.unity using Guid(abb809390820c0740b09347f36b8d44a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '74625134faba0fc5797638144aabff03') in 0.0003793 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 7.692401 seconds.
-  path: Assets/Levels/Level 1
-  artifactKey: Guid(2007db0a006e73a44b90a0f6bd299578) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 1 using Guid(2007db0a006e73a44b90a0f6bd299578) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'f45d4295b0f9b00fac09e74a3d021211') in 0.0004997 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.996865 seconds.
-  path: Assets/Levels/Level 1/Level_1.asset
-  artifactKey: Guid(4d2bdb1740931ad468c40fdbcc04cdea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 1/Level_1.asset using Guid(4d2bdb1740931ad468c40fdbcc04cdea) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '322dfcef44cc3159b2ed153d1e2f0b3e') in 0.0102443 seconds
+  Time since last request: 0.000032 seconds.
+  path: Assets/Plugins
+  artifactKey: Guid(65c18d699fcadad459bc3e16558c2bd2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins using Guid(65c18d699fcadad459bc3e16558c2bd2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '94b3adadde64639f34fa0df88bbaf065') in 0.0087419 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 1.038297 seconds.
-  path: Assets/Levels/Level 1/LevelScene_1.unity
-  artifactKey: Guid(dba26c2f2058c1f45b9fd18b8e826bd3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 1/LevelScene_1.unity using Guid(dba26c2f2058c1f45b9fd18b8e826bd3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ad74191dc1641fa9256cafe5ba8092ca') in 0.0003709 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 14.285010 seconds.
-  path: Assets/Levels/Level 2/LevelScene_2.unity
-  artifactKey: Guid(75d9929769b44cd429e38360c36feccb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 2/LevelScene_2.unity using Guid(75d9929769b44cd429e38360c36feccb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '102fcf8ecce2b209f6725bedb655bf5f') in 0.0005068 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 2.083942 seconds.
-  path: Assets/Levels/Level 1/LevelScene_1Settings.lighting
-  artifactKey: Guid(09eee98dd724fcb4a971747a467c808d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 1/LevelScene_1Settings.lighting using Guid(09eee98dd724fcb4a971747a467c808d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
- -> (artifact id: 'ec324a901526185fdbfc35d57e2eec0d') in 0.0167073 seconds
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Bootstrap License.txt
+  artifactKey: Guid(3fdc67fad3e362e47b5dd365a0bbdd7f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Assets/Editor/Bootstrap License.txt using Guid(3fdc67fad3e362e47b5dd365a0bbdd7f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '1e361271e93ac70e54a4dda54092b71e') in 0.0103617 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 10.528023 seconds.
-  path: Assets/Levels/Level 3/LevelScene_3.unity
-  artifactKey: Guid(ba3d57b3ef94c264b9a652ed705e04cf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 3/LevelScene_3.unity using Guid(ba3d57b3ef94c264b9a652ed705e04cf) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '1ce8407fa5dad32310def2a2b0da2413') in 0.0003708 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 2.157729 seconds.
-  path: Assets/Levels/Level 2/LevelScene_2.unity
-  artifactKey: Guid(75d9929769b44cd429e38360c36feccb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 2/LevelScene_2.unity using Guid(75d9929769b44cd429e38360c36feccb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '29ba2d111bf5ad611fd703d0aa6e1b62') in 0.0159167 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 8.116625 seconds.
-  path: Assets/Levels/Level 3/LevelScene_3.unity
-  artifactKey: Guid(ba3d57b3ef94c264b9a652ed705e04cf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 3/LevelScene_3.unity using Guid(ba3d57b3ef94c264b9a652ed705e04cf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'bac79e76c75f1165098c3e1de490f2f4') in 0.259003 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.795377 seconds.
-  path: Assets/Levels/Level 4/LevelScene_4.unity
-  artifactKey: Guid(fad128bdb1c6e4941b40ec472ef2efa7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 4/LevelScene_4.unity using Guid(fad128bdb1c6e4941b40ec472ef2efa7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'd387878a7dea1a9181c1643c9ec0718c') in 0.0003627 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 9.761242 seconds.
-  path: Assets/Levels/Level 4/LevelScene_4.unity
-  artifactKey: Guid(fad128bdb1c6e4941b40ec472ef2efa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 4/LevelScene_4.unity using Guid(fad128bdb1c6e4941b40ec472ef2efa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '8d37a7a5947e1f2894f4a83a1386dc2a') in 0.0152463 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 1.339761 seconds.
-  path: Assets/Levels/Level 5/LevelScene_5.unity
-  artifactKey: Guid(7db9821514b67f544b862afe687dacbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 5/LevelScene_5.unity using Guid(7db9821514b67f544b862afe687dacbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'a20a2c485f52b99ad627822399f689be') in 0.0003778 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 8.254842 seconds.
-  path: Assets/Levels/Level 5/LevelScene_5.unity
-  artifactKey: Guid(7db9821514b67f544b862afe687dacbb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 5/LevelScene_5.unity using Guid(7db9821514b67f544b862afe687dacbb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'fcbc8034e559ab1a72e4b3657b0bed6a') in 0.282394 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.452921 seconds.
-  path: Assets/Levels/Level 6/LevelScene_6.unity
-  artifactKey: Guid(6c695a7df5d36d744950ff72f8db8c97) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 6/LevelScene_6.unity using Guid(6c695a7df5d36d744950ff72f8db8c97) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '7340cfccc6682faf88ba93da56ec9a98') in 0.0003493 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 8.085846 seconds.
-  path: Assets/Levels/Level 6/LevelScene_6.unity
-  artifactKey: Guid(6c695a7df5d36d744950ff72f8db8c97) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 6/LevelScene_6.unity using Guid(6c695a7df5d36d744950ff72f8db8c97) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'ef857c549e00776734bd26d83a7d5bed') in 0.2776145 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.859739 seconds.
-  path: Assets/Levels/Level 7/LevelScene_7.unity
-  artifactKey: Guid(27a10a7f4f536994f86f233dcf8c89bf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 7/LevelScene_7.unity using Guid(27a10a7f4f536994f86f233dcf8c89bf) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'c73a5c494c41f26fdc9f97289a585af3') in 0.000345 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 8.113792 seconds.
-  path: Assets/Levels/Level 7/LevelScene_7.unity
-  artifactKey: Guid(27a10a7f4f536994f86f233dcf8c89bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 7/LevelScene_7.unity using Guid(27a10a7f4f536994f86f233dcf8c89bf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd59c2dbb63f81e13e24b71abeb6127e9') in 0.0139804 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.965743 seconds.
-  path: Assets/Levels/Level 8/LevelScene_8.unity
-  artifactKey: Guid(7e4dad1fd71f7b145b8db1b06e2f3555) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 8/LevelScene_8.unity using Guid(7e4dad1fd71f7b145b8db1b06e2f3555) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '06edfd53ac942e28c49e427649423290') in 0.0003565 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 8.854383 seconds.
+  Time since last request: 0.000016 seconds.
   path: Assets/Levels/Level 8/LevelScene_8.unity
   artifactKey: Guid(7e4dad1fd71f7b145b8db1b06e2f3555) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 8/LevelScene_8.unity using Guid(7e4dad1fd71f7b145b8db1b06e2f3555) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '8068ede8ddb015e3488b29776f29c320') in 0.0135175 seconds
+Start importing Assets/Levels/Level 8/LevelScene_8.unity using Guid(7e4dad1fd71f7b145b8db1b06e2f3555) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '2da9e7a6ce45ef886047544e964aa759') in 0.0121201 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.745458 seconds.
-  path: Assets/Levels/Level 9/LevelScene_9.unity
-  artifactKey: Guid(53c62bdb5324f35408fdd7d8ff108327) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 9/LevelScene_9.unity using Guid(53c62bdb5324f35408fdd7d8ff108327) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '0521c80ee34fc4e65612b5ab6da33ac2') in 0.0003643 seconds
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyPaletteWindow.cs
+  artifactKey: Guid(8ae240588f29744208e627125db9c9e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyPaletteWindow.cs using Guid(8ae240588f29744208e627125db9c9e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '582ac9b6376aa67037571385f85b97d2') in 0.0108543 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 7.740123 seconds.
-  path: Assets/Levels/Level 9/LevelScene_9Settings.lighting
-  artifactKey: Guid(1a6798949fa3ac74fbd62e8dfc23dd2b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 9/LevelScene_9Settings.lighting using Guid(1a6798949fa3ac74fbd62e8dfc23dd2b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
- -> (artifact id: 'a48c9351fe6543606d3d6bf6e279f9e6') in 0.0152175 seconds
+  Time since last request: 0.000022 seconds.
+  path: Assets/Plugins/Kubacho/vFolders/VFolders.asmdef
+  artifactKey: Guid(3331bc437f3a24586b7e86e7bdd62b5e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vFolders/VFolders.asmdef using Guid(3331bc437f3a24586b7e86e7bdd62b5e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '967ee827056928d465d69bf2ecbcde88') in 0.0116402 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.770320 seconds.
-  path: Assets/Levels/Level 10/LevelScene_10.unity
-  artifactKey: Guid(51c13ce6cbb2fc54db88a05350b21cb9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 10/LevelScene_10.unity using Guid(51c13ce6cbb2fc54db88a05350b21cb9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'e5e0144da0219668c3aaf610ba079239') in 0.000361 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 7.311246 seconds.
-  path: Assets/Levels/Level 10/LevelScene_10Settings.lighting
-  artifactKey: Guid(6ec5a5558cdd5a2409c9308c0e604b3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 10/LevelScene_10Settings.lighting using Guid(6ec5a5558cdd5a2409c9308c0e604b3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
- -> (artifact id: 'c876af2a8d130e1637a67df5e86f89e6') in 0.0184356 seconds
+  Time since last request: 0.000015 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchy.asmdef
+  artifactKey: Guid(2c3f48364a5004fd3a152fbdf5fea703) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchy.asmdef using Guid(2c3f48364a5004fd3a152fbdf5fea703) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '5bfd0b789686b098cc68276c44bf61f6') in 0.0112249 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.752674 seconds.
-  path: Assets/Levels/Level 11/LevelScene_11.unity
-  artifactKey: Guid(ae0ab96557849964783efb4e7b124a76) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Levels/Level 11/LevelScene_11.unity using Guid(ae0ab96557849964783efb4e7b124a76) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '6bbd133201de780a684fce2e74931aa7') in 0.0003655 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 7.934304 seconds.
-  path: Assets/Levels/Level 11/LevelScene_11.unity
-  artifactKey: Guid(ae0ab96557849964783efb4e7b124a76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Levels/Level 11/LevelScene_11.unity using Guid(ae0ab96557849964783efb4e7b124a76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '59701b5e2a6435e278c1d81d3e010574') in 0.2269171 seconds
+  Time since last request: 0.000019 seconds.
+  path: Assets/Shared/Materials/MatBrownChecker.mat
+  artifactKey: Guid(83fb075e083ad414bb58307f02ba597a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatBrownChecker.mat using Guid(83fb075e083ad414bb58307f02ba597a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c307508dc2ce909c7053dff341e323ca') in 0.0116674 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
 ========================================================================
 Received Import Request.
-  Time since last request: 13.271009 seconds.
-  path: Assets/ProCore/ProBuilderData
-  artifactKey: Guid(d63b41d5d82555445ad31ee6076e0387) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/ProCore/ProBuilderData using Guid(d63b41d5d82555445ad31ee6076e0387) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'e3ec0f832868a4890cd45a4161f4b1ec') in 0.0003446 seconds
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/GeneralDrawerConfig.asset
+  artifactKey: Guid(9dfc166129644a145b6d18ef9dbbbc6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/GeneralDrawerConfig.asset using Guid(9dfc166129644a145b6d18ef9dbbbc6f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6119d1448a43480da64c4ad7b29dc3ed') in 0.0113943 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyData.cs
+  artifactKey: Guid(3a9752b0c8e144801967e6897679604b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyData.cs using Guid(3a9752b0c8e144801967e6897679604b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '6641ae0a3b97a0becca400431a7129bf') in 0.0102589 seconds
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000013 seconds.
+  path: Assets/Plugins/Sirenix/Demos
+  artifactKey: Guid(39584688cfac6ff44bd94124e5bc1ca7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Demos using Guid(39584688cfac6ff44bd94124e5bc1ca7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c215a6dae53ae63e013b7f686df42456') in 0.0114091 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Plugins/Kubacho/vInspector/VInspectorResettableVariables.cs
+  artifactKey: Guid(4efb7d95707f0459ba76cac7fa149875) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vInspector/VInspectorResettableVariables.cs using Guid(4efb7d95707f0459ba76cac7fa149875) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '194f05e2ab6f7a9d767265479cc85f4a') in 0.0124288 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000046 seconds.
+  path: Assets/Plugins/Kubacho/vHierarchy/VHierarchyLightingWindow.cs
+  artifactKey: Guid(25324ddc1ebdc4ee5b1d9902a8efafa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Kubacho/vHierarchy/VHierarchyLightingWindow.cs using Guid(25324ddc1ebdc4ee5b1d9902a8efafa7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '34d0a581431ffad430d365269fac09cd') in 0.0110979 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000039 seconds.
+  path: Assets/Plugins/Sirenix/Assemblies/NoEmitAndNoEditor
+  artifactKey: Guid(a73a691127ad93941b89586292291dab) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Assemblies/NoEmitAndNoEditor using Guid(a73a691127ad93941b89586292291dab) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd9dbdee9cc5c54544478270c060da783') in 0.0107369 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000014 seconds.
+  path: Assets/Levels/Level 8/LevelScene_8Settings.lighting
+  artifactKey: Guid(61fc2fa2ce22170488877e7294e3003e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Levels/Level 8/LevelScene_8Settings.lighting using Guid(61fc2fa2ce22170488877e7294e3003e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter)LightingSettings: switching bake backend from 2 to 1.
+ -> (artifact id: '3da75e1ea2bcc9df971765dfc9b7a958') in 0.0113043 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000012 seconds.
+  path: Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables.data
+  artifactKey: Guid(d92d0eb8b980c6d44b5f0e64a620355b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Plugins/Sirenix/Odin Inspector/Modules/Unity.Addressables.data using Guid(d92d0eb8b980c6d44b5f0e64a620355b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '740397352102d35e76ec22e5092d8771') in 0.0094437 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.846760 seconds.
+  path: Assets/Shared/Scenes/DemoScene.unity
+  artifactKey: Guid(4b715df4c28f7364c8b1d36151220364) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Shared/Scenes/DemoScene.unity using Guid(4b715df4c28f7364c8b1d36151220364) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '032758f8cd7b9b211ac17d25de6dba9f') in 0.0005326 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 21.372439 seconds.
+  path: Assets/Shared/Sprites/GridBox_Default.png
+  artifactKey: Guid(8aacf002ead0221489a9036ec772cf1d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Shared/Sprites/GridBox_Default.png using Guid(8aacf002ead0221489a9036ec772cf1d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'b6240a8f1ca232bbca14347c68d5beaf') in 0.0379193 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.086126 seconds.
+  path: Assets/Shared/Sprites/GridBox_Default.png
+  artifactKey: Guid(8aacf002ead0221489a9036ec772cf1d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Sprites/GridBox_Default.png using Guid(8aacf002ead0221489a9036ec772cf1d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '5ee2852b22de73b227a724c9561ce418') in 0.0178642 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
+========================================================================
+Received Import Request.
+  Time since last request: 27.610305 seconds.
+  path: Assets/Shared/Materials/MatTransparantChecker.mat
+  artifactKey: Guid(48a02f5543c87714d81e95322e9d8231) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatTransparantChecker.mat using Guid(48a02f5543c87714d81e95322e9d8231) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd2e0465cdd1f6182b03fbc3f0094d582') in 0.0198751 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000017 seconds.
+  path: Assets/Shared/Materials/MatLightGrayChecker.mat
+  artifactKey: Guid(bc402b79f75687c4f8051d103ef15ad4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatLightGrayChecker.mat using Guid(bc402b79f75687c4f8051d103ef15ad4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'fdd093f927e61eff26b84f7821a225b0') in 0.0125432 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000016 seconds.
+  path: Assets/Shared/Materials/MatBrownChecker.mat
+  artifactKey: Guid(83fb075e083ad414bb58307f02ba597a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatBrownChecker.mat using Guid(83fb075e083ad414bb58307f02ba597a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'd59cf3f3624f05b7793332b38ec0c1d1') in 0.0124626 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000015 seconds.
+  path: Assets/Shared/Materials/MatBlueChecker.mat
+  artifactKey: Guid(312893457228b37469740e0486b6ab39) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatBlueChecker.mat using Guid(312893457228b37469740e0486b6ab39) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '8a66b9a933b114b8ceb6fb0001d047bd') in 0.0124976 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000014 seconds.
+  path: Assets/Shared/Materials/MatDarkBrownChecker.mat
+  artifactKey: Guid(a105be5bf8dee0d46abcd1fd31787940) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Materials/MatDarkBrownChecker.mat using Guid(a105be5bf8dee0d46abcd1fd31787940) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: 'c4389841d77ff3e67b49b08f499c09ae') in 0.0123297 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 73.485525 seconds.
+  path: Assets/Shared/Scenes/DemoScene.unity
+  artifactKey: Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
+Start importing Assets/Shared/Scenes/DemoScene.unity using Guid(4b715df4c28f7364c8b1d36151220364) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '97cbce6fd362a21d783f38dd8705b475') in 0.0289658 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
 
