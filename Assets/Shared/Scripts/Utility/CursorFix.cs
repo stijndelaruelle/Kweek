@@ -1,21 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CursorFix : MonoBehaviour
+namespace Kweek
 {
-    private void Update()
+    public class CursorFix : MonoBehaviour
     {
-        //Alt-tabbing fix (put is somewhere else?)
-        if (Cursor.lockState == CursorLockMode.None)
+        private void Update()
         {
-            if (Time.timeScale == 0.0f)
+            //Alt-tabbing fix (put is somewhere else?)
+            if (Cursor.lockState == CursorLockMode.None)
             {
-                Cursor.lockState = CursorLockMode.Confined;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
+                if (Time.timeScale == 0.0f)
+                {
+                    Cursor.lockState = CursorLockMode.Confined;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
             }
         }
     }

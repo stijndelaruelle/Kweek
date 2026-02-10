@@ -1,23 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class QuitToDesktopButton : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private PopupPanel m_PopupWindow;
-
-    public void Quit()
+    public class QuitToDesktopButton : MonoBehaviour
     {
-        m_PopupWindow.SetupYesNo("Quit", "Are you sure you want to quit?", OnYesClicked, null);
-    }
+        [SerializeField]
+        private PopupPanel m_PopupWindow = null;
 
-    private void OnYesClicked()
-    {
-        #if UNITY_EDITOR
+        public void Quit()
+        {
+            m_PopupWindow.SetupYesNo("Quit", "Are you sure you want to quit?", OnYesClicked, null);
+        }
+
+        private void OnYesClicked()
+        {
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-        #else
+#else
             Application.Quit();
-        #endif
+#endif
+        }
     }
 }

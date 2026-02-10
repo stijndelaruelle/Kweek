@@ -1,25 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
-public class ContinueButton : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private ImageFader m_ImageFader;
-
-    public void Continue()
+    public class ContinueButton : MonoBehaviour
     {
-        SaveGameManager.Instance.ActivateMostRecent();
-        m_ImageFader.FadeIn(OnFadeInComplete);
-    }
+        [SerializeField]
+        private ImageFader m_ImageFader;
 
-    private void OnFadeInComplete()
-    {
-        if (SaveGameManager.Instance.ActiveSaveGame != null)
+        public void Continue()
         {
-            LevelManager.Instance.LoadLevel(SaveGameManager.Instance.ActiveSaveGame.LevelID);
-            m_ImageFader.SetAlphaMin();
+            SaveGameManager.Instance.ActivateMostRecent();
+            m_ImageFader.FadeIn(OnFadeInComplete);
+        }
+
+        private void OnFadeInComplete()
+        {
+            if (SaveGameManager.Instance.ActiveSaveGame != null)
+            {
+                LevelManager.Instance.LoadLevel(SaveGameManager.Instance.ActiveSaveGame.LevelID);
+                m_ImageFader.SetAlphaMin();
+            }
         }
     }
 }

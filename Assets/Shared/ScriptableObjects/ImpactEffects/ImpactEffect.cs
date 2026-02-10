@@ -1,77 +1,78 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent (typeof(SpriteRenderer))]
-[RequireComponent(typeof(AudioSource))]
-public class ImpactEffect : PoolableObject
+namespace Kweek
 {
-    [SerializeField]
-    private ImpactEffectDefinition m_Definition;
-
-    [Space(5)]
-    [Header ("Required references")]
-    [Space(10)]
-    [SerializeField]
-    private SpriteRenderer m_SpriteRenderer;
-
-    [SerializeField]
-    private AudioSource m_AudioSource;
-
-    public void InitializeImpactEffect(ImpactEffectDefinition definition)
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(AudioSource))]
+    public class ImpactEffect : PoolableObject
     {
-        m_Definition = definition;
-    }
+        [SerializeField]
+        private ImpactEffectDefinition m_Definition = null;
 
-    //PoolableObject
-    public override void Initialize()
-    {
+        [Space(5)]
+        [Header("Required references")]
+        [Space(10)]
+        [SerializeField]
+        private SpriteRenderer m_SpriteRenderer = null;
 
-    }
+        [SerializeField]
+        private AudioSource m_AudioSource = null;
 
-    public override void Activate()
-    {
-        //Set a random sprite
-        if (m_SpriteRenderer != null)
+        public void InitializeImpactEffect(ImpactEffectDefinition definition)
         {
-            int randomDecalID = 0;
-            if (m_Definition.Decals.Count > 0)
+            m_Definition = definition;
+        }
+
+        //PoolableObject
+        public override void Initialize()
+        {
+
+        }
+
+        public override void Activate()
+        {
+            //Set a random sprite
+            if (m_SpriteRenderer != null)
             {
-                randomDecalID = Random.Range(0, m_Definition.Decals.Count);
-                m_SpriteRenderer.sprite = m_Definition.Decals[randomDecalID];
-                m_SpriteRenderer.enabled = true;
+                int randomDecalID = 0;
+                if (m_Definition.Decals.Count > 0)
+                {
+                    randomDecalID = Random.Range(0, m_Definition.Decals.Count);
+                    m_SpriteRenderer.sprite = m_Definition.Decals[randomDecalID];
+                    m_SpriteRenderer.enabled = true;
+                }
+                else
+                {
+                    m_SpriteRenderer.enabled = false;
+                }
             }
-            else
+
+            //Play a random hit sound
+            if (m_AudioSource != null)
             {
-                m_SpriteRenderer.enabled = false;
+                int randomClipID = 0;
+                if (m_Definition.AudioClips.Count > 0)
+                {
+                    randomClipID = Random.Range(0, m_Definition.AudioClips.Count);
+                    m_AudioSource.clip = m_Definition.AudioClips[randomClipID];
+                    m_AudioSource.Play();
+                }
+                else
+                {
+                    m_AudioSource.Stop();
+                }
             }
         }
 
-        //Play a random hit sound
-        if (m_AudioSource != null)
+        public override void Deactivate()
         {
-            int randomClipID = 0;
-            if (m_Definition.AudioClips.Count > 0)
-            {
-                randomClipID = Random.Range(0, m_Definition.AudioClips.Count);
-                m_AudioSource.clip = m_Definition.AudioClips[randomClipID];
-                m_AudioSource.Play();
-            }
-            else
-            {
-                m_AudioSource.Stop();
-            }
+            m_SpriteRenderer.enabled = false;
+            m_AudioSource.Stop();
         }
-    }
 
-    public override void Deactivate()
-    {
-        m_SpriteRenderer.enabled = false;
-        m_AudioSource.Stop();
-    }
-
-    public override bool IsAvailable()
-    {
-        return true;
+        public override bool IsAvailable()
+        {
+            return true;
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace Kweek
     [RequireComponent(typeof(EnemyWeaponPickupBehaviour))]
     public class BasicGunAttackState : IAbstractTargetState
     {
-        private EnemyWeaponPickupBehaviour m_Soldier = null;
+        private EnemyWeaponPickupBehaviour m_Behaviour = null;
 
         [Header("Fireing")]
         [Space(5)]
@@ -73,17 +73,17 @@ namespace Kweek
         {
             //Assigning this manually clutters the inspector a LOT!
             //If we, at some point, want to detach state objects from their behaviour, revert this.
-            m_Soldier = GetComponent<EnemyWeaponPickupBehaviour>();
+            m_Behaviour = GetComponent<EnemyWeaponPickupBehaviour>();
         }
 
         public override void Enter()
         {
             //Debug.Log("Entered fire state!");
 
-            m_Soldier.AnimatorIKEvent += OnStateAnimatorIK;
+            m_Behaviour.AnimatorIKEvent += OnStateAnimatorIK;
 
             //Stop the character from moving, both gamewise as visually
-            m_Soldier.NavMeshAgent.isStopped = true;
+            m_Behaviour.NavMeshAgent.isStopped = true;
 
             m_Target = null;
             m_FireDelayTimer = m_FireDelay;
@@ -95,10 +95,10 @@ namespace Kweek
 
         public override void Exit()
         {
-            if (m_Soldier == null)
+            if (m_Behaviour == null)
                 return;
 
-            m_Soldier.AnimatorIKEvent -= OnStateAnimatorIK;
+            m_Behaviour.AnimatorIKEvent -= OnStateAnimatorIK;
         }
 
         public override void StateUpdate()
@@ -133,12 +133,12 @@ namespace Kweek
             //Burstfire
             if (distance < m_SingleShotDistance)
             {
-                m_FireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine(3));
+                m_FireRoutine = m_Behaviour.StartCoroutine(FireBurstRoutine(3));
                 return;
             }
 
             //Single shot
-            m_FireRoutine = m_Soldier.StartCoroutine(FireBurstRoutine(1));
+            m_FireRoutine = m_Behaviour.StartCoroutine(FireBurstRoutine(1));
             return;
         }
 
@@ -172,7 +172,7 @@ namespace Kweek
             Vector3 normDirection = (m_Target.GetPosition() - m_FireTransform.position).normalized;
             Ray fireRay = new Ray(m_FireTransform.position, normDirection);
 
-            return m_Soldier.Weapon.Use(fireRay);
+            return m_Behaviour.Weapon.Use(fireRay);
         }
 
 
@@ -189,7 +189,7 @@ namespace Kweek
                 //If we are almost ready to fire, call the animation already once. Otherwise we fire our first bullet into the ground
                 if (m_IsInFireStance == false && m_FireDelayTimer <= 0.2f) //hardcoded value from the animator
                 {
-                    m_Soldier.Animator.SetTrigger("ReadyFireTrigger");
+                    m_Behaviour.Animator.SetTrigger("ReadyFireTrigger");
                     m_IsInFireStance = true;
                 }
             }
@@ -205,12 +205,12 @@ namespace Kweek
             {
                 if (m_Target.IsDead())
                 {
-                    m_Soldier.SwitchState(m_DefaultState);
+                    m_Behaviour.SwitchState(m_DefaultState);
                 }
                 else
                 {
                     m_ChaseState.SetTarget(m_Target);
-                    m_Soldier.SwitchState(m_ChaseState);
+                    m_Behaviour.SwitchState(m_ChaseState);
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace Kweek
 
             m_FireDelayTimer = 0.0f;
             m_IsSwitchingOut = true;
-            m_Soldier.Animator.SetTrigger("MovementTrigger");
+            m_Behaviour.Animator.SetTrigger("MovementTrigger");
         }
 
         private void HandleScanning()
@@ -250,8 +250,8 @@ namespace Kweek
                     }
 
                     //If so check if he's within the specified angle
-                    Vector3 diffPos = other.transform.position - m_Soldier.transform.position;
-                    float dot = Vector3.Dot(m_Soldier.transform.forward, diffPos.normalized);
+                    Vector3 diffPos = other.transform.position - m_Behaviour.transform.position;
+                    float dot = Vector3.Dot(m_Behaviour.transform.forward, diffPos.normalized);
                     float degAngle = (Mathf.Acos(dot) * Mathf.Rad2Deg * 2.0f);
 
                     if (degAngle <= m_ViewAngle)
@@ -299,9 +299,9 @@ namespace Kweek
             {
                 //Rotate the head
                 float normTimer = (m_FireDelay - m_FireDelayTimer) / m_FireDelay;
-                m_Soldier.Animator.SetLookAtWeight(normTimer);
+                m_Behaviour.Animator.SetLookAtWeight(normTimer);
 
-                m_Soldier.Animator.SetLookAtPosition(m_Target.GetPosition());
+                m_Behaviour.Animator.SetLookAtPosition(m_Target.GetPosition());
 
                 //Rotate the chest
                 if (m_ChestRotationSpeed > 0)
@@ -310,7 +310,7 @@ namespace Kweek
 
                     if (m_LastChestLocalRotation == Quaternion.identity)
                     {
-                        m_LastChestLocalRotation = Quaternion.RotateTowards(m_Soldier.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
+                        m_LastChestLocalRotation = Quaternion.RotateTowards(m_Behaviour.Animator.GetBoneTransform(HumanBodyBones.Chest).localRotation,
                                                                             desiredChestRotation,
                                                                             m_ChestRotationSpeed * Time.deltaTime);
                     }
@@ -321,7 +321,7 @@ namespace Kweek
                                                                             m_ChestRotationSpeed * Time.deltaTime);
                     }
 
-                    m_Soldier.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
+                    m_Behaviour.Animator.SetBoneLocalRotation(HumanBodyBones.Chest, m_LastChestLocalRotation);
                 }
             }
         }
@@ -332,20 +332,20 @@ namespace Kweek
 
             if (m_IsSwitchingOut == false)
             {
-                Vector3 direction = (m_Target.GetPosition() - m_Soldier.Animator.GetBoneTransform(boneType).position).normalized;
+                Vector3 direction = (m_Target.GetPosition() - m_Behaviour.Animator.GetBoneTransform(boneType).position).normalized;
                 desiredRotation = Quaternion.LookRotation(direction);
                 Vector3 euler = desiredRotation.eulerAngles;
 
                 //Add the transform of the character, otherwise things get weird.
-                euler.z = 360.0f - euler.x + (m_Soldier.transform.rotation.eulerAngles.x) + vertOffset;
-                euler.x = 360.0f - euler.y + (m_Soldier.transform.rotation.eulerAngles.y) + horizOffset;
+                euler.z = 360.0f - euler.x + (m_Behaviour.transform.rotation.eulerAngles.x) + vertOffset;
+                euler.x = 360.0f - euler.y + (m_Behaviour.transform.rotation.eulerAngles.y) + horizOffset;
                 euler.y = 0.0f;
 
                 desiredRotation = Quaternion.Euler(euler);
             }
             else
             {
-                desiredRotation = m_Soldier.Animator.GetBoneTransform(boneType).localRotation;
+                desiredRotation = m_Behaviour.Animator.GetBoneTransform(boneType).localRotation;
             }
 
             return desiredRotation;

@@ -1,63 +1,65 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DifficultySelectPanel : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private DifficultyModeListDefinition m_DifficultyModes;
-
-    [SerializeField]
-    private DifficultySelectToggle m_TogglePrefab;
-
-    [SerializeField]
-    private RectTransform m_ContentRoot;
-
-    [SerializeField]
-    private ToggleGroup m_ToggleGroup;
-    private List<DifficultySelectToggle> m_DifficultySelectToggles; //Sole purpose is to unsubscribe.
-
-    private int m_SelectedDifficulty = 0;
-    public int SelectedDifficulty
+    public class DifficultySelectPanel : MonoBehaviour
     {
-        get { return m_SelectedDifficulty; }
-    }
+        [SerializeField]
+        private DifficultyModeListDefinition m_DifficultyModes;
 
-    private void Start()
-    {
-        //Create new toggles
-        m_DifficultySelectToggles = new List<DifficultySelectToggle>();
+        [SerializeField]
+        private DifficultySelectToggle m_TogglePrefab;
 
-        for (int i = 0; i < m_DifficultyModes.GetDifficultyModeCount(); ++i)
+        [SerializeField]
+        private RectTransform m_ContentRoot;
+
+        [SerializeField]
+        private ToggleGroup m_ToggleGroup;
+        private List<DifficultySelectToggle> m_DifficultySelectToggles; //Sole purpose is to unsubscribe.
+
+        private int m_SelectedDifficulty = 0;
+        public int SelectedDifficulty
         {
-            DifficultySelectToggle toggle = GameObject.Instantiate<DifficultySelectToggle>(m_TogglePrefab);
-            toggle.Setup(i, m_DifficultyModes.GetDifficultyMode(i), m_ContentRoot, m_ToggleGroup);
-            toggle.DifficultySelectEvent += OnDifficultySelect;
-
-            //Enable the first toggle
-            if (i == 0)
-                toggle.IsOn(true);
-            else
-                toggle.IsOn(false);
-
-            m_DifficultySelectToggles.Add(toggle);
+            get { return m_SelectedDifficulty; }
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (m_DifficultySelectToggles == null)
-            return;
-
-        foreach (DifficultySelectToggle toggle in m_DifficultySelectToggles)
+        private void Start()
         {
-            toggle.DifficultySelectEvent -= OnDifficultySelect;
-        }
-    }
+            //Create new toggles
+            m_DifficultySelectToggles = new List<DifficultySelectToggle>();
 
-    private void OnDifficultySelect(int difficulty)
-    {
-        m_SelectedDifficulty = difficulty;
+            for (int i = 0; i < m_DifficultyModes.GetDifficultyModeCount(); ++i)
+            {
+                DifficultySelectToggle toggle = GameObject.Instantiate<DifficultySelectToggle>(m_TogglePrefab);
+                toggle.Setup(i, m_DifficultyModes.GetDifficultyMode(i), m_ContentRoot, m_ToggleGroup);
+                toggle.DifficultySelectEvent += OnDifficultySelect;
+
+                //Enable the first toggle
+                if (i == 0)
+                    toggle.IsOn(true);
+                else
+                    toggle.IsOn(false);
+
+                m_DifficultySelectToggles.Add(toggle);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (m_DifficultySelectToggles == null)
+                return;
+
+            foreach (DifficultySelectToggle toggle in m_DifficultySelectToggles)
+            {
+                toggle.DifficultySelectEvent -= OnDifficultySelect;
+            }
+        }
+
+        private void OnDifficultySelect(int difficulty)
+        {
+            m_SelectedDifficulty = difficulty;
+        }
     }
 }

@@ -57,6 +57,8 @@ namespace Kweek
 
             if (m_WeaponPickup != null)
             {
+                //TODO: We could also just set the ammo at the time when the pickup is thrown?
+
                 //Throw the weapon
                 m_WeaponPickup.enabled = true;
                 m_WeaponPickup.gameObject.transform.parent = null;
@@ -66,6 +68,7 @@ namespace Kweek
 
         private void OnUpdateWeaponAmmo(int ammoInClip, int reserveAmmo)
         {
+            //TODO: We could also just set the ammo at the time when the pickup is thrown?
             if (m_WeaponPickup != null)
                 m_WeaponPickup.Ammo = ammoInClip;
         }

@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DontDestroyOnLoad : MonoBehaviour
+namespace Kweek
 {
-    void Awake()
+    public class DontDestroyOnLoad : MonoBehaviour
     {
-        DontDestroyOnLoad(this);
+        void Awake()
+        {
+            DontDestroyOnLoad(this);
+        }
     }
 }

@@ -1,32 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FadeOutOnLevelLoad : MonoBehaviour
+namespace Kweek
 {
-    [SerializeField]
-    private ImageFader m_ImageFader;
-
-    private void Start()
+    public class FadeOutOnLevelLoad : MonoBehaviour
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        FadeOut();
-    }
+        [SerializeField]
+        private ImageFader m_ImageFader = null;
 
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+        private void Start()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            FadeOut();
+        }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        FadeOut();
-    }
+        private void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
 
-    private void FadeOut()
-    {
-        m_ImageFader.SetAlphaMax();
-        m_ImageFader.FadeOut();
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            FadeOut();
+        }
+
+        private void FadeOut()
+        {
+            m_ImageFader.SetAlphaMax();
+            m_ImageFader.FadeOut();
+        }
     }
 }

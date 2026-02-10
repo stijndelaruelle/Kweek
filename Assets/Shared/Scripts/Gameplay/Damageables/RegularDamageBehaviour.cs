@@ -5,6 +5,9 @@ namespace Kweek
     public class RegularDamageBehaviour : IDamageableObject
     {
         [SerializeField]
+        private Transform m_Transform = null;
+
+        [SerializeField]
         protected int m_MaxHealth = 0;
         public override int MaxHealth
         {
@@ -16,9 +19,6 @@ namespace Kweek
         {
             get { return m_Health; }
         }
-
-        [SerializeField]
-        private Transform m_Transform = null;
 
         private void Awake()
         {

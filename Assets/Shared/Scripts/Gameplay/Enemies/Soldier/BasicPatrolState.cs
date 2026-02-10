@@ -34,7 +34,7 @@ namespace Kweek
         private IAbstractTargetState m_TargetState = null;
 
         [SerializeField]
-        private Transform m_ViewPosition = null;
+        private Transform m_ViewTransform = null;
 
         [SerializeField]
         private float m_ViewRadius = 0.0f;
@@ -122,7 +122,7 @@ namespace Kweek
 
         private void HandleScanning()
         {
-            Collider[] colliders = Physics.OverlapSphere(m_ViewPosition.position, m_ViewRadius, m_ScanLayerMask);
+            Collider[] colliders = Physics.OverlapSphere(m_ViewTransform.position, m_ViewRadius, m_ScanLayerMask);
 
             //For all targets in my radius
             for (int i = 0; i < colliders.Length; ++i)
@@ -153,7 +153,7 @@ namespace Kweek
                     if (degAngle <= m_ViewAngle)
                     {
                         //Check if we can actually see him
-                        Ray ray = new Ray(m_ViewPosition.position, (damageableObject.GetPosition() - m_ViewPosition.position));
+                        Ray ray = new Ray(m_ViewTransform.position, (damageableObject.GetPosition() - m_ViewTransform.position));
 
                         RaycastHit hitInfo;
                         bool success = Physics.Raycast(ray, out hitInfo);
@@ -176,7 +176,9 @@ namespace Kweek
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(m_ViewPosition.position, m_ViewRadius);
+
+            if (m_ViewTransform != null)
+                Gizmos.DrawWireSphere(m_ViewTransform.position, m_ViewRadius);
         }
 
         public override string ToString()

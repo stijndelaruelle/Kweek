@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
-//Abstract class instead of interface as we have to 100% certain it's a monobehaviour.
-public abstract class PoolableObject : MonoBehaviour
+namespace Kweek
 {
-    public abstract void Initialize();
-    public abstract void Activate();
-    public abstract void Deactivate();
-    public abstract bool IsAvailable();
+    //Abstract class instead of interface as we have to 100% certain it's a monobehaviour.
+    public abstract class PoolableObject : MonoBehaviour
+    {
+        public abstract void Initialize();
+        public abstract void Activate();
+        public abstract void Deactivate();
+        public abstract bool IsAvailable();
+    }
 }

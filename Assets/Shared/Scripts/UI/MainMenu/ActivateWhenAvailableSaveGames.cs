@@ -1,57 +1,55 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
-
-public class ActivateWhenAvailableSaveGames : MonoBehaviour
+namespace Kweek
 {
-
-    private void Start()
+    public class ActivateWhenAvailableSaveGames : MonoBehaviour
     {
-        SaveGameManager saveGameManager = SaveGameManager.Instance;
-        saveGameManager.SaveGamesLoadedEvent += OnSaveGamesLoaded;
-        saveGameManager.SaveGameDeletedEvent += OnSaveGameDeleted;
-    }
-
-    private void OnDestroy()
-    {
-        SaveGameManager saveGameManager = SaveGameManager.Instance;
-        if (saveGameManager != null)
+        private void Start()
         {
-            saveGameManager.SaveGamesLoadedEvent -= OnSaveGamesLoaded;
-            saveGameManager.SaveGameDeletedEvent -= OnSaveGameDeleted;
+            SaveGameManager saveGameManager = SaveGameManager.Instance;
+            saveGameManager.SaveGamesLoadedEvent += OnSaveGamesLoaded;
+            saveGameManager.SaveGameDeletedEvent += OnSaveGameDeleted;
         }
-    }
 
-    private void OnEnable()
-    {
-        Refresh();
-    }
-
-    private void Refresh()
-    {
-        SaveGameManager saveGameManager = SaveGameManager.Instance;
-        if (saveGameManager != null)
+        private void OnDestroy()
         {
-            bool enabled = (saveGameManager.GetSaveGameCount() > 0);
-            gameObject.SetActive(enabled);
+            SaveGameManager saveGameManager = SaveGameManager.Instance;
+            if (saveGameManager != null)
+            {
+                saveGameManager.SaveGamesLoadedEvent -= OnSaveGamesLoaded;
+                saveGameManager.SaveGameDeletedEvent -= OnSaveGameDeleted;
+            }
         }
-    }
 
-    //SaveGameManager callbacks
-    //private void OnSaveGameAdded(SaveGame saveGame)
-    //{
-    //    //Refresh();
-    //}
+        private void OnEnable()
+        {
+            Refresh();
+        }
 
-    private void OnSaveGameDeleted(SaveGame saveGame)
-    {
-        Refresh();
-    }
+        private void Refresh()
+        {
+            SaveGameManager saveGameManager = SaveGameManager.Instance;
+            if (saveGameManager != null)
+            {
+                bool enabled = (saveGameManager.GetSaveGameCount() > 0);
+                gameObject.SetActive(enabled);
+            }
+        }
 
-    private void OnSaveGamesLoaded()
-    {
-        Refresh();
+        //SaveGameManager callbacks
+        //private void OnSaveGameAdded(SaveGame saveGame)
+        //{
+        //    //Refresh();
+        //}
+
+        private void OnSaveGameDeleted(SaveGame saveGame)
+        {
+            Refresh();
+        }
+
+        private void OnSaveGamesLoaded()
+        {
+            Refresh();
+        }
     }
 }

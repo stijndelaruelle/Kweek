@@ -1,54 +1,57 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPoolManager : Singleton<ObjectPoolManager>
+namespace Kweek
 {
-    [SerializeField]
-    private List<ObjectPoolDefinition> m_ObjectPoolDefinitions;
-    private Dictionary<PoolableObject, ObjectPool> m_ObjectPools;
-
-    protected override void Awake()
+    public class ObjectPoolManager : Singleton<ObjectPoolManager>
     {
-        base.Awake();
-        Initialize();
-    }
-    
-    private void Initialize()
-    {
-        m_ObjectPools = new Dictionary<PoolableObject, ObjectPool>();
+        [SerializeField]
+        private List<ObjectPoolDefinition> m_ObjectPoolDefinitions;
+        private Dictionary<PoolableObject, ObjectPool> m_ObjectPools;
 
-        foreach (ObjectPoolDefinition definition in m_ObjectPoolDefinitions)
+        protected override void Awake()
         {
-            if (definition.ObjectType != null)
+            base.Awake();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            m_ObjectPools = new Dictionary<PoolableObject, ObjectPool>();
+
+            foreach (ObjectPoolDefinition definition in m_ObjectPoolDefinitions)
             {
-                //If the pool already exists, notify the developer
-                if (m_ObjectPools.ContainsKey(definition.ObjectType))
+                if (definition.ObjectType != null)
                 {
-                    Debug.LogWarning("Trying to create an already existing pool \"" + definition.ToString() + "\" please extend the original instead.");
-                }
-                else
-                {
-                    ObjectPool newPool = new GameObject("Pool " + definition.ObjectType.name).AddComponent<ObjectPool>();
-                    newPool.transform.SetParent(transform); //Parent it to ourselves
+                    //If the pool already exists, notify the developer
+                    if (m_ObjectPools.ContainsKey(definition.ObjectType))
+                    {
+                        Debug.LogWarning("Trying to create an already existing pool \"" + definition.ToString() + "\" please extend the original instead.");
+                    }
+                    else
+                    {
+                        ObjectPool newPool = new GameObject("Pool " + definition.ObjectType.name).AddComponent<ObjectPool>();
+                        newPool.transform.SetParent(transform); //Parent it to ourselves
 
-                    newPool.Initialize(definition);
+                        newPool.Initialize(definition);
 
-                    m_ObjectPools.Add(definition.ObjectType, newPool);
+                        m_ObjectPools.Add(definition.ObjectType, newPool);
+                    }
                 }
             }
         }
-    }
 
-    public ObjectPool GetPool(PoolableObject poolableObject)
-    {
-        if (poolableObject == null)
-            return null;
-
-        if (m_ObjectPools.ContainsKey(poolableObject))
+        public ObjectPool GetPool(PoolableObject poolableObject)
         {
-            return m_ObjectPools[poolableObject];
-        }
+            if (poolableObject == null)
+                return null;
 
-        return null;
+            if (m_ObjectPools.ContainsKey(poolableObject))
+            {
+                return m_ObjectPools[poolableObject];
+            }
+
+            return null;
+        }
     }
 }
