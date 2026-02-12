@@ -19,6 +19,7 @@ namespace Kweek
         private PhysicsParticle m_PopupPrefab = null; //TEMP
 
         private LinkedList<float> m_LeftEyeEARRatioHistory = null;
+        private float m_LastLeftEyeAspectRatio = 0.0f; //For minitoring purposes
 
         //Events
         public VoidDelegate BlinkEvent = null;
@@ -71,6 +72,7 @@ namespace Kweek
                 m_LeftEyeEARRatioHistory.RemoveFirst();
 
             m_LeftEyeEARRatioHistory.AddLast(leftEyeAspectRatio);
+            m_LastLeftEyeAspectRatio = leftEyeAspectRatio; //For minitoring purposes
         }
 
         private void OnFaceLandmarksDetected(List<FaceLandmarkData> faceLandmarkData)
