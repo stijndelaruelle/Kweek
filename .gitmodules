@@ -1,0 +1,3 @@
+[submodule "Kweek_Unity/Assets/Plugins/Utilities"]
+	path = Kweek_Unity/Assets/Plugins/Utilities
+	url = git@github.com:stijndelaruelle/submodule_utilities.git
