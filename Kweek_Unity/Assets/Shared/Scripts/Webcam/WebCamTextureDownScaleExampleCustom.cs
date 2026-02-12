@@ -26,6 +26,16 @@ namespace Kweek
         private static readonly string DLIB_SHAPE_PREDICTOR_FILE_NAME_68 = "DlibFaceLandmarkDetector/sp_human_face_68.dat";
         private static readonly string DLIB_SHAPE_PREDICTOR_FILE_NAME_68_MOBILE = "DlibFaceLandmarkDetector/sp_human_face_68_for_mobile.dat";
 
+        public enum ShapePredictorType
+        {
+            None = 0,
+            PC_6 = 1,
+            PC_17 = 2,
+            Mobile_17 = 3,
+            PC_68 = 4,
+            Mobile_68 = 5
+        }
+
         // Public Fields
         [Header("Output")]
         /// <summary>
@@ -85,11 +95,11 @@ namespace Kweek
 
         //STIJN
         [SerializeField]
-        private FaceLandmarkData.FaceLandmarkType m_FaceLandmarkType = FaceLandmarkData.FaceLandmarkType.PC_68;
-        public FaceLandmarkData.FaceLandmarkType FaceLandmarkDataType
+        private ShapePredictorType m_ShapePredictorType = ShapePredictorType.PC_68;
+        public ShapePredictorType ShapePredictorDataType
         {
-            get { return m_FaceLandmarkType; }
-            set { m_FaceLandmarkType = value; }
+            get { return m_ShapePredictorType; }
+            set { m_ShapePredictorType = value; }
         }
 
         [SerializeField]
@@ -212,7 +222,7 @@ namespace Kweek
                             scaledResults.Add((scaledRect, scaledLandmarks));
 
                             //STIJN: Convert to my own data structure
-                            FaceLandmarkData faceLandMarkDataObject = new FaceLandmarkData(m_FaceLandmarkType, scaledRect, scaledLandmarks);
+                            FaceLandmarkData faceLandMarkDataObject = new FaceLandmarkData(ConvertShapePredictorType(m_ShapePredictorType), scaledRect, scaledLandmarks);
                             faceLandmarkDataObjectList.Add(faceLandMarkDataObject);
 
                             //STIJN: DEBUG
@@ -263,7 +273,7 @@ namespace Kweek
                                 _faceLandmarkDetector.DrawDetectLandmarkResult<Color32>(colors, _texture.width, _texture.height, 4, true, 0, 255, 0, 255);
 
                             //STIJN: Convert to my own data structure
-                            FaceLandmarkData faceLandMarkDataObject = new FaceLandmarkData(m_FaceLandmarkType, rect, landMarkPositions);
+                            FaceLandmarkData faceLandMarkDataObject = new FaceLandmarkData(ConvertShapePredictorType(m_ShapePredictorType), rect, landMarkPositions);
                             faceLandmarkDataObjectList.Add(faceLandMarkDataObject);
                         }
                         
@@ -1236,15 +1246,15 @@ namespace Kweek
             //Get the filename
             string shapePredictorFileName = string.Empty;
 
-            switch (m_FaceLandmarkType)
+            switch (m_ShapePredictorType)
             {
-                case FaceLandmarkData.FaceLandmarkType.PC_6:       { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_6;         break; }
-                case FaceLandmarkData.FaceLandmarkType.PC_17:      { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_17;        break; }
-                case FaceLandmarkData.FaceLandmarkType.Mobile_17:  { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_17_MOBILE; break; }
-                case FaceLandmarkData.FaceLandmarkType.PC_68:      { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_68;        break; }
-                case FaceLandmarkData.FaceLandmarkType.Mobile_68:  { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_68_MOBILE; break; }
+                case ShapePredictorType.PC_6:       { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_6;         break; }
+                case ShapePredictorType.PC_17:      { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_17;        break; }
+                case ShapePredictorType.Mobile_17:  { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_17_MOBILE; break; }
+                case ShapePredictorType.PC_68:      { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_68;        break; }
+                case ShapePredictorType.Mobile_68:  { shapePredictorFileName = DLIB_SHAPE_PREDICTOR_FILE_NAME_68_MOBILE; break; }
 
-                case FaceLandmarkData.FaceLandmarkType.None:
+                case ShapePredictorType.None:
                 default:
                 {
                     shapePredictorFileName = string.Empty;
@@ -1263,6 +1273,36 @@ namespace Kweek
 
             _faceLandmarkDetector = new FaceLandmarkDetector(_dlibShapePredictorFilePath);
             Initialize();
+        }
+
+        private FaceLandmarkData.FaceLandmarkType ConvertShapePredictorType(ShapePredictorType shapePredictorType)
+        {
+            //Basically get rid of the "mobile" varients.
+            switch (shapePredictorType)
+            {
+                case ShapePredictorType.PC_6:
+                {
+                    return FaceLandmarkData.FaceLandmarkType.PC_6;
+                }
+
+                case ShapePredictorType.PC_17:
+                case ShapePredictorType.Mobile_17:
+                {
+                    return FaceLandmarkData.FaceLandmarkType.PC_17;
+                }
+
+                case ShapePredictorType.PC_68:
+                case ShapePredictorType.Mobile_68:
+                {
+                    return FaceLandmarkData.FaceLandmarkType.PC_68;
+                }
+
+                case ShapePredictorType.None:
+                default:
+                {
+                    return FaceLandmarkData.FaceLandmarkType.None;
+                }
+            }
         }
     }
 }
